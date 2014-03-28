@@ -135,7 +135,7 @@ function WarsDisplayList () {
                         <?php
                     }
                 }
- {
+                else {
                 ?>
                     <tr>
                         <td colspan="4">
@@ -156,7 +156,10 @@ function WarsDisplayList () {
 }
 
 function WarsDisplayForm ($id = fale) {
-    $games = nkGetGames();
+
+    $json = MatchGetJsonTab();
+    $games = nkGEtGames();
+
     $countries = nkGetCountries();
     if ($id) {
         $match = getMatchs((int)$id);
@@ -166,6 +169,9 @@ function WarsDisplayForm ($id = fale) {
         $country = nkGetValue('country', $match['country']);
         $status = nkGetValue('status', $match['status']);
         $date = nkGetValue('date', $match['date']);
+        $icon = nkGetValue('icon', $match['icon']);
+        $type = nkGetValue('type', $match['type']);
+        $report = nkGetValue('report', $match['report']);
     }
     else {
         $versus = nkGetValue('versus');
@@ -173,12 +179,48 @@ function WarsDisplayForm ($id = fale) {
         $link = nkGetValue('link');
         $country = nkGetValue('country');
         $status = nkGetValue('status');
-        $date = nkGetValue('date');
+        $date = nkGetValue('date', strftime('%Y-%m-%d %H:%M'));
+        $icon = nkGetValue('icon');
+        $type = nkGetValue('type');
+        $report = nkGetValue('report');
     }
 
     ?>
+    <script type="text/javascript">
+        var jsonTab = <?php echo $json; ?>;
+        var defaultOption = '<option value="0"><?php echo CHOOSE; ?></option>';
+        $(function(){
+            $(".datetimepicker").datetimepicker(
+                {
+                    controlType : 'select',
+                    showTime : false,
+                    dateFormat : 'yy-mm-dd'
+                }
+            );
+            $("#game").change(function(){
+                setSelectTeam($(this).val());
+            });
+        });
+
+        function setSelectTeam(game_id) {
+            var element = $("div[data-form=team]");
+            element.html('<select name="team" id="team" class="select">'+defaultOption+'</select>');
+            for (i in jsonTab) {
+                if (i == game_id)
+                {
+                    var teams = jsonTab[i].teams;
+                    for (j in teams) {
+                        console.log(teams[j]);
+                        element.find('select').append('<option>'+teams[j].name+'</option>');
+                    }
+                }
+            }
+            element.find('select').chosen().uniform();
+        }
+    </script>
     <form action="" method="POST" class="form" autocomplete="off" enctype="multipart/form-data">
         <div class="fluid">
+            <!-- Information -->
             <div class="widget grid6">
                 <div class="whead">
                     <h6>Informations générales</h6>
@@ -186,31 +228,11 @@ function WarsDisplayForm ($id = fale) {
                 </div>
                 <div class="formRow">
                     <div class="grid3">
-                        <label for="game">Jeu :</label>
-                    </div>
-                    <div class="grid9 searchDrop">
-                        <select name="jeu" id="game" class="select">
-                            <option value="0">=== CHOISIR ===</option>
-                            <?php
-                            if (isset($games) && is_array($games) && sizeof($games)) {
-                                foreach ($games as $game) {
-                                    ?>
-                                        <option value="<?php echo printSecuTags($game['id']); ?>"<?php echo ($game['id'] == $game_id ? ' selected' : ''); ?>><?php echo printSecuTags($game['name']); ?></option>
-                                    <?php
-                                }
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="clear both"></div>
-                </div>
-                <div class="formRow">
-                    <div class="grid3">
                         <label for="status">Statut :</label>
                     </div>
                     <div class="grid9 searchDrop">
-                        <select name="jeu" id="status" class="select">
-                            <option value="">=== CHOISIR ===</option>
+                        <select name="status" id="status" class="select">
+                            <option value=""><?php echo CHOOSE; ?></option>
                             <option value="0"<?php echo ($status == 0 ? ' selected' : ''); ?>>A jouer</option>
                             <option value="1"<?php echo ($status == 1 ? ' selected' : ''); ?>>Terminé</option>
                         </select>
@@ -226,7 +248,76 @@ function WarsDisplayForm ($id = fale) {
                     </div>
                     <div class="clear both"></div>
                 </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="game">Jeu :</label>
+                    </div>
+                    <div class="grid9 searchDrop">
+                        <select name="game" id="game" class="select">
+                            <option value="0"><?php echo CHOOSE; ?></option>
+                            <?php
+                            if (isset($games) && is_array($games) && sizeof($games)) {
+                                foreach ($games as $game) {
+                                    ?>
+                                        <option value="<?php echo printSecuTags($game['id']); ?>"<?php echo ($game['id'] == $game_id ? ' selected' : ''); ?>><?php echo printSecuTags($game['name']); ?></option>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="team">&Eacute;quipe</label>
+                    </div>
+                    <div class="grid9 searchDrop" data-form="team">
+                        <select name="team" id="team" class="select">
+                            <option value="0"><?php echo CHOOSE; ?></option>
+                        </select>
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="type">Type :</label>
+                    </div>
+                    <div class="grid9 searchDrop">
+                        <input type="text" name="type" id="type" value="<?php echo $type; ?>" />
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="tournament">Comp&eacute;tition :</label>
+                    </div>
+                    <div class="grid9 searchDrop">
+                        <input type="text" name="tournament" id="tournament" value="<?php echo $type; ?>" />
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="url_tournament">Site web de la comp&eacute;tition :</label>
+                    </div>
+                    <div class="grid9 searchDrop">
+                        <input type="text" name="url_tournament" id="url_tournament" value="<?php echo $type; ?>" />
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="report">Rapport :</label>
+                    </div>
+                    <div class="grid9 searchDrop">
+                        <textarea name="report" id="report" class="editor"><?php echo $report; ?></textarea>
+                    </div>
+                    <div class="clear both"></div>
+                </div>
             </div>
+            <!-- /Information -->
+            <!-- Versus informations -->
             <div class="widget grid6">
                 <div class="whead">
                     <h6>Adversaire</h6>
@@ -246,7 +337,16 @@ function WarsDisplayForm ($id = fale) {
                         <label for="link">Site web :</label>
                     </div>
                     <div class="grid9">
-                        <input type="text" id="link" name="versus" value="<?php echo $link; ?>"/>
+                        <input type="text" id="link" name="link" value="<?php echo $link; ?>"/>
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="icon">Logo :</label>
+                    </div>
+                    <div class="grid9">
+                        <input type="file" id="icon" name="icon" value="<?php echo $icon; ?>"/>
                     </div>
                     <div class="clear both"></div>
                 </div>
@@ -256,7 +356,7 @@ function WarsDisplayForm ($id = fale) {
                     </div>
                     <div class="grid9 searchDrop">
                         <select name="jeu" id="country" class="select">
-                            <option value="0">=== CHOISIR ===</option>
+                            <option value="0"><?php echo CHOOSE; ?></option>
                             <?php
                             if (isset($countries) && is_array($countries) && sizeof($countries)) {
                                 foreach ($countries as $flag) {
@@ -273,13 +373,41 @@ function WarsDisplayForm ($id = fale) {
                     <div class="clear both"></div>
                 </div>
             </div>
+            <!-- /Versus informations -->
+            <!-- Maps -->
+            <div class="widget grid6" id="maps">
+                <div class="whead">
+                    <h6>Cartes</h6>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid2">
+                        <input type="text" name="test" />
+                    </div>
+                    <div class="grid2">
+                        <input type="text" name="test" />
+                    </div>
+                    <div class="grid2">
+                        <input type="text" name="test" />
+                    </div>
+                    <div class="grid2">
+                        <input type="text" name="test" />
+                    </div>
+                    <div class="grid2">
+                        <input type="text" name="test" />
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div id="mapsbutton" class="formRow">
+                    <div class="grid9">
+                        <a class="buttonM bDefault" href="#maps">Ajouter une carte</a>
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+            </div>
+            <!-- /Maps -->
         </div>
     </form>
-    <script type="text/javascript">
-        $(function(){
-            $(".datetimepicker").datetimepicker({controlType : 'select', showTime : false, dateFormat : 'yy-mm-dd'});
-        });
-    </script>
     <?php
 }
 ?>

@@ -54,6 +54,7 @@ $arrayModLang = array(
     #####################################
     'TEAM_NO_TEAM_REGISTERED'     => 'Aucune &eacute;quipe enregistr&eacute;e',
     'TEAM_IMAGE'                  => 'Image',
+    'TEAM_ICON'                   => 'Icon',
     #####################################
     # Team - listUsers() (admin.php)
     #####################################
@@ -73,7 +74,6 @@ $arrayModLang = array(
     #####################################
     # Team - formUser() (admin.php)
     #####################################
-    'TEAM_CHOOSE'                 => '=== CHOISIR ===',
     'TEAM_RANK'                   => 'Rang',
     #####################################
     # Team - formPreferences() (admin.php)

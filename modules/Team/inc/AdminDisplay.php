@@ -247,14 +247,14 @@ function listTeams () {
                             <!-- Nom -->
                             <td>
                                 <?php
-                                    echo printSecuTags($value['name']);
+                                    echo stripslashes(printSecuTags($value['name']));
                                 ?>
                             </td>
                             <!-- Prefix -->
                             <td>
                                 <?php
                                     if (isset($value['prefix']) && empty($value['prefix']) === false) {
-                                        echo printSecuTags($value['prefix']);
+                                        echo stripslashes(printSecuTags($value['prefix']));
                                     }
                                     else {
                                         echo "-";
@@ -265,7 +265,7 @@ function listTeams () {
                             <td>
                                 <?php
                                     if (isset($value['suffix']) && empty($value['suffix']) === false) {
-                                        echo printSecuTags($value['suffix']);
+                                        echo stripslashes(printSecuTags($value['suffix']));
                                     }
                                     else {
                                         echo "-";
@@ -275,7 +275,7 @@ function listTeams () {
                             <!-- Ordre -->
                             <td class="order">
                                 <?php
-                                    echo printSecuTags($value['order']);
+                                    echo stripslashes(printSecuTags($value['order']));
                                 ?>
                             </td>
                             <td class="center">
@@ -318,6 +318,7 @@ function formTeams ($id = false) {
         $team        = nkGetTeams((int) $id);
         $name        = nkGetValue('name',        $team['name']);
         $image       = nkGetValue('image',       $team['image']);
+        $icon        = nkGetValue('icon',        $team['icon']);
         $description = nkGetValue('description', $team['description']);
         $suffix      = nkGetValue('suffix',      $team['suffix']);
         $prefix      = nkGetValue('prefix',      $team['prefix']);
@@ -327,6 +328,7 @@ function formTeams ($id = false) {
     else {
         $name        = nkGetValue('name');
         $image       = nkGetValue('image');
+        $icon        = nkGetValue('icon');
         $description = nkGetValue('description');
         $suffix      = nkGetValue('suffix');
         $prefix      = nkGetValue('prefix');
@@ -371,7 +373,7 @@ function formTeams ($id = false) {
             <!-- Image -->
             <div class="formRow">
                 <div class="grid3 quarter">
-                    <label for="name">
+                    <label for="image">
                         <?php
                             echo TEAM_IMAGE . ' :' ;
                         ?>
@@ -383,10 +385,25 @@ function formTeams ($id = false) {
                 <div class="clear both"></div>
             </div>
             <!-- /Image -->
+            <!-- Image -->
+            <div class="formRow">
+                <div class="grid3 quarter">
+                    <label for="icon">
+                        <?php
+                            echo TEAM_ICON . ' :' ;
+                        ?>
+                    </label>
+                </div>
+                <div class="grid9">
+                    <input type="file" name="icon" id="icon" value="<?php echo $icon; ?>" class="validate[required]" />
+                </div>
+                <div class="clear both"></div>
+            </div>
+            <!-- /Image -->
             <!-- Description -->
             <div class="formRow">
                 <div class="grid3 quarter">
-                    <label for="name">
+                    <label for="description">
                         <?php
                             echo TEAM_DESCRIPTION . ' :' ;
                         ?>
@@ -464,7 +481,7 @@ function formTeams ($id = false) {
                         $games = nkGetGames();
                         if ($games) {
                             foreach ($games as $id => $game) {
-                                echo '<div><input type="checkbox" class="check" name="games[]" value="'.$id.'" id="game_' . $id . '" ' . ( is_array($teamGames) && in_array($id, $teamGames) ? 'checked="checked"' : '') . ' /> <label for="game_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($game['name'])) . '</label><br /></div>';
+                                echo '<div><input type="checkbox" class="check" name="games[]" value="'.$game['id'].'" id="game_' . $game['id'] . '" ' . ( is_array($teamGames) && in_array($game['id'], $teamGames) ? 'checked="checked"' : '') . ' /> <label for="game_' . $game['id'] . '" class="inlineBlock">' . ucfirst(strtolower($game['name'])) . '</label><br /></div>';
                             }
                         }
                     ?>
@@ -519,7 +536,7 @@ function listUsers () {
                             <td>
                                 <?php
                                     if (isset($value['pseudo']) && empty($value['pseudo']) === false) {
-                                        echo printSecuTags($value['pseudo']);
+                                        echo stripslashes(printSecuTags($value['pseudo']));
                                     }
                                     else {
                                         echo "-";
@@ -529,7 +546,7 @@ function listUsers () {
                             <td>
                                 <?php
                                     if (isset($value['team_name']) && empty($value['team_name']) === false) {
-                                        echo printSecuTags($value['team_name']);
+                                        echo stripslashes(printSecuTags($value['team_name']));
                                     }
                                     else {
                                         echo "-";
@@ -539,7 +556,7 @@ function listUsers () {
                             <td>
                                 <?php
                                     if (isset($value['ranks_name']) && empty($value['ranks_name']) === false) {
-                                        echo printSecuTags($value['ranks_name']);
+                                        echo stripslashes(printSecuTags($value['ranks_name']));
                                     }
                                     else {
                                         echo "-";
@@ -613,7 +630,7 @@ function listUsersStatus() {
                         <td>
                             <?php
                                 if (isset($value['pseudo']) && empty($value['pseudo']) === false) {
-                                    echo printSecuTags($value['pseudo']);
+                                    echo stripslashes(printSecuTags($value['pseudo']));
                                 }
                                 else {
                                     echo "-";
@@ -623,7 +640,7 @@ function listUsersStatus() {
                         <td>
                             <?php
                                 if (isset($value['status_name']) && empty($value['status_name']) === false) {
-                                    echo printSecuTags($value['status_name']);
+                                    echo stripslashes(printSecuTags($value['status_name']));
                                 }
                                 else {
                                     echo "-";
@@ -712,7 +729,7 @@ function formUsers ($id = false) {
                 </div>
                 <div class="grid9 searchDrop">
                     <select name="user" class="select validate[required]">
-                        <option value=""><?php echo TEAM_CHOOSE; ?></option>
+                        <option value=""><?php echo CHOOSE; ?></option>
                         <?php
                             foreach ($users as $user) {
                                 ?>
@@ -736,7 +753,7 @@ function formUsers ($id = false) {
                 </div>
                 <div class="grid9 searchDrop">
                     <select class="select" name="team">
-                        <option value=""><?php echo TEAM_CHOOSE; ?></option>
+                        <option value=""><?php echo CHOOSE; ?></option>
                         <?php
                             foreach ($teams as $team) {
                                 ?>
@@ -843,7 +860,7 @@ function formUsersStatus ($id = false) {
                 </div>
                 <div class="grid9 searchDrop">
                     <select name="status" class="select validate[required]">
-                        <option value=""><?php echo TEAM_CHOOSE; ?></option>
+                        <option value=""><?php echo CHOOSE; ?></option>
                         <?php
                             foreach ($status as $state) {
                                 ?>
@@ -896,7 +913,7 @@ function listStatus () {
                             <td>
                                 <?php
                                     if (isset($value['name']) && empty($value['name']) === false) {
-                                        echo printSecuTags($value['name']);
+                                        echo stripslashes(printSecuTags($value['name']));
                                     }
                                     else {
                                         echo "-";
@@ -999,7 +1016,7 @@ function listRanks () {
                             <td>
                                 <?php
                                     if (isset($value['name']) && empty($value['name']) === false) {
-                                        echo printSecuTags($value['name']);
+                                        echo stripslashes(printSecuTags($value['name']));
                                     }
                                     else {
                                         echo "-";
@@ -1008,7 +1025,7 @@ function listRanks () {
                             </td>
                             <td class="order">
                                 <?php
-                                    echo printSecuTags($value['order']);
+                                    echo stripslashes(printSecuTags($value['order']));
                                 ?>
                             </td>
                             <td class="center">
@@ -1190,17 +1207,21 @@ function postProcess ($op, $action, $id) {
             $dbaExists = mysql_fetch_assoc($dbeExists);
             if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1)) {
 
-                $dir = dirname(__FILE__) .'/upload/';
+                $dir = dirname(__FILE__) . '/../../../upload/Teams/banner/';
 
                 $image = nkUploadImage($_FILES['image'], $dir, nkGetValue('name') );
 
+                $dir = dirname(__FILE__) . '/../../../upload/Teams/icon/';
+
+                $icon = nkUploadImage($_FILES['icon'], $dir, nkGetValue('name') );
+
                 // si c'est un update
                 if ($id) {
-                    $dbrSetTeam = 'UPDATE ' . TEAM_TABLE . ' SET name = "' . mysql_real_escape_string(nkGetValue('name')) . '", description = "' . mysql_real_escape_string(nkGetValue('description')) . '", suffix =  "' . mysql_real_escape_string(nkGetValue('suffix')) . '", prefix = "' . mysql_real_escape_string(nkGetValue('prefix')) . '"'.($image ? ', image = "'.mysql_real_escape_string($image).'" ' : '').' WHERE id = "' . (int) $id . '"';
+                    $dbrSetTeam = 'UPDATE ' . TEAM_TABLE . ' SET name = "' . mysql_real_escape_string(nkGetValue('name')) . '", description = "' . mysql_real_escape_string(nkGetValue('description')) . '", suffix =  "' . mysql_real_escape_string(nkGetValue('suffix')) . '", prefix = "' . mysql_real_escape_string(nkGetValue('prefix')) . '"'.($image ? ', image = "'.mysql_real_escape_string($image).'" ' : '').''.($icon ? ', icon = "'.mysql_real_escape_string($icon).'" ' : '').' WHERE id = "' . (int) $id . '"';
                 }
                 // Si c'est une insertion
                 else {
-                    $dbrSetTeam = 'INSERT INTO ' . TEAM_TABLE . ' (id, name, description, suffix, prefix, `order`, image) SELECT NULL, "' . mysql_real_escape_string(nkGetValue('name')) . '", "' . mysql_real_escape_string(nkGetValue('description')) . '", "' . mysql_real_escape_string(nkGetValue('suffix')) . '", "' . mysql_real_escape_string(nkGetValue('prefix')) . '", (MAX(`order`) + 1), "'.mysql_real_escape_string($image).'" FROM ' . TEAM_TABLE . ' ';
+                    $dbrSetTeam = 'INSERT INTO ' . TEAM_TABLE . ' (id, name, description, suffix, prefix, `order`, image) SELECT NULL, "' . mysql_real_escape_string(nkGetValue('name')) . '", "' . mysql_real_escape_string(nkGetValue('description')) . '", "' . mysql_real_escape_string(nkGetValue('suffix')) . '", "' . mysql_real_escape_string(nkGetValue('prefix')) . '", (MAX(`order`) + 1), "'.mysql_real_escape_string($image).'", "'.mysql_real_escape_string($icon).'" FROM ' . TEAM_TABLE . ' ';
                 }
 
                 // execution de la requete

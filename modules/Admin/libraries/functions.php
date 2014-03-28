@@ -235,6 +235,51 @@ if (nkHasAdmin()) {
     }
 
     /**
+     * Liste des maps
+     * @param  integer $id Identifier de la map
+     * @return mixed      Données trouvées
+     */
+    function nkGetMaps ($id = false) {
+        $dbsGetGames = '
+                SELECT g.id, gm.name, g.name AS game, gm.game_id
+                FROM ' . GAMES_MAP_TABLE . ' AS gm
+                INNER JOIN ' . GAMES_TABLE . ' AS g
+                    ON g.id = gm.game_id
+                WHERE 1
+            ';
+
+        if ($id) {
+            $dbsGetGames .= " AND gm.id = '" . (int)$id . "' ";
+        }
+
+        $dbsGetGames .= '
+            GROUP BY gm.id
+        ';
+
+        $dbeGetGames = mysql_query($dbsGetGames) or die(nk_debug_bt());
+        $games = array();
+        if ($dbeGetGames !== false) {
+            while ($dbaGetGames = mysql_fetch_assoc($dbeGetGames)) {
+                $games[] = $dbaGetGames;
+            }
+        }
+        // Check results
+        if ($games !== false && sizeof($games)) {
+            if ($id) {
+                $return = current($games);
+            }
+            else {
+                $return = $games;
+            }
+        }
+        else {
+            $return = false;
+        }
+
+        return $return;
+    }
+
+    /**
      * Liste des champs sociaux
      * @param  integer $id Identifiant du champ social
      * @return mixed       Données trouvées
@@ -283,7 +328,7 @@ if (nkHasAdmin()) {
     function nkGetTeams ($id = false) {
 
         $dbsGetTeams = "
-            SELECT t.name, t.prefix, t.suffix, t.`order`, t.`description`, t.id, GROUP_CONCAT(tg.groups_id) AS groups, GROUP_CONCAT(tga.game_id) AS games, image
+            SELECT t.name, t.prefix, t.suffix, t.`order`, t.`description`, t.id, GROUP_CONCAT(tg.groups_id) AS groups, GROUP_CONCAT(tga.game_id) AS games, t.image, t.icon
             FROM " . TEAM_TABLE . " AS t
                 LEFT OUTER JOIN " . TEAM_GROUPS_TABLE . " AS tg
                     ON tg.team_id = t.id

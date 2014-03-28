@@ -119,6 +119,7 @@ $arrayGlobalLang = array(
     '_LATESTWAR'             => 'Derniers Matchs',
     '_NEXTWAR'               => 'Prochains Matchs',
     'TEAM'                   => '&Eacute;quipe',
+    'CHOOSE'                 => '=== CHOISIR ===',
     #####################################
     # Global - Block Login
     #####################################

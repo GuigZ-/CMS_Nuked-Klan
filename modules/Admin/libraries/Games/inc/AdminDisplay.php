@@ -50,6 +50,12 @@ function GamesDisplayAdmin () {
     <?php
 }
 
+/**
+ * Process
+ * @param string  $op     Operation
+ * @param string  $action Action
+ * @param integer $id     Identifier
+ */
 function GamesPostProcess ($op, $action, $id) {
     if ($op === 'games') {
 
@@ -132,7 +138,96 @@ function GamesPostProcess ($op, $action, $id) {
                         <div class="nNote nFailure nNoteHideable">
                             <p>
                                 <?php
-                                echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbdRanks ;
+                                echo TEAM_QUERY . ' ' . $dbdRanks ;
+                                ?>
+                            </p>
+                        </div>
+                    <?php
+                }
+            }
+        }
+
+    }
+    else if ($op === 'maps') {
+
+        $path = dirname(__FILE__) . '/../../../../../Upload/Maps/';
+        if (($action === 'add' || $action === 'edit') && nkGetValue('btnSubmit')) {
+            if (!nkGetValue('name') || !nkGetValue('game')) {
+                ?>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
+                            <?php
+                                echo 'Merci de remplir correctement le formulaire';
+                            ?>
+                        </p>
+                    </div>
+                <?php
+            }
+            else {
+                $dbsExists = 'SELECT COUNT(name) AS total, id FROM ' . GAMES_MAP_TABLE . ' WHERE name = "' . mysql_real_escape_string(nkGetValue('name')) . '" AND game_id = "'.(int)nkGetValue('game').'" ';
+                $dbeExists = mysql_query($dbsExists);
+                $dbaExists = mysql_fetch_assoc($dbeExists);
+
+                if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1)) {
+                    $picture = nkUploadImage('picture', $path);
+                    if (!$id && ($picture === true || $picture === false)) {
+                        ?>
+                            <div class="nNote nFailure nNoteHideable">
+                                <p>
+                                    <?php
+                                        echo 'Merci d\'insérer une image';
+                                    ?>
+                                </p>
+                            </div>
+                        <?php
+                        return;
+                    }
+
+                    if ($id) {
+                        $dbrSetMap = "UPDATE " . GAMES_MAP_TABLE . " SET name = '".nkGetValue('name')."', game_id = '".nkGetValue('game')."'".($picture ? ", picture = '".$picture."' " : "") ." WHERE id = '".(int)$id."' ";
+                    }
+                    else {
+                        $dbrSetMap = "INSERT INTO " . GAMES_MAP_TABLE . " (name, game_id, picture) VALUES ('".nkGetValue('name')."', '".nkGetValue('game')."', '".$picture."') ";
+                    }
+
+                    if (mysql_query($dbrSetMap)) {
+                        header('Refresh:0, url='.nkGetLink(true));
+                    }
+                }
+                else {
+                    ?>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
+                                <?php
+                                    echo 'Le jeu que vous souhaitez enregistrer existe déjà';
+                                ?>
+                            </p>
+                        </div>
+                    <?php
+                    return;
+                }
+            }
+        }
+        else if ($action === 'del') {
+            $game = nkGetGames($id);
+            if ($game && sizeof($game)) {
+                $dbdRanksMaps = 'DELETE FROM ' . GAMES_MAP_TABLE . ' WHERE id = ' . (int) $id . ' ';
+
+                if (file_exists($path . $game['picture'])) {
+                    unlink($path . $game['picture']);
+                }
+
+                // execution de la requete
+                if (mysql_query($dbdRanks) && mysql_query($dbdRanksMaps)) {
+                    header('Refresh:0, url='.nkGetLink(true, 2));
+                }
+                else {
+
+                    ?>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
+                                <?php
+                                echo TEAM_QUERY . ' ' . $dbdRanks ;
                                 ?>
                             </p>
                         </div>
@@ -151,8 +246,7 @@ function GamesPostProcess ($op, $action, $id) {
 function GamesDisplayMenu  ($op, $action) {
     $menus = array(
         'games'        => array('name' => 'Jeux', 'icon' => ''),
-        'maps'           => array('name' => 'Cartes', 'icon' => ''),
-        'settings'      => array('name' => 'Préférences', 'icon' => 'settings'),
+        'maps'         => array('name' => 'Cartes', 'icon' => '')
     );
 
     nkDisplayContentMenu($menus, $op);
@@ -206,6 +300,17 @@ function GamesDisplayContent ($op, $action, $id = null) {
                 break;
             }
             break;
+        case "maps":
+            switch ($action) {
+                case "edit":
+                case "add":
+                    GamesMapsDisplayForm($id);
+                break;
+                default:
+                    GamesMapsDisplayList($op);
+                break;
+            }
+        break;
         default:
             break;
     }
@@ -241,22 +346,22 @@ function GamesDisplayList ($op) {
             <tbody>
                 <?php
                 if (isset($games) && is_array($games) && count($games)) {
-                    foreach ($games as $game) {
+                    foreach ($games as $value) {
                         ?>
                             <tr>
                                 <td>
                                     <?php
-                                        echo printSecuTags($game['name']);
+                                        echo printSecuTags($value['name']);
                                     ?>
                                 </td>
                                 <td>
                                     <?php
-                                        echo printSecuTags($game['maps']);
+                                        echo printSecuTags($value['maps']);
                                     ?>
                                 </td>
                                 <td class="center">
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page'); ?>&op=<?php echo $op; ?>&action=edit&id=<?php echo $game['id'];?>"></a>
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page'); ?>&op=<?php echo $op; ?>&action=del&id=<?php echo $game['id'];?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("op" => "edit", "id" => $value['id'])); ?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("op" => "del", "id" => $value['id'])); ?>"></a>
                                 </td>
                             </tr>
                         <?php
@@ -268,7 +373,7 @@ function GamesDisplayList ($op) {
                         <td colspan="4">
                             <div class="nNote nWarning nNoteHideable">
                                 <p>
-                                    Il n'y a pas de match pour le moment
+                                    Il n'y a pas de jeu pour le moment
                                 </p>
                             </div>
                         </td>
@@ -296,7 +401,7 @@ function GamesDisplayForm ($id = false) {
     }
 
     ?>
-        <form action="" method="POST" class="form" autocomplete="off" enctype="multipart/form-data">
+    <form action="" method="POST" class="form" autocomplete="off" enctype="multipart/form-data">
         <div class="fluid">
             <div class="widget">
                 <div class="whead">
@@ -307,7 +412,7 @@ function GamesDisplayForm ($id = false) {
                     <div class="grid3">
                         <label for="name">Nom :</label>
                     </div>
-                    <div class="grid9 noSearch">
+                    <div class="grid9 searchDrop">
                         <input type="text" name="name" id="name" value="<?php echo $name; ?>" />
                     </div>
                     <div class="clear both"></div>
@@ -316,14 +421,155 @@ function GamesDisplayForm ($id = false) {
                     <div class="grid3">
                         <label for="icon">Icône :</label>
                     </div>
-                    <div class="grid9 noSearch">
+                    <div class="grid9 searchDrop">
                         <input type="file" name="icon" id="icon" />
                     </div>
                     <div class="clear both"></div>
                 </div>
                 <div class="body center">
                     <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                    <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
+                    <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
+                </div>
+                <div class="clear both"></div>
+            </div>
+        </div>
+    </form>
+    <?php
+}
+
+/**
+ * Display Map list in BO
+ */
+function GamesMapsDisplayList () {
+    $maps = nkGetMaps();
+    ?>
+        <div class="widget">
+            <div class="whead">
+                <h6>Jeux</h6>
+                <div class="clear both"></div>
+            </div>
+            <table class="tDefault" data-table="<?php echo TEAM_TABLE; ?>">
+                <thead>
+                    <tr>
+                        <td>
+                            <strong>Nom :</strong>
+                        </td>
+                        <td>
+                            <strong>Jeu :</strong>
+                        </td>
+                        <td>
+                            <strong>Actions :</strong>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if (isset($maps) && is_array($maps) && count($maps)) {
+                        foreach ($maps as $value) {
+                            ?>
+                                <tr>
+                                    <td>
+                                        <?php
+                                            echo printSecuTags($value['name']);
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                            echo printSecuTags($value['game']);
+                                        ?>
+                                    </td>
+                                    <td class="center">
+                                        <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                        <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
+                                    </td>
+                                </tr>
+                            <?php
+                        }
+                    }
+                    else {
+                    ?>
+                        <tr>
+                            <td colspan="4">
+                                <div class="nNote nWarning nNoteHideable">
+                                    <p>
+                                        Il n'y a pas de carte pour le moment
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    <?php
+}
+
+/**
+ * Affiche le formulaire
+ * @param integer $id Identifier
+ */
+function GamesMapsDisplayForm ($id = false) {
+
+    $games = nkGetGames();
+    if ($id) {
+        $map = nkGetMaps($id);
+        $name = nkGetValue('name', $map['name']);
+        $game_id = nkGetValue('name', $map['game_id']);
+    }
+    else {
+        $name = nkGetValue('name');
+        $game_id = nkGetValue('game');
+    }
+
+    ?>
+    <form action="" method="POST" class="form" autocomplete="off" enctype="multipart/form-data">
+        <div class="fluid">
+            <div class="widget">
+                <div class="whead">
+                    <h6>Formulaire</h6>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="name">Nom :</label>
+                    </div>
+                    <div class="grid9 searchDrop">
+                        <input type="text" name="name" id="name" value="<?php echo $name; ?>" />
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="jeu">Jeu :</label>
+                    </div>
+                    <div class="grid9 searchDrop">
+                        <select name="game" class="select validate[required]">
+                            <option value=""><?php echo CHOOSE; ?></option>
+                            <?php
+                                foreach ($games as $game) {
+                                    ?>
+                                        <option value="<?php echo $game['id']; ?>"<?php echo ($game_id == $game['id'] ? ' selected' : ''); ?>><?php echo $game['name']; ?></option>
+                                    <?php
+                                }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="formRow">
+                    <div class="grid3">
+                        <label for="picture">Image :</label>
+                    </div>
+                    <div class="grid9 searchDrop">
+                        <input type="file" name="picture" id="picture" />
+                    </div>
+                    <div class="clear both"></div>
+                </div>
+                <div class="body center">
+                    <input type="submit" name="btnSubmit" class="buttonM bBlue">
+                    <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
                 </div>
                 <div class="clear both"></div>
             </div>

@@ -565,24 +565,6 @@
                         $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
-        case'games_prefs':
-                        $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_games_prefs`";
-                        $req = mysql_query($sql) or die (nk_debug_bt());
-                        $sql = "CREATE TABLE `" . $db_prefix . "_games_prefs` (
-                          `id` int(11) NOT NULL auto_increment,
-                          `game` int(11) NOT NULL default '0',
-                          `user_id` varchar(20) NOT NULL default '',
-                          `pref_1` text NOT NULL,
-                          `pref_2` text NOT NULL,
-                          `pref_3` text NOT NULL,
-                          `pref_4` text NOT NULL,
-                          `pref_5` text NOT NULL,
-                          PRIMARY KEY  (`id`)
-                        ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
-                        $req = mysql_query($sql) or die (nk_debug_bt());
-                        echo 'OK';
-        break;
-
         case'groups':
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_groups`";
                         $req = mysql_query($sql) or die (nk_debug_bt());
@@ -1115,6 +1097,7 @@
                                   `suffix` varchar(100) NOT NULL,
                                   `order` tinyint(2) NOT NULL,
                                   `image` varchar(255) NOT NULL,
+                                  `icon` varchar(255) NOT NULL,
                                   PRIMARY KEY (`id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die (nk_debug_bt());
