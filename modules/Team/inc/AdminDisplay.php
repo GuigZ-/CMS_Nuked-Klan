@@ -1221,7 +1221,7 @@ function postProcess ($op, $action, $id) {
                 }
                 // Si c'est une insertion
                 else {
-                    $dbrSetTeam = 'INSERT INTO ' . TEAM_TABLE . ' (id, name, description, suffix, prefix, `order`, image) SELECT NULL, "' . mysql_real_escape_string(nkGetValue('name')) . '", "' . mysql_real_escape_string(nkGetValue('description')) . '", "' . mysql_real_escape_string(nkGetValue('suffix')) . '", "' . mysql_real_escape_string(nkGetValue('prefix')) . '", (MAX(`order`) + 1), "'.mysql_real_escape_string($image).'", "'.mysql_real_escape_string($icon).'" FROM ' . TEAM_TABLE . ' ';
+                    $dbrSetTeam = 'INSERT INTO ' . TEAM_TABLE . ' (id, name, description, suffix, prefix, `order`, image, icon) SELECT NULL, "' . mysql_real_escape_string(nkGetValue('name')) . '", "' . mysql_real_escape_string(nkGetValue('description')) . '", "' . mysql_real_escape_string(nkGetValue('suffix')) . '", "' . mysql_real_escape_string(nkGetValue('prefix')) . '", (MAX(`order`) + 1), "'.mysql_real_escape_string($image).'", "'.mysql_real_escape_string($icon).'" FROM ' . TEAM_TABLE . ' ';
                 }
 
                 // execution de la requete
@@ -1278,7 +1278,7 @@ function postProcess ($op, $action, $id) {
                     <div class="nNote nFailure nNoteHideable">
                         <p>
                             <?php
-                            echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetTeam ;
+                                echo nk_debug_bt();
                             ?>
                         </p>
                     </div>
