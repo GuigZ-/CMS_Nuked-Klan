@@ -710,7 +710,7 @@ function formUsers ($id = false) {
                         ?>
                     </label>
                 </div>
-                <div class="grid9 noSearch">
+                <div class="grid9 searchDrop">
                     <select name="user" class="select validate[required]">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
@@ -734,7 +734,7 @@ function formUsers ($id = false) {
                         ?>
                     </label>
                 </div>
-                <div class="grid9 noSearch">
+                <div class="grid9 searchDrop">
                     <select class="select" name="team">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
@@ -841,7 +841,7 @@ function formUsersStatus ($id = false) {
                         ?>
                     </label>
                 </div>
-                <div class="grid9 noSearch">
+                <div class="grid9 searchDrop">
                     <select name="status" class="select validate[required]">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
@@ -1126,7 +1126,7 @@ function formPreferences() {
                         ?>
                     </label>
                 </div>
-                <div class="grid9 noSearch">
+                <div class="grid9 searchDrop">
                     <select name="display_type" id="display_type" class="select validate[required]">
                         <option value="table"<?php echo (isset($config['display_type']) && $config['display_type']  == 'table' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_TABLE; ?></option>
                         <option value="alternate"<?php echo (isset($config['display_type']) && $config['display_type']  == 'alternate' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_ALT; ?></option>
