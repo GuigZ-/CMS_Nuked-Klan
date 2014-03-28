@@ -1190,7 +1190,7 @@
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `user_id` varchar(50) NOT NULL,
-                                  `teamstatus_id` int(11) NOT NULL,
+                                  `team_status_id` int(11) NOT NULL,
                                   PRIMARY KEY (`id`,`user_id`),
                                   UNIQUE KEY `team` (`user_id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
@@ -1201,9 +1201,9 @@
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user_rank`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_rank` (
-                                  `teamuserteam_id` varchar(50) NOT NULL,
-                                  `teamrank_id` int(11) NOT NULL,
-                                  UNIQUE KEY `teamuser_id` (`teamuserteam_id`,`teamrank_id`)
+                                  `team_user_team_id` varchar(50) NOT NULL,
+                                  `team_rank_id` int(11) NOT NULL,
+                                  UNIQUE KEY `team_user_id` (`team_user_team_id`,`team_rank_id`)
                                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
@@ -1213,11 +1213,11 @@
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_team` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                                  `teamuser_id` int(11) NOT NULL,
+                                  `team_user_id` int(11) NOT NULL,
                                   `team_id` int(11) NOT NULL,
                                   `description` text NOT NULL,
                                   PRIMARY KEY (`id`),
-                                  UNIQUE KEY `teamuser_id` (`teamuser_id`,`team_id`)
+                                  UNIQUE KEY `team_user_id` (`team_user_id`,`team_id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';

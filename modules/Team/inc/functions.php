@@ -21,10 +21,10 @@ function getUsers ($id = false, $by_team = false) {
     $nkUsers = nkGetUsers();
 
 	$dbsGetUsers = '
-		SELECT u.user_id, s.name AS status, ut.id, ut.team_id, t.name AS team_name, GROUP_CONCAT(" ", r.name) AS ranks_name, GROUP_CONCAT(" ", r.id) AS ranks, u.teamstatus_id, ut.teamuser_id, t.prefix, t.suffix, t.description, g.name AS gameName, g.icon AS gameIcon, ut.description AS userDescription, t.image
+		SELECT u.user_id, s.name AS status, ut.id, ut.team_id, t.name AS team_name, GROUP_CONCAT(" ", r.name) AS ranks_name, GROUP_CONCAT(" ", r.id) AS ranks, u.team_status_id, ut.team_user_id, t.prefix, t.suffix, t.description, g.name AS gameName, g.icon AS gameIcon, ut.description AS userDescription, t.image
 		FROM ' . TEAM_USER_TEAM_TABLE . ' AS ut
             INNER JOIN ' . TEAM_USER_TABLE . ' AS u
-                ON ut.teamuser_id = u.id';
+                ON ut.team_user_id = u.id';
 
     if ($id) {
         $dbsGetUsers .= ' AND ut.id = ' . (int) $id . ' ';
@@ -34,18 +34,18 @@ function getUsers ($id = false, $by_team = false) {
             INNER JOIN ' . TEAM_TABLE . ' AS t
                 ON ut.team_id = t.id
             INNER JOIN ' . TEAM_USER_RANK_TABLE . ' AS ur
-                ON ur.teamuserteam_id = ut.id
+                ON ur.team_user_team_id = ut.id
             INNER JOIN ' . TEAM_RANK_TABLE . ' AS r
-                ON ur.teamrank_id = r.id
+                ON ur.team_rank_id = r.id
             LEFT OUTER JOIN ' . TEAM_STATUS_TABLE . ' AS s
-                ON u.teamstatus_id = s.id
+                ON u.team_status_id = s.id
             LEFT OUTER JOIN ' . TEAM_GAMES_TABLE . ' AS tg
                 ON tg.team_id = ut.team_id
             LEFT OUTER JOIN ' . GAMES_TABLE . ' AS g
                 ON g.id = tg.game_id
         ';
     $dbsGetUsers .= '
-		GROUP BY ut.team_id, ut.teamuser_id
+		GROUP BY ut.team_id, ut.team_user_id
 		ORDER BY t.`order` ASC, r.`order` ASC';
 
 	// Exec query
@@ -94,7 +94,7 @@ function getUsersStatus ($id = false) {
         SELECT u.id, u.user_id, s.name AS status_name, s.id AS status
         FROM ' . TEAM_USER_TABLE . ' AS u
             LEFT OUTER JOIN ' . TEAM_STATUS_TABLE . ' AS s
-                ON u.teamstatus_id = s.id
+                ON u.team_status_id = s.id
         ';
 
     // Exec query

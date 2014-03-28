@@ -283,8 +283,8 @@
         case'table_module':
                             if(!fieldExist('modules', 'status', $db_prefix)){
                                 mysql_query("ALTER TABLE `" . $db_prefix . "_modules` ADD `status` varchar(3) NOT NULL default 'on';")or die(nk_debug_bt());
-                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` DELETE `niveau`;")or die(nk_debug_bt());
-                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` DELETE `admin`;")or die(nk_debug_bt());
+                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` DELETE `niveau`")or die(nk_debug_bt());
+                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` DELETE `admin`")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
@@ -497,15 +497,167 @@
             }
             echo "OK";
         break;
-        case 'table_team':
+        case 'module_team':
+            // Table Rank
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team_rank` CHANGE `titre` `name` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci  NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team_rank` CHANGE `ordre` `order` INT( 10 ) NOT NULL") or die(nk_debug_bt());
+            // Table team
+            // Edit field
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team` CHANGE `cid` `id` INT( 11 ) NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team` CHANGE `titre` `name` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team` CHANGE `tag` `prefix` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team` CHANGE `tag2` `suffix` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team` CHANGE `ordre` `order` INT( 10 ) NOT NULL") or die(nk_debug_bt());
+            // Add field
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team` ADD  `image` VARCHAR( 255 ) NOT NULL") or die(nk_debug_bt());
+
+            // Create Table
+            $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_games`";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "
+                CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team_games` (
+                  `team_id` int(11) NOT NULL,
+                  `game_id` int(11) NOT NULL
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+            ";
+            $req = mysql_error($sql) or die(nk_debug_bt());
+            // Associate team to games
+            mysql_query("INSERT INTO `" . $db_prefix . "_team_games` (SELECT id, game FROM `" . $db_prefix . "_team`) ") or die(nk_debug_bt());
+            // Team groups
+            $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_team_groups`";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team_groups` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                      `team_id` int(11) NOT NULL,
+                      `groups_id` int(11) NOT NULL,
+                      PRIMARY KEY (`id`)
+                    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
+            $req = mysql_query($sql) or die (nk_debug_bt());
+            // Team settings
+            $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_settings`";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_settings` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                      `name` varchar(255) NOT NULL,
+                      `value` text NOT NULL,
+                      PRIMARY KEY (`id`),
+                      UNIQUE KEY `name` (`name`)
+                    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
+            $req = mysql_query($sql) or die (nk_debug_bt());
+            $sql = "INSERT INTO `".$db_prefix."_team_settings` (`id`, `name`, `value`) VALUES
+                      (NULL, 'team_page', '10'),
+                      (NULL, 'display_type', 'alternate'),
+                      (NULL, 'picture', '1')
+            ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            // Team status
+            $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_status`";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_status` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                      `name` varchar(100) NOT NULL,
+                      PRIMARY KEY (`id`)
+                    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            // Association team user status
+            $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user`";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                      `user_id` varchar(50) NOT NULL,
+                      `team_status_id` int(11) NOT NULL,
+                      PRIMARY KEY (`id`,`user_id`),
+                      UNIQUE KEY `team` (`user_id`)
+                    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            // Association team user rank
+            $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user_rank`";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_rank` (
+                      `team_user_team_id` varchar(50) NOT NULL,
+                      `team_rank_id` int(11) NOT NULL,
+                      UNIQUE KEY `team_user_id` (`team_user_team_id`,`team_rank_id`)
+                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            // Association team user team
+            $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user_team`";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_team` (
+                      `id` int(11) NOT NULL AUTO_INCREMENT,
+                      `team_user_id` int(11) NOT NULL,
+                      `team_id` int(11) NOT NULL,
+                      `description` text NOT NULL,
+                      PRIMARY KEY (`id`),
+                      UNIQUE KEY `team_user_id` (`team_user_id`,`team_id`)
+                    ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+
+            // Insert two default status
+            $sql = "INSERT INTO `".$db_prefix."_team_status` ( `id`, `name`) VALUES
+                      (NULL,  'Actif'),
+                      (NULL, 'Inactif')
+            ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+
+            // Add association user status
+            $sql = "INSERT INTO `".$db_prefix."_team_user` (`user_id`, `team_status_id`) (SELECT id, 1 FROM `".$db_prefix."_users`); ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+
+            // Insert association teamuser & team
+            $sql = "INSERT INTO `".$db_prefix."_team_user_team` (`team_user_id`, `team_id`) (SELECT tu.id, u.team FROM `".$db_prefix."_users` AS u INNER JOIN `".$db_prefix."_team_user` AS tu ON u.id = tu.user_id WHERE u.team > 0) ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "INSERT INTO `".$db_prefix."_team_user_team` (`team_user_id`, `team_id`) (SELECT tu.id, u.team2 FROM `".$db_prefix."_users` AS u INNER JOIN `".$db_prefix."_team_user` AS tu ON u.id = tu.user_id WHERE u.team2 > 0) ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = "INSERT INTO `".$db_prefix."_team_user_team` (`team_user_id`, `team_id`) (SELECT tu.id, u.team3 FROM `".$db_prefix."_users` AS u INNER JOIN `".$db_prefix."_team_user` AS tu ON u.id = tu.user_id WHERE u.team3 > 0) ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+
+            // Associate rank
+            $sql = " INSERT INTO `" . $db_prefix . "_team_user_rank` (`team_user_team_id`, `team_rank_id`) (
+                        SELECT tut.id, u.rang
+                        FROM `" . $db_prefix . "_users` AS u
+                        INNER JOIN `".$db_prefix."_team_user` AS tu
+                            ON tu.user_id = u.id
+                        INNER JOIN `".$db_prefix."_team_user_team` AS tut
+                            ON tu.id = tut.team_user_id AND u.team = tut.team_id
+                        WHERE u.team > 0
+                    )
+                ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = " INSERT INTO `" . $db_prefix . "_team_user_rank` (`team_user_team_id`, `team_rank_id`) (
+                        SELECT tut.id, u.rang
+                        FROM `" . $db_prefix . "_users` AS u
+                        INNER JOIN `".$db_prefix."_team_user` AS tu
+                            ON tu.user_id = u.id
+                        INNER JOIN `".$db_prefix."_team_user_team` AS tut
+                            ON tu.id = tut.team_user_id AND u.team2 = tut.team_id
+                        WHERE u.team2 > 0
+                    )
+                ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+            $sql = " INSERT INTO `" . $db_prefix . "_team_user_rank` (`team_user_team_id`, `team_rank_id`) (
+                        SELECT tut.id, u.rang
+                        FROM `" . $db_prefix . "_users` AS u
+                        INNER JOIN `".$db_prefix."_team_user` AS tu
+                            ON tu.user_id = u.id
+                        INNER JOIN `".$db_prefix."_team_user_team` AS tut
+                            ON tu.id = tut.team_user_id AND u.team3 = tut.team_id
+                        WHERE u.team3 > 0
+                    )
+                ";
+            $req = mysql_query($sql) or die(nk_debug_bt());
+
+
+            // Drop field
+            mysql_query("ALTER TABLE `" . $db_prefix . "_team` DROP `game` ") or die(nk_debug_bt();
+            mysql_query("ALTER TABLE `" . $db_prefix . "_users` DROP `team`, DROP `team2`, DROP `team3`, DROP `rang` ") or die(nk_debug_bt();
 
             echo "OK";
         break;
-        case 'table_wars':
+        case 'module_wars':
             // Update fields to NK 1.8
             /***********************************************************************************************************************/
             // Game tables
-            mysql_query("DROP TABLE IF EXISTS `".$db_prefix."_games_map`;") or die(nk_debug_bt());
+            mysql_query("DROP TABLE IF EXISTS `".$db_prefix."_games_map`") or die(nk_debug_bt());
             mysql_query("
                 CREATE TABLE IF NOT EXISTS `".$db_prefix."_games_map` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -513,7 +665,8 @@
                     `name` VARCHAR(255) NOT NULL,
                     `picture` VARCHAR(255) NOT NULL,
                     PRIMARY KEY (`id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;") or die(nk_debug_bt());
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ") or die(nk_debug_bt());
 
             // Get old maps
             $dbsGetGames = "SELECT `id`, `map` FROM `".$db_prefix."_games` ";
@@ -555,8 +708,8 @@
             mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `team`  `team_id` INT( 11 ) NOT NULL") or die(nk_debug_bt());
             mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `game`  `game_id` INT( 11 ) NOT NULL") or die(nk_debug_bt());
             mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `etat`  `status` INT( 1 ) NOT NULL") or die(nk_debug_bt());
-            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `url_adv`  `link` VARCHAR( 255 ) NOT NULL") or die(nk_debug_bt());
-            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `adversaire`  `versus` TEXT") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `url_adv`  `link` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `adversaire`  `versus` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci ") or die(nk_debug_bt());
             mysql_query("ALTER TABLE `" . $db_prefix . "_match` ADD `date` BIGINT( 20 ) NOT NULL AFTER  `style` ;") or die(nk_debug_bt());
             // Update date to TIMESTAMP
             mysql_query("UPDATE `" . $db_prefix . "_match` SET `date` = UNIX_TIMESTAMP(CONCAT(`date_an`,'-', `date_mois`, '-', `date_jour`, ' ', `heure`, ':00') ;") or die(nk_debug_bt());
@@ -574,7 +727,7 @@
                     DROP `score_adv`;
             ") or die(nk_debug_bt());
             // Drop Association Table if update failed (Match, Map)
-            mysql_query("DROP TABLE IF EXISTS `" .$db_prefix . "_match_map`;") or die(nk_debug_bt());
+            mysql_query("DROP TABLE IF EXISTS `" .$db_prefix . "_match_map`") or die(nk_debug_bt());
             // Create Association Table (Match, Map)
             mysql_query("
                 CREATE TABLE IF NOT EXISTS `" .$db_prefix . "_match_map` (

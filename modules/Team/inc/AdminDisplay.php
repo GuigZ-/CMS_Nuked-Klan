@@ -1470,17 +1470,17 @@ function postProcess ($op, $action, $id) {
                 return;
             }
             // Get Team User ID
-            $dbsGetTeamUserId = 'SELECT id, teamstatus_id FROM ' . TEAM_USER_TABLE . ' WHERE user_id = "' . mysql_real_escape_string(nkGetValue('user')) . '" ';
+            $dbsGetTeamUserId = 'SELECT id, team_status_id FROM ' . TEAM_USER_TABLE . ' WHERE user_id = "' . mysql_real_escape_string(nkGetValue('user')) . '" ';
             // Execute
             $dbeGetTeamUserId = mysql_query($dbsGetTeamUserId) or die(nk_debug_bt());
             // Get Row
             $dbaGetTeamUserId = mysql_fetch_assoc($dbeGetTeamUserId);
 
             $TeamUserId = isset($dbaGetTeamUserId['id']) ? $dbaGetTeamUserId['id'] : null;
-            $TeamStatusId = isset($dbaGetTeamUserId['teamstatus_id']) ? (int) $dbaGetTeamUserId['teamstatus_id'] : "(SELECT id FROM " . TEAM_STATUS_TABLE . " ORDER BY id ASC LIMIT 1)";
+            $TeamStatusId = isset($dbaGetTeamUserId['team_status_id']) ? (int) $dbaGetTeamUserId['team_status_id'] : "(SELECT id FROM " . TEAM_STATUS_TABLE . " ORDER BY id ASC LIMIT 1)";
 
             // User
-            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, teamstatus_id) VALUES (' . ($TeamUserId ? (int) $TeamUserId : 'NULL') . ', "' . mysql_real_escape_string(nkGetValue('user')) . '", ' . $TeamStatusId . ') ';
+            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, team_status_id) VALUES (' . ($TeamUserId ? (int) $TeamUserId : 'NULL') . ', "' . mysql_real_escape_string(nkGetValue('user')) . '", ' . $TeamStatusId . ') ';
             mysql_query($dbiSetUser) ;
 
             if (!$TeamUserId) {
@@ -1489,7 +1489,7 @@ function postProcess ($op, $action, $id) {
 
             // Team
             // Get Team UserTeam ID
-            $dbsGetTeamId = 'SELECT id FROM ' . TEAM_USER_TEAM_TABLE . ' WHERE team_id = "' . (int) nkGetValue('team') . '" AND teamuser_id = "' . (int) $TeamUserId . '" ';
+            $dbsGetTeamId = 'SELECT id FROM ' . TEAM_USER_TEAM_TABLE . ' WHERE team_id = "' . (int) nkGetValue('team') . '" AND team_user_id = "' . (int) $TeamUserId . '" ';
             // Execute
             $dbeGetTeamId = mysql_query($dbsGetTeamId);
             // Get Row
@@ -1498,19 +1498,19 @@ function postProcess ($op, $action, $id) {
             $TeamId = $dbaGetTeamId['id'];
 
             // Insert
-            $dbiSetTeamUserTeam = 'REPLACE INTO ' . TEAM_USER_TEAM_TABLE . ' (id, teamuser_id, team_id, description) VALUES (' . (int) $TeamId .', ' . (int) $TeamUserId . ', ' . (int) nkGetValue('team') . ', "' . mysql_real_escape_string(nkGetValue('description')) . '") ';
+            $dbiSetTeamUserTeam = 'REPLACE INTO ' . TEAM_USER_TEAM_TABLE . ' (id, team_user_id, team_id, description) VALUES (' . (int) $TeamId .', ' . (int) $TeamUserId . ', ' . (int) nkGetValue('team') . ', "' . mysql_real_escape_string(nkGetValue('description')) . '") ';
             mysql_query($dbiSetTeamUserTeam);
 
             if ((int) $TeamId) {
                 // Delete old
-                $dbdUsers = 'DELETE FROM ' . TEAM_USER_RANK_TABLE . ' WHERE teamuserteam_id = ' . (int) $TeamId . ' ';
+                $dbdUsers = 'DELETE FROM ' . TEAM_USER_RANK_TABLE . ' WHERE team_user_team_id = ' . (int) $TeamId . ' ';
                 mysql_query($dbdUsers);
             }
             else {
                 $TeamId = mysql_insert_id();
             }
 
-            $dbrSetUserRank = 'INSERT INTO ' . TEAM_USER_RANK_TABLE . ' (teamuserteam_id, teamrank_id) VALUES ';
+            $dbrSetUserRank = 'INSERT INTO ' . TEAM_USER_RANK_TABLE . ' (team_user_team_id, team_rank_id) VALUES ';
             $i = 0;
             foreach ($ranks as $rank) {
                 if ($i > 0) {
@@ -1541,7 +1541,7 @@ function postProcess ($op, $action, $id) {
 
             $users = getUsers($id);
             if ($users && sizeof($users)) {
-                $dbdRanks = 'DELETE FROM ' . TEAM_USER_TABLE . ' WHERE id = ' . (int) $users[0]['teamuser_id'] . ' ';
+                $dbdRanks = 'DELETE FROM ' . TEAM_USER_TABLE . ' WHERE id = ' . (int) $users[0]['team_user_id'] . ' ';
 
                 // execution de la requete
                 if (mysql_query($dbdRanks)) {
@@ -1564,7 +1564,7 @@ function postProcess ($op, $action, $id) {
         }
         else if (nkGetValue('btnSubmit') && $action === 'edit_user') {
             // Get Team User ID
-            $dbsGetTeamUserId = 'SELECT user_id, teamstatus_id FROM ' . TEAM_USER_TABLE . ' WHERE id = "' . (int) $id . '" ';
+            $dbsGetTeamUserId = 'SELECT user_id, team_status_id FROM ' . TEAM_USER_TABLE . ' WHERE id = "' . (int) $id . '" ';
             // Execute
             $dbeGetTeamUserId = mysql_query($dbsGetTeamUserId);
             // Get Row
@@ -1573,7 +1573,7 @@ function postProcess ($op, $action, $id) {
             $TeamUserId = $dbaGetTeamUserId['user_id'];
 
             // User
-            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, teamstatus_id) VALUES (' . ($id ? (int) $id : 'NULL') . ', "' . mysql_real_escape_string($TeamUserId) . '", ' . nkGetValue('status', 'NULL') . ') ';
+            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, team_status_id) VALUES (' . ($id ? (int) $id : 'NULL') . ', "' . mysql_real_escape_string($TeamUserId) . '", ' . nkGetValue('status', 'NULL') . ') ';
 
 
             if (mysql_query($dbiSetUser)) {
