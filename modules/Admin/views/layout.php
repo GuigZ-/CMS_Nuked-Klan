@@ -40,9 +40,11 @@ function adminHeader(){
         <title><?php echo $GLOBALS['nuked']['name'] ?> - <?php echo ADMIN_PANEL_TITLE; ?></title>
         <link rel="shortcut icon"  href="<?php echo $favicon; ?>" />
         <link href="modules/Admin/assets/css/main.css" rel="stylesheet" type="text/css" />
+        <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css" />
         <script src="modules/Admin/assets/scripts/jquery-1.8.3.min.js"></script>
         <script src="modules/Admin/assets/scripts/jqueryUI-1.10.3.min.js"></script>
         <script src="modules/Admin/assets/scripts/jquery.plugin.tableDnD.js"></script>
+        <script src="modules/Admin/assets/scripts/jquery.plugin.timepicker.js"></script>
         <script src="modules/Admin/assets/scripts/main.js"></script>
         <script src="modules/Admin/assets/scripts/jquery.validationEngine-<?php echo substr($GLOBALS['language'], 0, 2); ?>.js"></script>
         <script src="modules/Admin/assets/scripts/nk.js"></script>

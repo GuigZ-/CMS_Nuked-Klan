@@ -58,7 +58,7 @@ function sidebar() {
                             }
 ?>
                             <li <?php echo $styleLiMod; ?>>
-                                <a href="<?php echo $subNavContent[0]; ?>">
+                                <a href="<?php echo ($nav == MODULES ? "index.php?file=".$subNavContent[0]."&page=admin" : $subNavContent[0]); ?>">
                                     <span class="nkIcons <?php echo $subNavContent[1]; ?>"><?php echo $subNav; ?></span>
                                 </a>
                             </li>

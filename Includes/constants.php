@@ -45,6 +45,11 @@ $arrayConstants =   array(
     'IRC_AWARDS_TABLE'     => '_irc_awards',
     'LINKS_TABLE'          => '_liens',
     'LINKS_CAT_TABLE'      => '_liens_cat',
+    //
+    'MATCH_TABLE'          => '_match',
+    'MATCH_TABLE_MAP'      => '_match_map',
+    'MATCH_FILES_TABLE'    => '_match_files',
+    //
     'MODULES_TABLE'        => '_modules',
     'NBCONNECTE_TABLE'     => '_nbconnecte',
     'NEWS_TABLE'           => '_news',
@@ -66,15 +71,25 @@ $arrayConstants =   array(
     'SURVEY_CHECK_TABLE'   => '_sondage_check',
     'SURVEY_DATA_TABLE'    => '_sondage_data',
     'TEAM_TABLE'           => '_team',
+    'TEAM_SETTINGS_TABLE'  => '_team_settings',
+    'TEAM_STATUS_TABLE'    => '_team_status',
+    'TEAM_RANK_TABLE'      => '_team_rank',
+    'TEAM_USER_TABLE'      => '_team_user',
+    'TEAM_USER_TEAM_TABLE' => '_team_user_team',
+    'TEAM_USER_RANK_TABLE' => '_team_user_rank',
+    'TEAM_GROUPS_TABLE'    => '_team_groups',
+    'TEAM_GAMES_TABLE'     => '_team_games',
     'TMPSES_TABLE'         => '_tmpses',
     'TEAM_RANK_TABLE'      => '_team_rank',
     'TEXTBOX_TABLE'        => '_shoutbox',
     'USERBOX_TABLE'        => '_userbox',
+    'USERBOX_THREADS_MSG'  => '_userbox_messages',
+    'USERBOX_THREADS_TABLE'=> '_userbox_threads',
     'USERS_TABLE'          => '_users',
     'USERS_DETAIL_TABLE'   => '_users_detail',
+    'USERS_PROFILS'        => '_users_profils',
+    'USERS_SOCIAL'         => '_users_social',
     'VOTE_TABLE'           => '_vote',
-    'WARS_TABLE'           => '_match',
-    'WARS_FILES_TABLE'     => '_match_files'
 );
 
 foreach ($arrayConstants as $constant => $tableName) {

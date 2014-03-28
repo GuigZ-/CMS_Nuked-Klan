@@ -45,7 +45,6 @@ function displayAdmin () {
      * @TODO DELETE NEXT LINE
      */
     ?>
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <div class="content-box">
         <div class="tab-content">
     <?php
@@ -756,8 +755,8 @@ function formUsers ($id = false) {
                         ?>
                     </label>
                 </div>
-                <div class="grid9">
-                    <select name="user" class="validate[required]">
+                <div class="grid9 noSearch">
+                    <select name="user" class="select validate[required]">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
                             foreach ($users as $user) {
@@ -780,8 +779,8 @@ function formUsers ($id = false) {
                         ?>
                     </label>
                 </div>
-                <div class="grid9">
-                    <select name="team">
+                <div class="grid9 noSearch">
+                    <select class="select" name="team">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
                             foreach ($teams as $team) {
@@ -887,8 +886,8 @@ function formUsersStatus ($id = false) {
                         ?>
                     </label>
                 </div>
-                <div class="grid9">
-                    <select name="status" class="validate[required]">
+                <div class="grid9 noSearch">
+                    <select name="status" class="select validate[required]">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
                             foreach ($status as $state) {
@@ -1185,8 +1184,8 @@ function formPreferences() {
                         ?>
                     </label>
                 </div>
-                <div class="grid9">
-                    <select name="display_type" id="display_type" class="validate[required]">
+                <div class="grid9 noSearch">
+                    <select name="display_type" id="display_type" class="select validate[required]">
                         <option value="table"<?php echo ($config['display_type']  == 'table' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_TABLE; ?></option>
                         <option value="alternate"<?php echo ($config['display_type']  == 'alternate' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_ALT; ?></option>
                         <option value="bloc"<?php echo ($config['display_type']  == 'bloc' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_BLOC; ?></option>
