@@ -1,0 +1,206 @@
+#nkModuleTeam a.teamBlock,
+#nkModuleTeam a.teamBlock > span {
+    display: block;
+    color: white;
+    cursor: pointer;
+}
+
+#nkModuleTeam .teamBlock + .teamBlock {
+    margin-top: 15px;
+}
+
+#nkModuleTeam .teamBlock > .teamMemberBlock {
+    color: #000000;
+    margin: 5px 0;
+}
+
+#nkModuleTeam .teamBlock > .teamMemberBlock + .teamMemberBlock {
+    margin-top: 10px;
+}
+
+#nkModuleTeam .teamBlock h3 {
+    padding: 0;
+    margin: 0;
+}
+
+#nkModuleTeam .teamBlock ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#nkModuleTeam .teamMemberDescription {
+    margin-top: 10px;
+}
+
+#nkModuleTeam .teamMemberInfos > ul {
+    margin-top: 10px;
+    line-height: 13px;
+}
+
+#nkModuleTeam .teamMemberInfos > ul img {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: -3px;
+}
+
+#nkModuleTeam .teamList {
+    position: relative;
+}
+
+#nkModuleTeam .teamList > a > button {
+    position: absolute;
+    z-index: 1;
+    bottom: 20px;
+    left: 80px;
+}
+
+#nkModuleTeam .teamList + .teamList{
+    margin-top: 20px;
+}
+
+#nkModuleTeam .teamBlockImage + h2 {
+    display: none;
+    margin-top: -100px;
+    line-height: 100px;
+    background: rgba(0,0,0,0.5);
+    position: relative;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: right;
+    font-size: 3em;
+    padding: 0 80px 0 0;
+    margin: -100px 0 0 0;
+}
+
+#nkModuleTeam .teamList:hover .teamBlockImage + h2 {
+    display: block;
+}
+
+#nkModuleTeam .teamBlockImage {
+    height: 100px;
+    overflow: hidden;
+}
+
+#nkModuleTeam .teamBlockImage img {
+    width: 100%;
+}
+
+/* Alternance / BLoc */
+.teamBlock.teamDisplayT#nkModuleTeam able,
+.teamBlock.teamDisplayAltern#nkModuleTeam ate,
+#nkModuleTeam .teamBlock.teamDisplayBloc {
+    display: table;
+    width: 98%;
+    border-collapse: collapse;
+    margin: auto;
+    overflow: hidden;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayAlternate > .teamMemberBlock,
+#nkModuleTeam .teamBlock.teamDisplayBloc > .teamMemberBlock {
+    display: table-row;
+    padding: 5px;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayAlternate > .teamMemberBlock > .teamMemberPicture,
+#nkModuleTeam .teamBlock.teamDisplayBloc > .teamMemberBlock > .teamMemberPicture {
+    text-align: center;
+    vertical-align: top;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayAlternate > .teamMemberBlock > .teamMemberPicture > .teamBorderPicture,
+#nkModuleTeam .teamBlock.teamDisplayBloc > .teamMemberBlock > .teamMemberPicture > .teamBorderPicture {
+    background: #ECECEC;
+    box-shadow: 2px 2px 7px #ECECEC;
+    border-radius: 7px;
+    padding: 10px;
+}
+
+
+#nkModuleTeam .teamBlock.teamDisplayAlternate > .teamMemberBlock > .teamMemberPicture > .teamBorderPicture > img,
+#nkModuleTeam .teamBlock.teamDisplayBloc > .teamMemberBlock > .teamMemberPicture > .teamBorderPicture > img {
+    width: 80px;
+    height: 80px;
+    box-shadow: 2px 2px 7px;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayAlternate > .teamMemberBlock > div,
+#nkModuleTeam .teamBlock.teamDisplayBloc > .teamMemberBlock > div {
+    width: 15%;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 10px 0;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayAlternate > .teamMemberBlock > div:first-child + div,
+#nkModuleTeam .teamBlock.teamDisplayBloc > .teamMemberBlock > div:first-child + div {
+    color: #ECECEC;
+    padding-left: 20px;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayAlternate > .teamMemberBlock.rightAlign > div:first-child + div,
+#nkModuleTeam .teamBlock.teamDisplayBloc > .teamMemberBlock.rightAlign > div:first-child + div {
+    text-align: right;
+    padding-right: 20px;
+}
+
+/* Table */
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow:nth-child(even) {
+    background: grey;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow:nth-child(odd) {
+    background: #025baf;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRowTitle,
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow {
+    display: table-row;
+    line-height: 20px;
+    border-bottom: 1px dotted #FFFFFF;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRowTitle {
+    background: darkgrey;
+    color: #025baf;
+    font-style: oblique;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow:last-child {
+    border: none;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRowTitle > .teamCols,
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow > .teamCols {
+    display: table-cell;
+    padding: 0px 10px;
+    border-right-width: 1px;
+    border-right-style: dotted;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRowTitle > .teamCols {
+    text-align: center;
+    font-weight: bold;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow > .teamCols:first-child {
+    width: 40%;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRowTitle > .teamCols:last-child,
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow > .teamCols:last-child{
+    border: none;
+    width: 30%;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow:nth-child(even) > .teamCols{
+    border-right-color: #025baf;
+}
+
+#nkModuleTeam .teamBlock.teamDisplayTable > .teamRow:nth-child(odd) > .teamCols{
+    border-right-color: grey;
+}
+
