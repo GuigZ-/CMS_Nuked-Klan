@@ -128,14 +128,16 @@ function displayContentMenu ($menus, $search, $type = "op", $op = null) {
     <?php
             foreach ($menus as $key => $menu) {
 
-                $isNotOp = null;
+                $request = array();
 
                 if($type !== "op") {
-                    $isNotOp = "op=" . $op . "&";
+                    $request = array('op' => $op);
                 }
+
+                $request = array_merge(array($type => $key), $request);
     ?>
                 <li>
-                    <a class="tipN" href="index.php?file=Team&page=admin&<?php echo $isNotOp.$type; ?>=<?php echo $key; ?>" original-title="<?php echo $menu['name']; ?>">
+                    <a class="tipN" href="<?php echo nkGetLink(false, null, $request); ?>" original-title="<?php echo $menu['name']; ?>">
                         <span class="nkIcons icon-<?php echo (isset($menu['icon']) && !empty($menu['icon']) ? $menu['icon'] : 'help' ) ?>"></span>
                     </a>
                 </li>
@@ -160,11 +162,11 @@ function displayContent ($op, $action, $id = null) {
                 switch ($action) {
                     case 'add':
                     case 'edit':
-                        formTeams($op, $id);
+                        formTeams($id);
                         break;
 
                     default:
-                        listTeams($op);
+                        listTeams();
                         break;
                 }
             break;
@@ -173,16 +175,16 @@ function displayContent ($op, $action, $id = null) {
                 switch ($action) {
                     case 'add':
                     case 'edit':
-                        formUsers($op, $id);
+                        formUsers($id);
                         break;
                     case 'list_status';
-                        listUsersStatus($op);
+                        listUsersStatus();
                         break;
                     case 'edit_user';
-                        formUsersStatus($op, $id);
+                        formUsersStatus($id);
                         break;
                     default:
-                        listUsers($op);
+                        listUsers();
                         break;
                 }
             break;
@@ -191,11 +193,11 @@ function displayContent ($op, $action, $id = null) {
                 switch ($action) {
                     case 'add':
                     case 'edit':
-                        formStatus($op, $id);
+                        formStatus($id);
                         break;
 
                     default:
-                        listStatus($op);
+                        listStatus();
                         break;
                 }
             break;
@@ -204,11 +206,11 @@ function displayContent ($op, $action, $id = null) {
                 switch ($action) {
                     case 'add':
                     case 'edit':
-                        formRanks($op, $id);
+                        formRanks($id);
                         break;
 
                     default:
-                        listRanks($op);
+                        listRanks();
                         break;
                 }
             break;
@@ -234,7 +236,7 @@ function displayContent ($op, $action, $id = null) {
 /**
  * Affiche la liste des équipes
  */
-function listTeams ($op) {
+function listTeams () {
     ?>
     <script type="text/javascript">
           $(function() {
@@ -278,20 +280,20 @@ function listTeams ($op) {
             <?php
                 $teams = nkGetTeams();
                 if ($teams !== false && is_array($teams) && sizeof($teams)) {
-                    foreach ($teams as $team) {
+                    foreach ($teams as $value) {
                         ?>
-                        <tr data-id="<?php echo $team['id']; ?>">
+                        <tr data-id="<?php echo $value['id']; ?>">
                             <!-- Nom -->
                             <td>
                                 <?php
-                                    echo printSecuTags($team['name']);
+                                    echo printSecuTags($value['name']);
                                 ?>
                             </td>
                             <!-- Prefix -->
                             <td>
                                 <?php
-                                    if (isset($team['prefix']) && empty($team['prefix']) === false) {
-                                        echo printSecuTags($team['prefix']);
+                                    if (isset($value['prefix']) && empty($value['prefix']) === false) {
+                                        echo printSecuTags($value['prefix']);
                                     }
                                     else {
                                         echo "-";
@@ -301,8 +303,8 @@ function listTeams ($op) {
                             <!-- Suffix -->
                             <td>
                                 <?php
-                                    if (isset($team['suffix']) && empty($team['suffix']) === false) {
-                                        echo printSecuTags($team['suffix']);
+                                    if (isset($value['suffix']) && empty($value['suffix']) === false) {
+                                        echo printSecuTags($value['suffix']);
                                     }
                                     else {
                                         echo "-";
@@ -312,12 +314,12 @@ function listTeams ($op) {
                             <!-- Ordre -->
                             <td class="order">
                                 <?php
-                                    echo printSecuTags($team['order']);
+                                    echo printSecuTags($value['order']);
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=teams&action=edit&id=<?php echo $team['id'];?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=teams&action=del&id=<?php echo $team['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
                             </td>
                         </tr>
                         <?php
@@ -351,7 +353,7 @@ function listTeams ($op) {
  * Formulaire de gestion des équipes
  * @param  boolean $id ID à éditer
  */
-function formTeams ($op, $id = false) {
+function formTeams ($id = false) {
     if ($id) {
         $team        = nkGetTeams((int) $id);
         $name        = nkGetValue('name',        $team['name']);
@@ -503,7 +505,7 @@ function formTeams ($op, $id = false) {
             <!-- /Games -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -514,7 +516,7 @@ function formTeams ($op, $id = false) {
 /**
  * Affiche la liste des utilisateurs associés
  */
-function listUsers ($op) {
+function listUsers () {
     ?>
     <div class="whead">
         <h6>&nbsp;</h6>
@@ -576,8 +578,8 @@ function listUsers ($op) {
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=manage_users&action=edit&id=<?php echo $value['id'];?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=manage_users&action=del&id=<?php echo $value['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
                             </td>
                         </tr>
                     <?php
@@ -611,7 +613,7 @@ function listUsers ($op) {
 /**
  * Affiche la liste des utilisateurs avec leur statut
  */
-function listUsersStatus($op) {
+function listUsersStatus() {
     ?>
 
     <div class="whead">
@@ -660,8 +662,8 @@ function listUsersStatus($op) {
                             ?>
                         </td>
                         <td class="center">
-                            <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=manage_users&action=edit_user&id=<?php echo $value['id'];?>"></a>
-                            <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=manage_users&action=del_user&id=<?php echo $value['id'];?>"></a>
+                            <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit_user", "id" => $value['id'])); ?>"></a>
+                            <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del_user", "id" => $value['id'])); ?>"></a>
                         </td>
                     </tr>
                     <?php
@@ -695,7 +697,7 @@ function listUsersStatus($op) {
  * Formulaire d'utilisateur
  * @param integer $id id à éditer
  */
-function formUsers ($op, $id = false) {
+function formUsers ($id = false) {
     $users = nkGetUsers();
     $teams = nkGetTeams();
     $ranks = nkGetTeamsRanks();
@@ -822,7 +824,7 @@ function formUsers ($op, $id = false) {
             <!-- /Ranks -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -887,7 +889,7 @@ function formUsersStatus ($id = false) {
             <!-- /Team -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -898,7 +900,7 @@ function formUsersStatus ($id = false) {
 /**
  * Affiche la liste des statuts
  */
-function listStatus ($op) {
+function listStatus () {
     ?>
     <div class="whead">
         <h6>&nbsp;</h6>
@@ -933,8 +935,8 @@ function listStatus ($op) {
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=status&action=edit&id=<?php echo $value['id'];?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=status&action=del&id=<?php echo $value['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
                             </td>
                         </tr>
                     <?php
@@ -985,7 +987,7 @@ function formStatus ($id = false) {
             <!-- /Name -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -996,7 +998,7 @@ function formStatus ($id = false) {
 /**
  * Affiche la liste des rangs
  */
-function listRanks ($op) {
+function listRanks () {
     ?>
     <div class="whead">
         <h6>&nbsp;</h6>
@@ -1040,8 +1042,8 @@ function listRanks ($op) {
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=<?php echo $op; ?>&action=edit&id=<?php echo $value['id'];?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=<?php echo $op; ?>&action=del&id=<?php echo $value['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
                             </td>
                         </tr>
                     <?php
@@ -1104,7 +1106,7 @@ function formRanks ($id = false) {
             <!-- /Name -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1274,7 +1276,7 @@ function postProcess ($op, $action, $id) {
                         mysql_query($dbrTeamGame);
                     }
 
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf='.($id ? '3' : '1'));
+                    header('Refresh:0, url='.nkGetLink(true));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1309,7 +1311,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdTeam)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=2');
+                    header('Refresh:0, url='.nkGetLink(true, 2));
                 }
                 else {
 
@@ -1360,7 +1362,7 @@ function postProcess ($op, $action, $id) {
                 }
                 // execution de la requete
                 if (mysql_query($dbrSetStatus)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf='.($id ? '3' : '1'));
+                    header('Refresh:0, url='.nkGetLink(true));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1384,7 +1386,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdStatus)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=2');
+                    header('Refresh:0, url='.nkGetLink(true, 2));
                 }
                 else {
 
@@ -1436,7 +1438,7 @@ function postProcess ($op, $action, $id) {
                 }
                 // execution de la requete
                 if (mysql_query($dbrSetRanks)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf='.($id ? '3' : '1'));
+                    header('Refresh:0, url='.nkGetLink(true));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1460,7 +1462,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdRanks)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=2');
+                    header('Refresh:0, url='.nkGetLink(true, 2));
                 }
                 else {
 
@@ -1546,7 +1548,7 @@ function postProcess ($op, $action, $id) {
             }
 
             if (mysql_query($dbrSetUserRank)) {
-                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf='.($id ? '3' : '1'));
+                header('Refresh:0, url='.nkGetLink(true));
             }
             // Si la requete n'a pas réussi
             else {
@@ -1570,7 +1572,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdRanks)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=2');
+                    header('Refresh:0, url='.nkGetLink(true, 2));
                 }
                 else {
 
@@ -1602,7 +1604,7 @@ function postProcess ($op, $action, $id) {
 
 
             if (mysql_query($dbiSetUser)) {
-                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&action=list_status&conf='.($id ? '3' : '1'));
+                header('Refresh:0, url='.nkGetLink(true, null, array('action' => 'list_status')));
             }
             // Si la requete n'a pas réussi
             else {
@@ -1628,7 +1630,7 @@ function postProcess ($op, $action, $id) {
                 && mysql_query(sprintf($dbuSetConfig, nkGetValue('display_type'), 'display_type'))
                 && mysql_query(sprintf($dbuSetConfig, (int) nkGetValue('picture'), 'picture'))
             ) {
-                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=3');
+                header('Refresh:0, url='.nkGetLink(true, 3));
             }
             // Si la requete n'a pas réussi
             else {
