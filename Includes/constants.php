@@ -50,8 +50,9 @@ $arrayConstants =   array(
     'LINKS_CAT_TABLE'      => '_liens_cat',
     //
     'MATCH_TABLE'          => '_match',
-    'MATCH_TABLE_MAP'      => '_match_map',
+    'MATCH_MAP_TABLE'      => '_match_map',
     'MATCH_FILES_TABLE'    => '_match_files',
+    'MATCH_SETTINGS_TABLE' => '_match_settings',
     //
     'MODULES_TABLE'        => '_modules',
     'NBCONNECTE_TABLE'     => '_nbconnecte',

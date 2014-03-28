@@ -664,32 +664,22 @@
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_match`";
                         $req = mysql_query($sql) or die (nk_debug_bt());
                         $sql = "CREATE TABLE `" . $db_prefix . "_match` (
-                          `warid` int(10) NOT NULL auto_increment,
-                          `etat` int(1) NOT NULL default '0',
-                          `team` int(11) NOT NULL default '0',
-                          `game` int(11) NOT NULL default '0',
-                          `adversaire` text,
-                          `url_adv` varchar(60) default NULL,
-                          `pays_adv` varchar(50) NOT NULL default '',
-                          `type` varchar(100) default NULL,
-                          `style` varchar(100) NOT NULL default '',
-                          `date_jour` int(2) default NULL,
-                          `date_mois` int(2) default NULL,
-                          `date_an` int(4) default NULL,
-                          `heure` varchar(10) NOT NULL default '',
-                          `map` text,
-                          `tscore_team` float default NULL,
-                          `tscore_adv` float default NULL,
-                          `score_team` text NOT NULL,
-                          `score_adv` text NOT NULL,
+                          `id` int(10) NOT NULL AUTO_INCREMENT,
+                          `status` int(1) NOT NULL DEFAULT '0',
+                          `team_id` int(11) NOT NULL DEFAULT '0',
+                          `game_id` int(11) NOT NULL DEFAULT '0',
+                          `date` BIGINT( 20 ) NOT NULL,
+                          `versus` text,
+                          `link` varchar(60) DEFAULT NULL,
+                          `country` varchar(50) NOT NULL DEFAULT '',
+                          `type` varchar(100) DEFAULT NULL,
                           `report` text,
-                          `auteur` varchar(50) default NULL,
-                          `url_league` varchar(100) default NULL,
-                          `dispo` text,
-                          `pas_dispo` text,
-                          PRIMARY KEY  (`warid`)
-                        ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
-                        $req  =mysql_query($sql) or die (nk_debug_bt());
+                          `auteur` varchar(50) DEFAULT NULL,
+                          `tournament` varchar(100) DEFAULT NULL,
+                          `url_tournament` varchar(100) DEFAULT NULL,
+                          PRIMARY KEY (`id`)
+                        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+                        $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
         case'match_files':
@@ -705,6 +695,43 @@
                           KEY `im_id` (`im_id`)
                         ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                         $req = mysql_query($sql) or die (nk_debug_bt());
+                        echo 'OK';
+        break;
+        case 'match_map':
+                        $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_match_map`";
+                        $req = mysql_query($sql) or die (nk_debug_bt());
+                        $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_match_map` (
+                          `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                          `match_id` int(11) NOT NULL,
+                          `map_id` int(11) NOT NULL,
+                          `players` text NOT NULL,
+                          `substitute` text NOT NULL,
+                          `score` varchar(30) NOT NULL,
+                          `game_mod` varchar(100) NOT NULL,
+                          `time` int(10) NOT NULL,
+                          `opponent` text NOT NULL
+                        ) ENGINE=InnoDB DEFAULT CHARSET=utf8; ";
+                        $req = mysql_query($sql) or die (nk_debug_bt());
+                        echo 'OK';
+        break;
+        case 'match_settings':
+                        $sql = "DROP TABLE IF EXISTS `".$db_prefix."_match_settings`;";
+                        $req = mysql_query($sql) or die(nk_debug_bt());
+                        $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_match_settings` (
+                                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                                  `name` varchar(255) NOT NULL,
+                                  `value` text NOT NULL,
+                                  PRIMARY KEY (`id`),
+                                  UNIQUE KEY `name` (`name`)
+                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+                        $req = mysql_query($sql) or die (nk_debug_bt());
+                        $sql = "INSERT INTO `".$db_prefix."_match_settings` (`id`, `name`, `value`) VALUES
+                            (NULL, 'match_page', '10'),
+                            (NULL, 'color_win', '#34C924'),
+                            (NULL, 'color_draw', '#2C75FF'),
+                            (NULL, 'color_lost', '#ED0000');
+                        ";
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
         case'modules':
@@ -1092,7 +1119,7 @@
                         $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
-        case'team':
+        case 'team':
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_team`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team` (
@@ -1116,7 +1143,7 @@
                         echo 'OK';
 
         break;
-        case'team_games':
+        case 'team_games':
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_team_games`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team_games` (
@@ -1126,7 +1153,7 @@
                         $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
-        case'team_rank':
+        case 'team_rank':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_rank`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_rank` (
@@ -1138,7 +1165,7 @@
                         $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
-        case'team_groups':
+        case 'team_groups':
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_team_groups`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team_groups` (
@@ -1158,7 +1185,7 @@
                         $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
-        case'team_settings':
+        case 'team_settings':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_settings`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_settings` (
@@ -1169,7 +1196,7 @@
                                   UNIQUE KEY `name` (`name`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die (nk_debug_bt());
-                        $sql = "INSERT INTO `nuked_team_settings` (`id`, `name`, `value`) VALUES
+                        $sql = "INSERT INTO `".$db_prefix."_team_settings` (`id`, `name`, `value`) VALUES
                             (NULL, 'team_page', '10'),
                             (NULL, 'display_type', 'alternate'),
                             (NULL, 'picture', '1');
@@ -1177,7 +1204,7 @@
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
-        case'team_status':
+        case 'team_status':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_status`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_status` (
@@ -1188,7 +1215,7 @@
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
-        case'team_user':
+        case 'team_user':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user` (
@@ -1201,7 +1228,7 @@
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
-        case'team_user_rank':
+        case 'team_user_rank':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user_rank`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_rank` (
@@ -1212,7 +1239,7 @@
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
-        case'team_user_team':
+        case 'team_user_team':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user_team`;";
                         $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_team` (

@@ -715,6 +715,28 @@ function formUsers ($id = false) {
         return;
     }
 
+    if (!isset($teams) || !$teams || !sizeof($teams)) {
+        ?>
+            <div class="nNote nWarning nNoteHideable">
+                <p>
+                    Merci de créer des équipes pour continuer sur cette page.
+                </p>
+            </div>
+        <?php
+        return;
+    }
+
+    if (!isset($ranks) || !$ranks || !sizeof($ranks)) {
+        ?>
+            <div class="nNote nWarning nNoteHideable">
+                <p>
+                    Merci de créer un rang pour continuer sur cette page.
+                </p>
+            </div>
+        <?php
+        return;
+    }
+
     ?>
     <form action="" method="POST" class="form" autocomplete="off">
         <div class="fluid">
@@ -755,10 +777,13 @@ function formUsers ($id = false) {
                     <select class="select" name="team">
                         <option value=""><?php echo CHOOSE; ?></option>
                         <?php
-                            foreach ($teams as $team) {
-                                ?>
-                                    <option value="<?php echo $team['id']; ?>"<?php echo ($team_id == $team['id'] ? ' selected' : ''); ?>><?php echo $team['name']; ?></option>
-                                <?php
+                            if (isset($teams) && $teams && sizeof($teams))
+                            {
+                                foreach ($teams as $team) {
+                                    ?>
+                                        <option value="<?php echo $team['id']; ?>"<?php echo ($team_id == $team['id'] ? ' selected' : ''); ?>><?php echo $team['name']; ?></option>
+                                    <?php
+                                }
                             }
                         ?>
                     </select class="validate[required]">
@@ -794,13 +819,16 @@ function formUsers ($id = false) {
                     <div class="table tableWidth100">
                         <?php
                             $i = 0;
-                            foreach ($ranks as $rank) {
-                                ?>
-                                    <div>
-                                        <input name="ranks[<?php echo $rank['id']; ?>]" value="<?php echo $rank['id']; ?>" type="checkbox" class="check" id="rank_<?php echo $rank['id']; ?>"<?php  echo (in_array($rank['id'], $rank_ids) ? ' checked' : ''); ?> />
-                                        <label for="rank_<?php echo $rank['id']; ?>"><?php echo $rank['name']; ?></label>
-                                    </div>
-                                <?php
+                            if (isset($ranks) && $ranks && sizeof($ranks))
+                            {
+                                foreach ($ranks as $rank) {
+                                    ?>
+                                        <div>
+                                            <input name="ranks[<?php echo $rank['id']; ?>]" value="<?php echo $rank['id']; ?>" type="checkbox" class="check" id="rank_<?php echo $rank['id']; ?>"<?php  echo (in_array($rank['id'], $rank_ids) ? ' checked' : ''); ?> />
+                                            <label for="rank_<?php echo $rank['id']; ?>"><?php echo $rank['name']; ?></label>
+                                        </div>
+                                    <?php
+                                }
                             }
                         ?>
                     </div>
@@ -1558,11 +1586,11 @@ function postProcess ($op, $action, $id) {
             }
 
         }
-        else if ($action === 'del') {
+        else if ($action === 'del_user') {
 
             $users = getUsers($id);
             if ($users && sizeof($users)) {
-                $dbdRanks = 'DELETE FROM ' . TEAM_USER_TABLE . ' WHERE id = ' . (int) $users[0]['team_user_id'] . ' ';
+                $dbdRanks = 'DELETE FROM ' . TEAM_USER_TABLE . ' WHERE id = ' . (int) $id . ' ';
 
                 // execution de la requete
                 if (mysql_query($dbdRanks)) {
@@ -1632,7 +1660,7 @@ function postProcess ($op, $action, $id) {
                     <div class="nNote nFailure nNoteHideable">
                         <p>
                             <?php
-                            echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetUser ;
+                            echo TEAM_QUERY;
                             ?>
                         </p>
                     </div>

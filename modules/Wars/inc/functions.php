@@ -12,24 +12,39 @@ defined('INDEX_CHECK') or die('You can\'t run this file alone.');
 
 function getMatchs ($id = false) {
     $dbsGetWars = '
-            SELECT *
+            SELECT *, m.id
                 FROM ' . MATCH_TABLE . ' AS m
-                LEFT OUTER JOIN ' . MATCH_TABLE_MAP . ' AS mm
+                LEFT OUTER JOIN ' . MATCH_MAP_TABLE . ' AS mm
                     ON mm.`match_id` = m.`id`
                 WHERE 1
         ';
 
     if ($id) {
-        $dbsGetWars .= ' AND id = "'.(int)$id.'" ';
+        $dbsGetWars .= ' AND m.id = "'.(int)$id.'" ';
     }
 
     $dbeGetWars = mysql_query($dbsGetWars) or die(nk_debug_bt());
     $wars = array();
     if ($dbeGetWars !== false) {
         while ($dbaGetWars = mysql_fetch_assoc($dbeGetWars)) {
-            $wars[] = $dbaGetWars;
+            $temp = $dbaGetWars;
+            if (!array_key_exists($dbaGetWars['id'], $wars)) {
+                $wars[$dbaGetWars['id']] = $temp;
+                $wars[$dbaGetWars['id']]['map'] = array();
+            }
+
+                $wars[$dbaGetWars['id']]['map'][] = array(
+                    'map' => $dbaGetWars['map_id'],
+                    'players' => explode(',', $dbaGetWars['players']),
+                    'substitute' => explode(',', $dbaGetWars['substitute']),
+                    'score' => $dbaGetWars['score'],
+                    'game_mod' => $dbaGetWars['game_mod'],
+                    'time' => $dbaGetWars['time'],
+                    'opponent' => $dbaGetWars['opponent']
+                );
         }
     }
+
     // Check results
     if ($wars !== false && sizeof($wars)) {
         if (!$id) {
@@ -49,11 +64,11 @@ function getMatchs ($id = false) {
 function MatchGetJsonTab()
 {
     $dbsGetInformations = "
-        SELECT gm.game_id, g.name AS gameName, tg.team_id, t.name AS teamName, tu.user_id, u.pseudo, gm.id AS map_id, gm.name AS mapName, mm.score AS mapScore, mm.players AS mapPlayers, mm.substitute AS mapSubstitute, mm.game_mod, mm.time, mm.opponent, mm.nb_players
+        SELECT gm.game_id, g.name AS gameName, tg.team_id, t.name AS teamName, tu.user_id, u.pseudo, gm.id AS map_id, gm.name AS mapName, mm.score AS mapScore, mm.players AS mapPlayers, mm.substitute AS mapSubstitute, mm.game_mod, mm.time, mm.opponent
         FROM ".GAMES_TABLE." AS g
             INNER JOIN ".GAMES_MAP_TABLE." gm
                 ON gm.game_id = g.id
-            LEFT OUTER JOIN ".MATCH_TABLE_MAP." mm
+            LEFT OUTER JOIN ".MATCH_MAP_TABLE." mm
                 ON mm.map_id = gm.id
             INNER JOIN ".TEAM_GAMES_TABLE." AS tg
                 ON tg.game_id = g.id
@@ -95,13 +110,34 @@ function MatchGetJsonTab()
                     'game_mod'   => $dbaGetInformations['game_mod'],
                     'time'       => $dbaGetInformations['time'],
                     'opponent'   => $dbaGetInformations['opponent'],
-                    'nb_players' => $dbaGetInformations['nb_players'],
                 );
             }
         }
     }
 
     return json_encode($tab);
+}
+
+function getMatchPrefs($id = false) {
+    $dbsGetWars = '
+            SELECT ms.name, ms.value, ms.id
+                FROM ' . MATCH_SETTINGS_TABLE . ' AS ms
+                WHERE 1
+        ';
+
+    if ($id) {
+        $dbsGetWars .= ' AND ms.id = "'.(int)$id.'" ';
+    }
+
+    $dbeGetWars = mysql_query($dbsGetWars) or die(nk_debug_bt());
+    $settings = array();
+    if ($dbeGetWars !== false) {
+        while ($dbaGetWars = mysql_fetch_assoc($dbeGetWars)) {
+            $settings[$dbaGetWars['name']] = $dbaGetWars['value'];
+        }
+    }
+
+    return $settings;
 }
 
 ?>

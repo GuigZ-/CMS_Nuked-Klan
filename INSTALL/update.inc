@@ -711,7 +711,9 @@
             mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `etat`  `status` INT( 1 ) NOT NULL") or die(nk_debug_bt());
             mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `url_adv`  `link` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL") or die(nk_debug_bt());
             mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `adversaire`  `versus` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci ") or die(nk_debug_bt());
-            mysql_query("ALTER TABLE `" . $db_prefix . "_match` ADD `date` BIGINT( 20 ) NOT NULL AFTER  `style` ;") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `url_league`  `url_tournament` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci ") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` ADD `date` BIGINT( 20 ) NOT NULL AFTER  `game_id` ;") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` ADD `tournament` VARCHAR( 100 ) NOT NULL AFTER  `auteur` ;") or die(nk_debug_bt());
             // Update date to TIMESTAMP
             mysql_query("UPDATE `" . $db_prefix . "_match` SET `date` = UNIX_TIMESTAMP(CONCAT(`date_an`,'-', `date_mois`, '-', `date_jour`, ' ', `heure`, ':00') ;") or die(nk_debug_bt());
             // Delete fields
@@ -735,6 +737,7 @@
             // Create Association Table (Match, Map)
             mysql_query("
                 CREATE TABLE IF NOT EXISTS `" .$db_prefix . "_match_map` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
                   `match_id` INT(11) NOT NULL,
                   `map_id` INT(11) NOT NULL,
                   `players` TEXT NOT NULL,
@@ -742,8 +745,7 @@
                   `score` VARCHAR(30) NOT NULL,
                   `game_mod` VARCHAR(100) NOT NULL,
                   `time` INT(10) NOT NULL,
-                  `opponent` TEXT NOT NULL,
-                  `nb_players` TINYINT(5) NOT NULL
+                  `opponent` TEXT NOT NULL
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ") or die(nk_debug_bt());
             // Drop Games Pref

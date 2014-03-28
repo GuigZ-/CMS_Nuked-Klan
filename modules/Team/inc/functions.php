@@ -93,7 +93,7 @@ function getUsersStatus ($id = false) {
     $dbsGetUsers = '
         SELECT u.id, u.user_id, s.name AS status_name, s.id AS status
         FROM ' . TEAM_USER_TABLE . ' AS u
-            LEFT OUTER JOIN ' . TEAM_STATUS_TABLE . ' AS s
+            INNER JOIN ' . TEAM_STATUS_TABLE . ' AS s
                 ON u.team_status_id = s.id
         ';
 

@@ -1056,7 +1056,6 @@
 		*/
 		datetimepicker: function (o) {
 			o = o || {};
-            console.log(arguments);
 			var tmp_args = arguments;
 
 			if (typeof(o) === 'string') {
