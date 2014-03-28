@@ -10,6 +10,8 @@
  */
 defined('INDEX_CHECK') or die('You can\'t run this file alone.');
 
+require_once 'modules/Admin/libraries/functions.php';
+
 /**
  * Get users
  * @return boolean

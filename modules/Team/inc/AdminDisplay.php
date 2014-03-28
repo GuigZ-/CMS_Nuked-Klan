@@ -1112,7 +1112,7 @@ function formPreferences() {
                     </label>
                 </div>
                 <div class="grid9">
-                    <input type="text" name="team_page" id="team_page" value="<?php echo isset($config['team_page']) && $config['team_page']; ?>" class="validate[required]">
+                    <input type="text" name="team_page" id="team_page" value="<?php echo (isset($config['team_page']) ? $config['team_page'] : ''); ?>" class="validate[required]">
                 </div>
                 <div class="clear both"></div>
             </div>
@@ -1146,7 +1146,7 @@ function formPreferences() {
                     </label>
                 </div>
                 <div class="grid9">
-                    <input type="checkbox" value="1" name="picture" id="picture" <?php echo (isset($config['picture']) && $config['picture']  == 1 ? ' checked' : ''); ?>class="check validate[required]" />
+                    <input type="checkbox" value="1" name="picture" id="picture" <?php echo (isset($config['picture']) && $config['picture']  == 1 ? ' checked ' : ''); ?>class="check validate[required]" />
                 </div>
                 <div class="clear both"></div>
             </div>
