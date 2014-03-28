@@ -37,7 +37,7 @@ function nk_debug_bt($die = false)
 
 // FUNCTION TO FIX PRINTING TAGS
 function printSecuTags($value){
-    $value = nkHtmlEntities(nkHtmlEntityDecode(nkHtmlEntityDecode($value)));
+    $value = stripslashes(nkHtmlEntities(nkHtmlEntityDecode(nkHtmlEntityDecode($value))));
     return $value;
 }
 // FIX TAGS IN NUKED ARRAY
@@ -1131,15 +1131,15 @@ function erreursql($errno, $errstr, $errfile, $errline, $errcontext){
 }
 
 function send_stats_nk() {
-    global $nuked;
+	global $nuked;
 
-    if($nuked['stats_share'] == "1")
-    {
-        $timediff = (time() - $nuked['stats_timestamp'])/60/60/24/60; // Tous les 60 jours
-        if($timediff >= 60)
-        {
+	if($nuked['stats_share'] == "1")
+	{
+		$timediff = (time() - $nuked['stats_timestamp'])/60/60/24/60; // Tous les 60 jours
+		if($timediff >= 60)
+		{
 
-            ?>
+			?>
      <script type="text/javascript">
           if ( typeof jQuery == 'undefined' )
                {
@@ -1147,15 +1147,15 @@ function send_stats_nk() {
                }
      </script>
             <script type="text/javascript">
-            $(document).ready(function() {
-                data="nuked_nude=ajax";
-                $.ajax({url:'index.php', data:data, type: "GET", success: function(html) {
-                 }});
-            });
-            </script>
+			$(document).ready(function() {
+				data="nuked_nude=ajax";
+				$.ajax({url:'index.php', data:data, type: "GET", success: function(html) {
+				 }});
+			});
+			</script>
             <?php
-        }
-    }
+		}
+	}
 }
 
 // Control valid DB prefix

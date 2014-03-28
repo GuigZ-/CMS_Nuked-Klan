@@ -1165,6 +1165,12 @@
                                   UNIQUE KEY `name` (`name`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die (nk_debug_bt());
+                        $sql = "INSERT INTO `nuked_team_settings` (`id`, `name`, `value`) VALUES
+                            (NULL, 'team_page', '10'),
+                            (NULL, 'display_type', 'alternate'),
+                            (NULL, 'picture', '1');
+                        ";
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_status':

@@ -461,11 +461,18 @@ if (nkHasAdmin()) {
      */
     function nkGetValue ($key, $default = false) {
         if (isset($_REQUEST[$key]) && !empty($_REQUEST[$key])) {
-            return $_REQUEST[$key];
+            $return = $_REQUEST[$key];
         }
         else {
-            return $default;
+            $return = $default;
         }
+
+        if (!is_array($return))
+            $return = stripslashes($return);
+        else
+            $return = array_map('stripslashes', $return);
+
+        return $return;
     }
 
     /**
