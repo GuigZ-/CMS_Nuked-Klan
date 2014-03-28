@@ -539,7 +539,7 @@
 
             // Delete fields
             mysql_query("
-                ALTER TABLE `" . $db_prefix . "_games_map`
+                ALTER TABLE `" . $db_prefix . "_games`
                     DROP `map`,
                     DROP `titre`,
                     DROP `pref_1`,

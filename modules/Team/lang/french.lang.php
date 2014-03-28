@@ -94,18 +94,6 @@ $arrayModLang = array(
     #####################################
     # Team - displayConf() (admin.php)
     #####################################
-    'TEAM_REGISTERED'             => 'Votre &eacute;quipe a &eacute;t&eacute; enregistr&eacute;e',
-    'TEAM_DELETED'                => 'Votre &eacute;quipe a &eacute;t&eacute; supprim&eacute;e',
-    'TEAM_STATUS_REGISTERED'      => 'Votre statut a &eacute;t&eacute; enregistr&eacute;e',
-    'TEAM_STATUS_DELETED'         => 'Votre statut a &eacute;t&eacute; supprim&eacute;e',
-    'TEAM_RANK_REGISTERED'        => 'Votre rang a &eacute;t&eacute; enregistr&eacute;e',
-    'TEAM_RANK_DELETED'           => 'Votre rang a &eacute;t&eacute; supprim&eacute;e',
-    'TEAM_USER_REGISTERED'        => 'Votre association a &eacute;t&eacute; enregistr&eacute;e',
-    'TEAM_USER_DELETED'           => 'Votre association a &eacute;t&eacute; supprim&eacute;e',
-    'TEAM_SETTINGS_SAVED'         => 'Vos pr&eacute;f&eacute;rences ont &eacute;t&eacute; sauvegard&eacute;es',
-    #####################################
-    # Team - displayConf() (admin.php)
-    #####################################
     'TEAM_FIRSTNAME'              => 'Pr&eacute;nom',
     'TEAM_COUNTRY'                => 'Pays',
     'TEAM_AGE'                    => 'Age',

@@ -13,24 +13,19 @@
  */
 function displayAdmin () {
 
-    if (isset($_REQUEST['op']) === false || empty($_REQUEST['op']) === true || $_REQUEST['op'] === 'index') {
+    if (!($op = nkGetValue('op')) || $op === 'index') {
         $op = "teams";
     }
-    else {
-        $op = $_REQUEST['op'];
-    }
 
-    if (isset($_REQUEST['action']) === false || empty($_REQUEST['action']) === true) {
+    if (!$action = nkGetValue('action')) {
         $action = "list";
-    }
-    else {
-        $action = $_REQUEST['action'];
     }
 
     $id = null;
 
-    if(isset($_REQUEST['action']) && ($_REQUEST['action'] == 'edit' || $_REQUEST['action'] == 'del' || $_REQUEST['action'] == 'edit_user' || $_REQUEST['action'] == 'del_user') && isset($_REQUEST['id']) !== false && preg_match("#^[0-9]+$#isD", $_REQUEST['id'])) {
-        $id = $_REQUEST['id'];
+
+    if(($action === 'edit' || $action === 'del' || $action === 'edit_user' || $action === 'del_user') && preg_match("#^[0-9]+$#isD", nkGetValue('id'))) {
+        $id = nkGetValue('id');
     }
     /**
      * @TODO DELETE NEXT LINE
@@ -41,11 +36,10 @@ function displayAdmin () {
     <?php
             displayMenu($op);
             displaySubMenu($op, $action);
-            postProcess($op, $action, $id);
-
-            if (isset($_REQUEST['conf'])) {
-                displayConf($_REQUEST['conf']);
+            if ($conf = nkGetValue('conf')) {
+                nkDisplayConf($conf);
             }
+            postProcess($op, $action, $id);
     ?>
             <div class="widget">
     <?php
@@ -166,11 +160,11 @@ function displayContent ($op, $action, $id = null) {
                 switch ($action) {
                     case 'add':
                     case 'edit':
-                        formTeams($id);
+                        formTeams($op, $id);
                         break;
 
                     default:
-                        listTeams();
+                        listTeams($op);
                         break;
                 }
             break;
@@ -179,16 +173,16 @@ function displayContent ($op, $action, $id = null) {
                 switch ($action) {
                     case 'add':
                     case 'edit':
-                        formUsers($id);
+                        formUsers($op, $id);
                         break;
                     case 'list_status';
-                        listUsersStatus();
+                        listUsersStatus($op);
                         break;
                     case 'edit_user';
-                        formUsersStatus($id);
+                        formUsersStatus($op, $id);
                         break;
                     default:
-                        listUsers();
+                        listUsers($op);
                         break;
                 }
             break;
@@ -197,11 +191,11 @@ function displayContent ($op, $action, $id = null) {
                 switch ($action) {
                     case 'add':
                     case 'edit':
-                        formStatus($id);
+                        formStatus($op, $id);
                         break;
 
                     default:
-                        listStatus();
+                        listStatus($op);
                         break;
                 }
             break;
@@ -210,11 +204,11 @@ function displayContent ($op, $action, $id = null) {
                 switch ($action) {
                     case 'add':
                     case 'edit':
-                        formRanks($id);
+                        formRanks($op, $id);
                         break;
 
                     default:
-                        listRanks();
+                        listRanks($op);
                         break;
                 }
             break;
@@ -240,7 +234,7 @@ function displayContent ($op, $action, $id = null) {
 /**
  * Affiche la liste des équipes
  */
-function listTeams () {
+function listTeams ($op) {
     ?>
     <script type="text/javascript">
           $(function() {
@@ -282,7 +276,7 @@ function listTeams () {
         <tbody>
             <!-- Equipes -->
             <?php
-                $teams = getTeams();
+                $teams = nkGetTeams();
                 if ($teams !== false && is_array($teams) && sizeof($teams)) {
                     foreach ($teams as $team) {
                         ?>
@@ -357,25 +351,24 @@ function listTeams () {
  * Formulaire de gestion des équipes
  * @param  boolean $id ID à éditer
  */
-function formTeams ($id = false) {
+function formTeams ($op, $id = false) {
     if ($id) {
-        $team        = getTeams((int) $id);
-        $team        = $team[0];
-        $name        = getValue('name',        $team['name']);
-        $image       = getValue('image',       $team['image']);
-        $description = getValue('description', $team['description']);
-        $suffix      = getValue('suffix',      $team['suffix']);
-        $prefix      = getValue('prefix',      $team['prefix']);
-        $teamGroups  = getValue('groups',      $team['groups']);
-        $teamGames   = getValue('games',       $team['games']);
+        $team        = nkGetTeams((int) $id);
+        $name        = nkGetValue('name',        $team['name']);
+        $image       = nkGetValue('image',       $team['image']);
+        $description = nkGetValue('description', $team['description']);
+        $suffix      = nkGetValue('suffix',      $team['suffix']);
+        $prefix      = nkGetValue('prefix',      $team['prefix']);
+        $teamGroups  = nkGetValue('groups',      $team['groups']);
+        $teamGames   = nkGetValue('games',       $team['games']);
     } else {
-        $name        = getValue('name');
-        $image       = getValue('image');
-        $description = getValue('description');
-        $suffix      = getValue('suffix');
-        $prefix      = getValue('prefix');
-        $teamGroups  = getValue('groups');
-        $teamGames   = getValue('games');
+        $name        = nkGetValue('name');
+        $image       = nkGetValue('image');
+        $description = nkGetValue('description');
+        $suffix      = nkGetValue('suffix');
+        $prefix      = nkGetValue('prefix');
+        $teamGroups  = nkGetValue('groups');
+        $teamGames   = nkGetValue('games');
     }
 
     if ($teamGroups != null && is_array($teamGroups) === false)
@@ -498,10 +491,10 @@ function formTeams ($id = false) {
                 </div>
                 <div class="grid9">
                     <?php
-                        $games = getNkGames();
+                        $games = nkGetGames();
                         if ($games)
-                            foreach ($games as $id => $name) {
-                                echo '<div><input type="checkbox" class="check" name="games[]" value="'.$id.'" id="game_' . $id . '" ' . ( is_array($teamGames) && in_array($id, $teamGames) ? 'checked="checked"' : '') . ' /> <label for="game_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($name)) . '</label><br /></div>';
+                            foreach ($games as $id => $game) {
+                                echo '<div><input type="checkbox" class="check" name="games[]" value="'.$id.'" id="game_' . $id . '" ' . ( is_array($teamGames) && in_array($id, $teamGames) ? 'checked="checked"' : '') . ' /> <label for="game_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($game['name'])) . '</label><br /></div>';
                             }
                     ?>
                 </div>
@@ -510,7 +503,7 @@ function formTeams ($id = false) {
             <!-- /Games -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -521,7 +514,7 @@ function formTeams ($id = false) {
 /**
  * Affiche la liste des utilisateurs associés
  */
-function listUsers () {
+function listUsers ($op) {
     ?>
     <div class="whead">
         <h6>&nbsp;</h6>
@@ -618,7 +611,7 @@ function listUsers () {
 /**
  * Affiche la liste des utilisateurs avec leur statut
  */
-function listUsersStatus() {
+function listUsersStatus($op) {
     ?>
 
     <div class="whead">
@@ -702,23 +695,23 @@ function listUsersStatus() {
  * Formulaire d'utilisateur
  * @param integer $id id à éditer
  */
-function formUsers ($id = false) {
-    $users = getNkUsers();
-    $teams = getTeams();
-    $ranks = getRanks();
+function formUsers ($op, $id = false) {
+    $users = nkGetUsers();
+    $teams = nkGetTeams();
+    $ranks = nkGetTeamsRanks();
     if ($id) {
         $associations = getUsers($id);
         $association = $associations[0];
-        $user_id = getValue('user', $association['user_id']);
-        $team_id = getValue('team', $association['team_id']);
-        $description = getValue('description', $association['description']);
-        $rank_ids = getValue('ranks', explode(',', $association['ranks']));
+        $user_id = nkGetValue('user', $association['user_id']);
+        $team_id = nkGetValue('team', $association['team_id']);
+        $description = nkGetValue('description', $association['description']);
+        $rank_ids = nkGetValue('ranks', explode(',', $association['ranks']));
     }
     else {
-        $user_id = getValue('user');
-        $team_id = getValue('team');
-        $description = getValue('description');
-        $rank_ids = getValue('ranks', array());
+        $user_id = nkGetValue('user');
+        $team_id = nkGetValue('team');
+        $description = nkGetValue('description');
+        $rank_ids = nkGetValue('ranks', array());
     }
 
     if ($teams === false || (int) sizeof($teams) === 0){
@@ -829,7 +822,7 @@ function formUsers ($id = false) {
             <!-- /Ranks -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -842,12 +835,12 @@ function formUsers ($id = false) {
  * @param integer $id id à éditer
  */
 function formUsersStatus ($id = false) {
-    $status = getStatus();
+    $status = nkGetTeamsStatus();
     if ($id) {
         $associations = getUsersStatus($id);
         $association = $associations[0];
         $pseudo = $association['pseudo'];
-        $status_id = getValue('status', $association['status']);
+        $status_id = nkGetValue('status', $association['status']);
     }
 
     ?>
@@ -894,7 +887,7 @@ function formUsersStatus ($id = false) {
             <!-- /Team -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -905,7 +898,7 @@ function formUsersStatus ($id = false) {
 /**
  * Affiche la liste des statuts
  */
-function listStatus () {
+function listStatus ($op) {
     ?>
     <div class="whead">
         <h6>&nbsp;</h6>
@@ -924,7 +917,7 @@ function listStatus () {
         </thead>
         <tbody>
         <?php
-            $status = getStatus();
+            $status = nkGetTeamsStatus();
             if ($status !== false && is_array($status) && sizeof($status)) {
                 foreach ($status as $value) {
                     ?>
@@ -966,11 +959,10 @@ function listStatus () {
 function formStatus ($id = false) {
 
     if ($id) {
-        $status = getStatus((int) $id);
-        $status = $status[0];
-        $name = getValue('name', $status['name']);
+        $status = nkGetTeamsStatus((int) $id);
+        $name = nkGetValue('name', $status['name']);
     } else {
-        $name =  getValue('name');
+        $name =  nkGetValue('name');
     }
 
     ?>
@@ -993,7 +985,7 @@ function formStatus ($id = false) {
             <!-- /Name -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1004,7 +996,7 @@ function formStatus ($id = false) {
 /**
  * Affiche la liste des rangs
  */
-function listRanks () {
+function listRanks ($op) {
     ?>
     <script type="text/javascript">
           $(function() {
@@ -1040,7 +1032,7 @@ function listRanks () {
         <tbody>
         <!-- ranks -->
         <?php
-            $ranks = getRanks();
+            $ranks = nkGetTeamsRanks();
             if ($ranks !== false && is_array($ranks) && sizeof($ranks)) {
                 foreach ($ranks as $value) {
                     ?>
@@ -1061,8 +1053,8 @@ function listRanks () {
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=<?php echo $_REQUEST['op']; ?>&action=edit&id=<?php echo $value['id'];?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=<?php echo $_REQUEST['op']; ?>&action=del&id=<?php echo $value['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=<?php echo $op; ?>&action=edit&id=<?php echo $value['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=<?php echo $op; ?>&action=del&id=<?php echo $value['id'];?>"></a>
                             </td>
                         </tr>
                     <?php
@@ -1099,11 +1091,10 @@ function listRanks () {
 function formRanks ($id = false) {
 
     if ($id) {
-        $ranks = getRanks((int) $id);
-        $ranks = $ranks[0];
-        $name = getValue('name', $ranks['name']);
+        $ranks = nkGetTeamsRanks((int) $id);
+        $name = nkGetValue('name', $ranks['name']);
     } else {
-        $name =  getValue('name');
+        $name =  nkGetValue('name');
     }
 
     ?>
@@ -1126,7 +1117,7 @@ function formRanks ($id = false) {
             <!-- /Name -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page') . ( $op ? '&op='.$op : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1202,7 +1193,7 @@ function formPreferences() {
             <!-- /Choose photo -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="index.php?file=Admin"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1219,9 +1210,9 @@ function formPreferences() {
 function postProcess ($op, $action, $id) {
     // Formulaire team
     if ($op === 'teams') {
-        if (isset($_REQUEST['btnSubmit']) && ($action === 'add' || $action === 'edit')) {
+        if (nkGetValue('btnSubmit') && ($action === 'add' || $action === 'edit')) {
             // Si tous les champs ne sont pas remplis
-            if(!isset($_REQUEST['name']) || empty($_REQUEST['name']) || (!$id && empty($_FILES['image']['tmp_name']))) {
+            if(!nkGetValue('name') || (!$id && empty($_FILES['image']['tmp_name']))) {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
                         <p>
@@ -1234,22 +1225,22 @@ function postProcess ($op, $action, $id) {
                 return;
             }
 
-            $dbsExists = 'SELECT COUNT(name) AS total, id FROM ' . TEAM_TABLE . ' WHERE name = "' . $_REQUEST['name'] . '" ';
+            $dbsExists = 'SELECT COUNT(name) AS total, id FROM ' . TEAM_TABLE . ' WHERE name = "' . mysql_real_escape_string(nkGetValue('name')) . '" ';
             $dbeExists = mysql_query($dbsExists);
             $dbaExists = mysql_fetch_assoc($dbeExists);
             if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1)) {
 
                 $dir = dirname(__FILE__) .'/upload/';
 
-                $image = uploadImage($_FILES['image'], $dir, $_REQUEST['name'] );
+                $image = nkUploadImage($_FILES['image'], $dir, nkGetValue('name') );
 
                 // si c'est un update
                 if ($id) {
-                    $dbrSetTeam = 'UPDATE ' . TEAM_TABLE . ' SET name = "' . mysql_real_escape_string($_REQUEST['name']) . '", description = "' . mysql_real_escape_string($_REQUEST['description']) . '", suffix =  "' . $_REQUEST['suffix'] . '", prefix = "' . $_REQUEST['prefix'] . '"'.($image ? ', image = "'.$image.'" ' : '').' WHERE id = "' . (int) $id . '"';
+                    $dbrSetTeam = 'UPDATE ' . TEAM_TABLE . ' SET name = "' . mysql_real_escape_string(nkGetValue('name')) . '", description = "' . mysql_real_escape_string(nkGetValue('description')) . '", suffix =  "' . mysql_real_escape_string(nkGetValue('suffix')) . '", prefix = "' . mysql_real_escape_string(nkGetValue('prefix')) . '"'.($image ? ', image = "'.mysql_real_escape_string($image).'" ' : '').' WHERE id = "' . (int) $id . '"';
                 }
                 // Si c'est une insertion
                 else {
-                    $dbrSetTeam = 'INSERT INTO ' . TEAM_TABLE . ' (id, name, description, suffix, prefix, `order`, image) SELECT NULL, "' . $_REQUEST['name'] . '", "' . $_REQUEST['description'] . '", "' . $_REQUEST['suffix'] . '", "' . $_REQUEST['prefix'] . '", (MAX(`order`) + 1), "'.$image.'" FROM ' . TEAM_TABLE . ' ';
+                    $dbrSetTeam = 'INSERT INTO ' . TEAM_TABLE . ' (id, name, description, suffix, prefix, `order`, image) SELECT NULL, "' . mysql_real_escape_string(nkGetValue('name')) . '", "' . mysql_real_escape_string(nkGetValue('description')) . '", "' . mysql_real_escape_string(nkGetValue('suffix')) . '", "' . mysql_real_escape_string(nkGetValue('prefix')) . '", (MAX(`order`) + 1), "'.mysql_real_escape_string($image).'" FROM ' . TEAM_TABLE . ' ';
                 }
 
                 // execution de la requete
@@ -1267,9 +1258,9 @@ function postProcess ($op, $action, $id) {
                     // Groups
                     $dbrTeamGroup = 'INSERT INTO ' . TEAM_GROUPS_TABLE . ' (team_id, groups_id) VALUES ';
 
-                    $groups = $_REQUEST['groups'];
+                    $groups = nkGetValue('groups');
 
-                    if (sizeof($groups)) {
+                    if (is_array($groups) && sizeof($groups)) {
                         $i = 0;
                         foreach($groups as $group) {
                             if ($i > 0)
@@ -1283,9 +1274,9 @@ function postProcess ($op, $action, $id) {
                     // Games
                     $dbrTeamGame = 'INSERT INTO ' . TEAM_GAMES_TABLE . ' (team_id, game_id) VALUES ';
 
-                    $games = $_REQUEST['games'];
+                    $games = nkGetValue('games');
 
-                    if (sizeof($games)) {
+                    if (is_array($games) && sizeof($games)) {
                         $i = 0;
                         foreach($games as $game) {
                             if ($i > 0)
@@ -1296,8 +1287,7 @@ function postProcess ($op, $action, $id) {
                         mysql_query($dbrTeamGame);
                     }
 
-
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=1');
+                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf='.($id ? '3' : '1'));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1326,7 +1316,7 @@ function postProcess ($op, $action, $id) {
         }
         else if ($action === 'del') {
 
-            $team = getTeams($id);
+            $team = nkGetTeams($id);
             if ($team && sizeof($team)) {
                 $dbdTeam = 'DELETE FROM ' . TEAM_TABLE . ' WHERE id = ' . (int) $id . ' ';
 
@@ -1352,10 +1342,10 @@ function postProcess ($op, $action, $id) {
     }
     else if ($op === 'status') {
         // Si le formulaire est envoyé
-        if (isset($_REQUEST['btnSubmit']) && ($action === 'add' || $action === 'edit')) {
+        if (nkGetValue('btnSubmit') && ($action === 'add' || $action === 'edit')) {
 
             // Si tous les champs ne sont pas remplis
-            if (!isset($_REQUEST['name']) || empty($_REQUEST['name'])) {
+            if (!nkGetValue('name')) {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
                         <p>
@@ -1368,22 +1358,22 @@ function postProcess ($op, $action, $id) {
                 return;
             }
 
-            $dbsExists = 'SELECT COUNT(name) AS total, id FROM ' . TEAM_STATUS_TABLE . ' WHERE name = "' . $_REQUEST['name'] . '" ';
+            $dbsExists = 'SELECT COUNT(name) AS total, id FROM ' . TEAM_STATUS_TABLE . ' WHERE name = "' . mysql_real_escape_string(nkGetValue('name')) . '" ';
             $dbeExists = mysql_query($dbsExists);
             $dbaExists = mysql_fetch_assoc($dbeExists);
 
             if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1)) {
                 // si c'est un update
                 if ($id) {
-                    $dbrSetStatus = 'UPDATE ' . TEAM_STATUS_TABLE . ' SET name = "' . mysql_real_escape_string($_REQUEST['name']) . '" WHERE id = "' . (int) $id . '"';
+                    $dbrSetStatus = 'UPDATE ' . TEAM_STATUS_TABLE . ' SET name = "' . mysql_real_escape_string(nkGetValue('name')) . '" WHERE id = "' . (int) $id . '"';
                 }
                 // Si c'est une insertion
                 else {
-                    $dbrSetStatus = 'INSERT INTO ' . TEAM_STATUS_TABLE . ' (id, name) VALUES (NULL, "'. mysql_real_escape_string($_REQUEST['name']).'") ';
+                    $dbrSetStatus = 'INSERT INTO ' . TEAM_STATUS_TABLE . ' (id, name) VALUES (NULL, "'. mysql_real_escape_string(nkGetValue('name')).'") ';
                 }
                 // execution de la requete
                 if (mysql_query($dbrSetStatus)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=3');
+                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf='.($id ? '3' : '1'));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1401,13 +1391,13 @@ function postProcess ($op, $action, $id) {
         }
         else if ($action === 'del') {
 
-            $status = getStatus($id);
+            $status = nkGetTeamsStatus($id);
             if ($status && sizeof($status)) {
                 $dbdStatus = 'DELETE FROM ' . TEAM_STATUS_TABLE . ' WHERE id = ' . (int) $id . ' ';
 
                 // execution de la requete
                 if (mysql_query($dbdStatus)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=4');
+                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=2');
                 }
                 else {
 
@@ -1427,10 +1417,10 @@ function postProcess ($op, $action, $id) {
     }
     else if ($op === 'ranks') {
         // Si le formulaire est envoyé
-        if (isset($_REQUEST['btnSubmit']) && ($action === 'add' || $action === 'edit')) {
+        if (nkGetValue('btnSubmit') && ($action === 'add' || $action === 'edit')) {
 
             // Si tous les champs ne sont pas remplis
-            if (!isset($_REQUEST['name']) || empty($_REQUEST['name'])) {
+            if (!nkGetValue('name')) {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
                         <p>
@@ -1443,7 +1433,7 @@ function postProcess ($op, $action, $id) {
                 return;
             }
 
-            $dbsExists = 'SELECT COUNT(name) AS total, id, ((SELECT MAX(`order`) FROM ' . TEAM_RANK_TABLE . ') + 1) AS max_order FROM ' . TEAM_RANK_TABLE . ' WHERE name = "' . $_REQUEST['name'] . '" ';
+            $dbsExists = 'SELECT COUNT(name) AS total, id, ((SELECT MAX(`order`) FROM ' . TEAM_RANK_TABLE . ') + 1) AS max_order FROM ' . TEAM_RANK_TABLE . ' WHERE name = "' . mysql_real_escape_string(nkGetValue('name')) . '" ';
             $dbeExists = mysql_query($dbsExists);
             $dbaExists = mysql_fetch_assoc($dbeExists);
 
@@ -1451,15 +1441,15 @@ function postProcess ($op, $action, $id) {
             if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1)) {
                 // si c'est un update
                 if ($id) {
-                    $dbrSetRanks = 'UPDATE ' . TEAM_RANK_TABLE . ' SET name = "' . mysql_real_escape_string($_REQUEST['name']) . '" WHERE id = "' . (int) $id . '"';
+                    $dbrSetRanks = 'UPDATE ' . TEAM_RANK_TABLE . ' SET name = "' . mysql_real_escape_string(nkGetValue('name')) . '" WHERE id = "' . (int) $id . '"';
                 }
                 // Si c'est une insertion
                 else {
-                    $dbrSetRanks = 'INSERT INTO ' . TEAM_RANK_TABLE . ' (id, name, `order`) VALUES (NULL, "'. mysql_real_escape_string($_REQUEST['name']).'", "' . (int) $dbaExists['max_order'] . '") ';
+                    $dbrSetRanks = 'INSERT INTO ' . TEAM_RANK_TABLE . ' (id, name, `order`) VALUES (NULL, "'. mysql_real_escape_string(nkGetValue('name')).'", "' . (int) $dbaExists['max_order'] . '") ';
                 }
                 // execution de la requete
                 if (mysql_query($dbrSetRanks)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=5');
+                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf='.($id ? '3' : '1'));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1477,13 +1467,13 @@ function postProcess ($op, $action, $id) {
         }
         else if ($action === 'del') {
 
-            $ranks = getRanks($id);
+            $ranks = nkGetTeamsRanks($id);
             if ($ranks && sizeof($ranks)) {
                 $dbdRanks = 'DELETE FROM ' . TEAM_RANK_TABLE . ' WHERE id = ' . (int) $id . ' ';
 
                 // execution de la requete
                 if (mysql_query($dbdRanks)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=6');
+                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=2');
                 }
                 else {
 
@@ -1503,9 +1493,9 @@ function postProcess ($op, $action, $id) {
     }
     else if ($op === 'manage_users') {
 
-        if (isset($_REQUEST['btnSubmit']) && ($action === 'add' || $action === 'edit')) {
+        if (nkGetValue('btnSubmit') && ($action === 'add' || $action === 'edit')) {
             // Si tous les champs ne sont pas remplis
-            if (!isset($_REQUEST['user']) || empty($_REQUEST['user']) || !isset($_REQUEST['team']) || empty($_REQUEST['team']) || !isset($_REQUEST['ranks']) || sizeof($_REQUEST['ranks']) === 0) {
+            if (!nkGetValue('user') || !nkGetValue('team') || (!$ranks = nkGetValue('ranks')) || sizeof($ranks) === 0) {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
                         <p>
@@ -1518,7 +1508,7 @@ function postProcess ($op, $action, $id) {
                 return;
             }
             // Get Team User ID
-            $dbsGetTeamUserId = 'SELECT id, teamstatus_id FROM ' . TEAM_USER_TABLE . ' WHERE user_id = "' . mysql_real_escape_string($_REQUEST['user']) . '" ';
+            $dbsGetTeamUserId = 'SELECT id, teamstatus_id FROM ' . TEAM_USER_TABLE . ' WHERE user_id = "' . mysql_real_escape_string(nkGetValue('user')) . '" ';
             // Execute
             $dbeGetTeamUserId = mysql_query($dbsGetTeamUserId) or die(nk_debug_bt());
             // Get Row
@@ -1528,7 +1518,7 @@ function postProcess ($op, $action, $id) {
             $TeamStatusId = isset($dbaGetTeamUserId['teamstatus_id']) ? (int) $dbaGetTeamUserId['teamstatus_id'] : "(SELECT id FROM " . TEAM_STATUS_TABLE . " ORDER BY id ASC LIMIT 1)";
 
             // User
-            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, teamstatus_id) VALUES (' . ($TeamUserId ? (int) $TeamUserId : 'NULL') . ', "' . mysql_real_escape_string($_REQUEST['user']) . '", ' . $TeamStatusId . ') ';
+            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, teamstatus_id) VALUES (' . ($TeamUserId ? (int) $TeamUserId : 'NULL') . ', "' . mysql_real_escape_string(nkGetValue('user')) . '", ' . $TeamStatusId . ') ';
             mysql_query($dbiSetUser) ;
 
             if (!$TeamUserId) {
@@ -1537,7 +1527,7 @@ function postProcess ($op, $action, $id) {
 
             // Team
             // Get Team UserTeam ID
-            $dbsGetTeamId = 'SELECT id FROM ' . TEAM_USER_TEAM_TABLE . ' WHERE team_id = "' . (int) $_REQUEST['team'] . '" AND teamuser_id = "' . (int) $TeamUserId . '" ';
+            $dbsGetTeamId = 'SELECT id FROM ' . TEAM_USER_TEAM_TABLE . ' WHERE team_id = "' . (int) nkGetValue('team') . '" AND teamuser_id = "' . (int) $TeamUserId . '" ';
             // Execute
             $dbeGetTeamId = mysql_query($dbsGetTeamId);
             // Get Row
@@ -1546,7 +1536,7 @@ function postProcess ($op, $action, $id) {
             $TeamId = $dbaGetTeamId['id'];
 
             // Insert
-            $dbiSetTeamUserTeam = 'REPLACE INTO ' . TEAM_USER_TEAM_TABLE . ' (id, teamuser_id, team_id, description) VALUES (' . (int) $TeamId .', ' . (int) $TeamUserId . ', ' . (int) $_REQUEST['team'] . ', "' . mysql_real_escape_string($_REQUEST['description']) . '") ';
+            $dbiSetTeamUserTeam = 'REPLACE INTO ' . TEAM_USER_TEAM_TABLE . ' (id, teamuser_id, team_id, description) VALUES (' . (int) $TeamId .', ' . (int) $TeamUserId . ', ' . (int) nkGetValue('team') . ', "' . mysql_real_escape_string(nkGetValue('description')) . '") ';
             mysql_query($dbiSetTeamUserTeam);
 
             if ((int) $TeamId) {
@@ -1560,7 +1550,7 @@ function postProcess ($op, $action, $id) {
 
             $dbrSetUserRank = 'INSERT INTO ' . TEAM_USER_RANK_TABLE . ' (teamuserteam_id, teamrank_id) VALUES ';
             $i = 0;
-            foreach ($_REQUEST['ranks'] as $rank) {
+            foreach ($ranks as $rank) {
                 if ($i > 0) {
                     $dbrSetUserRank .= ', ';
                 }
@@ -1569,7 +1559,7 @@ function postProcess ($op, $action, $id) {
             }
 
             if (mysql_query($dbrSetUserRank)) {
-                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=7');
+                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf='.($id ? '3' : '1'));
             }
             // Si la requete n'a pas réussi
             else {
@@ -1593,7 +1583,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdRanks)) {
-                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=8');
+                    header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=2');
                 }
                 else {
 
@@ -1610,7 +1600,7 @@ function postProcess ($op, $action, $id) {
             }
 
         }
-        else if (isset($_REQUEST['btnSubmit']) && $action === 'edit_user') {
+        else if (nkGetValue('btnSubmit') && $action === 'edit_user') {
             // Get Team User ID
             $dbsGetTeamUserId = 'SELECT user_id, teamstatus_id FROM ' . TEAM_USER_TABLE . ' WHERE id = "' . (int) $id . '" ';
             // Execute
@@ -1621,11 +1611,11 @@ function postProcess ($op, $action, $id) {
             $TeamUserId = $dbaGetTeamUserId['user_id'];
 
             // User
-            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, teamstatus_id) VALUES (' . ($id ? (int) $id : 'NULL') . ', "' . mysql_real_escape_string($TeamUserId) . '", ' . ($_REQUEST['status'] ? (int) $_REQUEST['status'] : 'NULL') . ') ';
+            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, teamstatus_id) VALUES (' . ($id ? (int) $id : 'NULL') . ', "' . mysql_real_escape_string($TeamUserId) . '", ' . nkGetValue('status', 'NULL') . ') ';
 
 
             if (mysql_query($dbiSetUser)) {
-                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&action=list_status&conf=7');
+                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&action=list_status&conf='.($id ? '3' : '1'));
             }
             // Si la requete n'a pas réussi
             else {
@@ -1643,15 +1633,15 @@ function postProcess ($op, $action, $id) {
         }
     }
     else if ($op === 'settings') {
-        if(isset($_REQUEST['btnSubmit'])) {
+        if(nkGetValue('btnSubmit')) {
             $dbuSetConfig = 'UPDATE ' . TEAM_SETTINGS_TABLE . ' SET value = "%s" WHERE name = "%s" ';
 
             if (
-                mysql_query(sprintf($dbuSetConfig, $_REQUEST['team_page'], 'team_page'))
-                && mysql_query(sprintf($dbuSetConfig, $_REQUEST['display_type'], 'display_type'))
-                && mysql_query(sprintf($dbuSetConfig, (int) isset($_REQUEST['picture']), 'picture'))
+                mysql_query(sprintf($dbuSetConfig, nkGetValue('team_page'), 'team_page'))
+                && mysql_query(sprintf($dbuSetConfig, nkGetValue('display_type'), 'display_type'))
+                && mysql_query(sprintf($dbuSetConfig, (int) nkGetValue('picture'), 'picture'))
             ) {
-                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=9');
+                header('Refresh:0, url=index.php?file=Team&page=admin&op='.$op.'&conf=3');
             }
             // Si la requete n'a pas réussi
             else {
@@ -1667,112 +1657,6 @@ function postProcess ($op, $action, $id) {
             }
         }
     }
-}
-
-/**
- * Récupère les values envoyé par le post|get
- * @param  String $key     Clé à retrouver
- * @param  String|boolean $default Valeur par défaut si pas trouvé
- * @return String|boolean Valeur retourné
- */
-function getValue ($key, $default = false) {
-    if (isset($_REQUEST[$key]) && !empty($_REQUEST[$key])) {
-        return $_REQUEST[$key];
-    } else {
-        return $default;
-    }
-}
-
-/**
- * Affiche un message de confirmation
- * @param  int $case Clé du message
- */
-function displayConf ($case) {
-    ?>
-    <div class="nNote nSuccess nNoteHideable">
-        <p>
-            <?php
-                switch ($case) {
-                    case '1':
-                        echo TEAM_REGISTERED;
-                        break;
-
-                    case '2':
-                        echo TEAM_DELETED;
-                        break;
-
-                    case '3':
-                        echo TEAM_STATUS_REGISTERED;
-                        break;
-
-                    case '4':
-                        echo TEAM_STATUS_DELETED;
-                        break;
-
-                    case '5':
-                        echo TEAM_RANK_REGISTERED;
-                        break;
-
-                    case '6':
-                        echo TEAM_RANK_DELETED;
-                        break;
-
-                    case '7':
-                        echo TEAM_USER_REGISTERED;
-                        break;
-
-                    case '8':
-                        echo TEAM_USER_DELETED;
-                        break;
-
-                    case '9':
-                        echo TEAM_SETTINGS_SAVED;
-                        break;
-
-                    default:
-                        break;
-                }
-            ?>
-        </p>
-    </div>
-    <?php
-}
-
-function uploadImage($file, $dest_path, $dest_file) {
-
-    if (!isset($file['tmp_name']))
-        return true;
-
-    // Si le dossier existe pas on le créé
-    if (is_dir($dest_path) === false) {
-        @mkdir($dest_path, 0755, true);
-    }
-
-    $dest_path = realpath($dest_path).DIRECTORY_SEPARATOR;
-
-    if ($file['error'] !== 0) {
-        return false;
-    }
-
-    $types = array('.jpeg', '.jpg', '.png', '.gif');
-
-    // Format du fichier uploadé
-    $type = strrchr($file['name'], '.');
-    if (!in_array($type, $types)) {
-        return false;
-    }
-
-    // Le fichier n'est pas uploadé
-    if (is_uploaded_file($file['tmp_name']) === false) {
-        return false;
-    }
-
-    // On upload le fichier
-    if (move_uploaded_file($file['tmp_name'], $dest_path . $dest_file . $type) === false) {
-        return false;
-    }
-
-    return $dest_file . $type;
 }
 
 ?>

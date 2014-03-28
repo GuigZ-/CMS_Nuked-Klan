@@ -38,8 +38,11 @@ $arrayConstants =   array(
     'FORUM_VOTE_TABLE'     => '_forums_vote',
     'GALLERY_TABLE'        => '_gallery',
     'GALLERY_CAT_TABLE'    => '_gallery_cat',
+    //
     'GAMES_TABLE'          => '_games',
+    'GAMES_MAP_TABLE'      => '_games_map',
     'GAMES_PREFS_TABLE'    => '_games_prefs',
+    //
     'GROUPS_TABLE'         => '_groups',
     'GUESTBOOK_TABLE'      => '_guestbook',
     'IRC_AWARDS_TABLE'     => '_irc_awards',
@@ -71,6 +74,7 @@ $arrayConstants =   array(
     'SURVEY_CHECK_TABLE'   => '_sondage_check',
     'SURVEY_DATA_TABLE'    => '_sondage_data',
     'TEAM_TABLE'           => '_team',
+    //
     'TEAM_SETTINGS_TABLE'  => '_team_settings',
     'TEAM_STATUS_TABLE'    => '_team_status',
     'TEAM_RANK_TABLE'      => '_team_rank',
@@ -79,6 +83,7 @@ $arrayConstants =   array(
     'TEAM_USER_RANK_TABLE' => '_team_user_rank',
     'TEAM_GROUPS_TABLE'    => '_team_groups',
     'TEAM_GAMES_TABLE'     => '_team_games',
+    //
     'TMPSES_TABLE'         => '_tmpses',
     'TEAM_RANK_TABLE'      => '_team_rank',
     'TEXTBOX_TABLE'        => '_shoutbox',

@@ -19,7 +19,7 @@ require_once 'modules/Admin/views/layout.php';
 adminHeader();
 
 if (nkHasAdmin() === true) {
-    require_once 'modules/Admin/libraries/Games/inc/AdminDisplay.php';
+    require_once 'modules/Games/inc/AdminDisplay.php';
     GamesDisplayAdmin();
 }
 else

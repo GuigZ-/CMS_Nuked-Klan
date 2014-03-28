@@ -18,9 +18,12 @@ nkTranslate('modules/Admin/lang/'.$GLOBALS['language'].'.lang.php');
 // Inclusion de la configuration de l'administration
 require_once 'modules/Admin/config.php';
 
+// Inclusion des méthodes génériques à l'administration
+require_once 'modules/Admin/libraries/functions.php';
+
 // Inclusion de la sidebar de l'administration
 require_once 'modules/Admin/views/sidebar.php';
-require_once dirname(__FILE__).'/../assets/scripts/script-dnd.php';
+require_once 'modules/Admin/assets/scripts/script-dnd.php';
 
 function adminHeader(){
     // Définition du favicon

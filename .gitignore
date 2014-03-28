@@ -1,1 +1,4 @@
 conf.inc.php
+.gitignore
+modules/Wars.old/
+upload/Games/
