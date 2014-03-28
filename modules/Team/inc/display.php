@@ -21,8 +21,8 @@ function index () {
 }
 
 /**
- * Afficher les Ã©quipes
- * @param  array $teams Les Ã©quipes
+ * Afficher les équipes
+ * @param  array $teams Les équipes
  */
 function displayTeam ($teams) {
 
@@ -30,10 +30,9 @@ function displayTeam ($teams) {
         // Les configurations
         $config = $GLOBALS['TEAM_CONFIG'];
 
-        // On boucle les Ã©quipes
+        // On boucle les équipes
         foreach ($teams as $team) {
-            if (!isset($_REQUEST['id_team']))
-            {
+            if (!isset($_REQUEST['id_team'])) {
                 ?>
                 <div class="teamList">
                     <a class="teamBlock" href="index.php?file=Team&id_team=<?php echo $team['team_id']; ?>">
@@ -59,8 +58,7 @@ function displayTeam ($teams) {
                 </div>
                 <?php
             }
-            else if (isset($_REQUEST['id_team']) && $team['team_id'] == $_REQUEST['id_team'])
-            {
+            else if (isset($_REQUEST['id_team']) && $team['team_id'] == $_REQUEST['id_team']) {
                 displayTeamContent($config, $team);
             }
         }
@@ -68,8 +66,7 @@ function displayTeam ($teams) {
     }
 }
 
-function displayTeamContent($config, $team)
-{
+function displayTeamContent ($config, $team) {
     ?>
     <h2><?php echo printSecuTags($team['name']); ?></h2>
     <div class="teamBlock teamDisplay<?php echo ucfirst(strtolower($config['display_type']));  ?>">
@@ -94,14 +91,14 @@ function displayTeamContent($config, $team)
         foreach ($team['members'] as $member) {
             // Si on alterne l'affichage
             if ($config['display_type'] === 'alternate') {
-                // Si la variable $i n'est pas dÃ©fini
+                // Si la variable $i n'est pas défini
                 if (!isset($i)) {
                     $i = 0;
                 }
 
                 displayTeamBlock($member, $team, $config, (boolean) ($i % 2));
 
-                // On incrÃ©mente
+                // On incrémente
                 $i++;
             }
             else if ($config['display_type'] === 'table') {
@@ -120,11 +117,11 @@ function displayTeamContent($config, $team)
 /**
  * Affichage d'un block
  * @param  array   $member Information du membre
- * @param  array   $team   Information de l'Ã©quipe
- * @param  array   $config PrÃ©fÃ©rences du module
- * @param  boolean $right  Aligner Ã  droite
+ * @param  array   $team   Information de l'équipe
+ * @param  array   $config Préférences du module
+ * @param  boolean $right  Aligner à droite
  */
-function displayTeamBlock($member, $team, $config, $right = false) {
+function displayTeamBlock ($member, $team, $config, $right = false) {
     $picture = $config['picture'] ? 'photo' : 'avatar';
     $img = file_exists($member[$picture]) ? $member[$picture] : 'assets/images/nkNoAvatar.png';
     ?>
@@ -148,9 +145,9 @@ function displayTeamBlock($member, $team, $config, $right = false) {
 /**
  * Block infos d'un membre
  * @param  array $member Information du membre
- * @param  array $team   Information de l'Ã©quipe
+ * @param  array $team   Information de l'équipe
  */
-function blockInfos($member, $team){
+function blockInfos ($member, $team) {
     ?>
         <div class="teamMemberInfos">
             <div class="teamMemberPseudo">
@@ -182,7 +179,7 @@ function blockInfos($member, $team){
  * Block de l'image
  * @param  string $img Lien de l'image
  */
-function blockImage($img){
+function blockImage ($img) {
     ?>
         <div class="teamMemberPicture">
             <div class="teamBorderPicture">
@@ -192,7 +189,7 @@ function blockImage($img){
     <?php
 }
 
-function blockResults(){
+function blockResults () {
     ?>
         <div class="teamMemberResults">
 
@@ -200,7 +197,7 @@ function blockResults(){
     <?php
 }
 
-function displayUserTable($user, $team) {
+function displayUserTable ($user, $team) {
     ?>
         <div class="teamRow">
             <div class="teamCols">
@@ -214,7 +211,7 @@ function displayUserTable($user, $team) {
     <?php
 }
 
-function displayUserTableTitle() {
+function displayUserTableTitle () {
     ?>
         <div class="teamRowTitle">
             <div class="teamCols">

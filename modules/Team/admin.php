@@ -26,8 +26,7 @@ if (nkHasAdmin() === true) {
     // Affichage de l'admin l'admin
     displayAdmin();
 }
-else
-{
+else {
     printMessage(ADMIN_ACCESS_DENIED, 'Failure');
     ?>
         <div class="backButton center">

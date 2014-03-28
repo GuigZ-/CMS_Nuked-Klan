@@ -71,18 +71,20 @@ function getUsers ($id = false, $by_team = false) {
     			$temp[$value['team_name']]['games'][] = array('gameName' => $value['gameName'], 'gameIcon' => $value['gameIcon']);
     		}
 
-    		return $temp;
+    		$return = $temp;
     	}
         else {
-            return $users;
+            $return = $users;
         }
     }
 	else {
-		return false;
+		$return = false;
 	}
+
+    return $return;
 }
 
-function getUsersStatus($id = false) {
+function getUsersStatus ($id = false) {
 
     $nkUsers = nkGetUsers();
 
@@ -97,19 +99,22 @@ function getUsersStatus($id = false) {
     $dbeGetUsers = mysql_query($dbsGetUsers) or die(nk_debug_bt());
     $users = array();
     if ($dbeGetUsers !== false) {
-        while ($dbaGetUsers = mysql_fetch_assoc($dbeGetUsers))
+        while ($dbaGetUsers = mysql_fetch_assoc($dbeGetUsers)) {
             $users[] = array_merge($nkUsers[$dbaGetUsers['user_id']], $dbaGetUsers);
+        }
     }
 
     if ($users !== false && sizeof($users)) {
-        return $users;
+        $return = $users;
     }
     else {
-        return false;
+        $return = false;
     }
+
+    return $return;
 }
 
-function getNkGroups($id = false) {
+function getNkGroups ($id = false) {
     $dbsGetNkGroups = '
         SELECT g.id, g.nameGroup, COUNT(ug.id) AS count
         FROM ' . GROUPS_TABLE . ' AS g
@@ -123,19 +128,17 @@ function getNkGroups($id = false) {
     $groups = array();
 
     if ($dbeGetNkGroups !== false) {
-        while ($dbaGetNkGroups = mysql_fetch_assoc($dbeGetNkGroups))
+        while ($dbaGetNkGroups = mysql_fetch_assoc($dbeGetNkGroups)) {
             $groups[$dbaGetNkGroups['id']] = $dbaGetNkGroups['nameGroup'];
+        }
     }
 
     // Check results
-    if ($groups !== false && sizeof($groups))
-    {
-        if ($id)
-        {
+    if ($groups !== false && sizeof($groups)) {
+        if ($id) {
             $return = current($groups);
         }
-        else
-        {
+        else {
             $return = $groups;
         }
     }
@@ -151,40 +154,33 @@ function getNkGroups($id = false) {
  * @param  integer $id Identifiant du jeu
  * @return mixed       Données trouvées
  */
-function nkGetTeamGames($id = false)
-{
+function nkGetTeamGames ($id = false) {
 
     $dbsGetGames = "
             SELECT name, id, icon
             FROM " . TEAM_GAMES_TABLE . "";
 
-    if($id)
-    {
+    if($id) {
         $dbsGetGames .= " WHERE id = '" . (int) $id . "' ";
     }
 
     $dbeGetGames = mysql_query($dbsGetGames) or die(nk_debug_bt());
 
     $games = array();
-    if ($dbeGetGames !== false)
-    {
+    if ($dbeGetGames !== false) {
         while ($dbaGetGames = mysql_fetch_assoc($dbeGetGames))
             $games[] = $dbaGetGames;
     }
     // Check results
-    if ($games !== false && sizeof($games))
-    {
-        if ($id)
-        {
+    if ($games !== false && sizeof($games)) {
+        if ($id) {
             $return = current($games);
         }
-        else
-        {
+        else {
             $return = $games;
         }
     }
-    else
-    {
+    else {
         $return = false;
     }
 

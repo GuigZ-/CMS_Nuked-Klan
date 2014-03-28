@@ -519,21 +519,17 @@
 
             $mapsArray = array();
 
-            if ($dbeGetGames)
-            {
-                while ($dbaGetGames = mysql_fetch_array($dbeGetGames))
-                {
+            if ($dbeGetGames) {
+                while ($dbaGetGames = mysql_fetch_array($dbeGetGames)) {
                     $maps = explode('|', $dbaGetGames['map']);
-                    if ($maps && is_array($maps) && count($maps))
-                    {
+                    if ($maps && is_array($maps) && count($maps)) {
                         foreach ($maps as $map)
                             $mapsArray[] = " (".(int) $dbaGetGames['id'].", '".mysql_real_escape_string($map)."') ";
                     }
                 }
             }
 
-            if (count($mapsArray))
-            {
+            if (count($mapsArray)) {
                 mysql_query($games.implode(',', $mapsArray)) or die(nk_debug_bt());
             }
 

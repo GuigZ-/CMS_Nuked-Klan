@@ -10,8 +10,7 @@
  */
 defined('INDEX_CHECK') or die('You can\'t run this file alone.');
 
-function getMatchs($id = false)
-{
+function getMatchs ($id = false) {
     $dbsGetWars = '
             SELECT *
                 FROM ' . MATCH_TABLE . ' AS m
@@ -20,8 +19,7 @@ function getMatchs($id = false)
                 WHERE 1
         ';
 
-    if ($id)
-    {
+    if ($id) {
         $dbsGetWars .= ' AND id = "'.(int)$id.'" ';
     }
 
@@ -33,14 +31,18 @@ function getMatchs($id = false)
     }
     // Check results
     if ($wars !== false && sizeof($wars)) {
-        if (!$id)
-            return $wars;
-        else
-            return current($wars);
+        if (!$id) {
+            $return = $wars;
+        }
+        else {
+            $return = current($wars);
+        }
     }
     else {
-        return false;
+        $return = false;
     }
+
+    return $return;
 }
 
 ?>

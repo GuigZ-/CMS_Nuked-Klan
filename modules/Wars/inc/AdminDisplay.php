@@ -11,8 +11,7 @@ defined('INDEX_CHECK') or die('You can\'t run this file alone.');
 
 require_once 'modules/Wars/inc/functions.php';
 
-function WarsDisplayAdmin()
-{
+function WarsDisplayAdmin () {
 
     if (!($op = nkGetValue('op')) || $op === 'index') {
         $op = "matchs";
@@ -24,7 +23,7 @@ function WarsDisplayAdmin()
 
     $id = null;
 
-    if(($op === 'edit' || $op === 'del') && preg_match("#^[0-9]+$#isD", nkGetValue('id'))) {
+    if (($op === 'edit' || $op === 'del') && preg_match("#^[0-9]+$#isD", nkGetValue('id'))) {
         $id = nkGetValue('id');
     }
 
@@ -48,8 +47,7 @@ function WarsDisplayAdmin()
  * Affiche le menu
  * @param  string $op
  */
-function WarsDisplayMenu ($op)
-{
+function WarsDisplayMenu ($op) {
     $menus = array(
         'matchs'        => array('name' => 'Matches', 'icon' => ''),
         'add'           => array('name' => 'Ajouter', 'icon' => 'add'),
@@ -65,8 +63,7 @@ function WarsDisplayMenu ($op)
  * @param string  $action action
  * @param integer $id     identifier
  */
-function WarsDisplayContent($op, $action, $id = null)
-{
+function WarsDisplayContent ($op, $action, $id = null) {
     switch ($op) {
         case 'matchs':
             WarsDisplayList();
@@ -82,8 +79,7 @@ function WarsDisplayContent($op, $action, $id = null)
 /**
  * Display list in BO
  */
-function WarsDisplayList()
-{
+function WarsDisplayList () {
 
     $wars = getMatchs();
 
@@ -112,10 +108,8 @@ function WarsDisplayList()
             </thead>
             <tbody>
                 <?php
-                if (isset($wars) && is_array($wars) && count($wars))
-                {
-                    foreach ($wars as $value)
-                    {
+                if (isset($wars) && is_array($wars) && count($wars)) {
+                    foreach ($wars as $value) {
                         ?>
                             <tr>
                                 <td>
@@ -141,7 +135,7 @@ function WarsDisplayList()
                         <?php
                     }
                 }
-                else {
+ {
                 ?>
                     <tr>
                         <td colspan="4">
@@ -161,12 +155,10 @@ function WarsDisplayList()
     <?php
 }
 
-function WarsDisplayForm($id = fale)
-{
+function WarsDisplayForm ($id = fale) {
     $games = nkGetGames();
     $countries = nkGetCountries();
-    if ($id)
-    {
+    if ($id) {
         $match = getMatchs((int)$id);
         $versus = nkGetValue('versus', $match['versus']);
         $game_id = nkGetValue('game_id', $match['game_id']);
@@ -175,8 +167,7 @@ function WarsDisplayForm($id = fale)
         $status = nkGetValue('status', $match['status']);
         $date = nkGetValue('date', $match['date']);
     }
-    else
-    {
+    else {
         $versus = nkGetValue('versus');
         $game_id = nkGetValue('game_id');
         $link = nkGetValue('link');
@@ -201,10 +192,8 @@ function WarsDisplayForm($id = fale)
                         <select name="jeu" id="game" class="select">
                             <option value="0">=== CHOISIR ===</option>
                             <?php
-                            if (isset($games) && is_array($games) && sizeof($games))
-                            {
-                                foreach ($games as $game)
-                                {
+                            if (isset($games) && is_array($games) && sizeof($games)) {
+                                foreach ($games as $game) {
                                     ?>
                                         <option value="<?php echo printSecuTags($game['id']); ?>"<?php echo ($game['id'] == $game_id ? ' selected' : ''); ?>><?php echo printSecuTags($game['name']); ?></option>
                                     <?php
@@ -269,10 +258,8 @@ function WarsDisplayForm($id = fale)
                         <select name="jeu" id="country" class="select">
                             <option value="0">=== CHOISIR ===</option>
                             <?php
-                            if (isset($countries) && is_array($countries) && sizeof($countries))
-                            {
-                                foreach ($countries as $flag)
-                                {
+                            if (isset($countries) && is_array($countries) && sizeof($countries)) {
+                                foreach ($countries as $flag) {
                                     ?>
                                         <option value="<?php echo $flag; ?>"<?php echo ($flag == $country ? ' selected' : ''); ?>>
                                             <?php echo strstr($flag, '.', true); ?>

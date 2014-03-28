@@ -14,8 +14,7 @@ require_once 'modules/Admin/libraries/Games/inc/functions.php';
 /**
  * Gestion de l'affichage de l'admin
  */
-function GamesDisplayAdmin()
-{
+function GamesDisplayAdmin () {
 
     if (!($op = nkGetValue('op')) || $op === 'index') {
         $op = "games";
@@ -51,16 +50,12 @@ function GamesDisplayAdmin()
     <?php
 }
 
-function GamesPostProcess($op, $action, $id)
-{
-    if ($op === 'games')
-    {
+function GamesPostProcess ($op, $action, $id) {
+    if ($op === 'games') {
 
         $path = dirname(__FILE__) . '/../../../../../Upload/Games/';
-        if (($action === 'add' || $action === 'edit') && nkGetValue('btnSubmit'))
-        {
-            if (!nkGetValue('name'))
-            {
+        if (($action === 'add' || $action === 'edit') && nkGetValue('btnSubmit')) {
+            if (!nkGetValue('name')) {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
                         <p>
@@ -71,18 +66,15 @@ function GamesPostProcess($op, $action, $id)
                     </div>
                 <?php
             }
-            else
-            {
+            else {
 
                 $dbsExists = 'SELECT COUNT(name) AS total, id, icon FROM ' . GAMES_TABLE . ' WHERE name = "' . mysql_real_escape_string(nkGetValue('name')) . '" ';
                 $dbeExists = mysql_query($dbsExists);
                 $dbaExists = mysql_fetch_assoc($dbeExists);
 
-                if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1))
-                {
+                if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1)) {
                     $icon = nkUploadImage('icon', $path);
-                    if (!$id && ($icon === true || $icon === false))
-                    {
+                    if (!$id && ($icon === true || $icon === false)) {
                         ?>
                             <div class="nNote nFailure nNoteHideable">
                                 <p>
@@ -95,22 +87,18 @@ function GamesPostProcess($op, $action, $id)
                         return;
                     }
 
-                    if ($id)
-                    {
+                    if ($id) {
                         $dbrSetGame = "UPDATE " . GAMES_TABLE . " SET name = '".nkGetValue('name')."'".($icon ? ", icon = '".$icon."' " : "") ." WHERE id = '".(int)$id."' ";
                     }
-                    else
-                    {
+                    else {
                         $dbrSetGame = "INSERT INTO " . GAMES_TABLE . " (name, icon) VALUES ('".nkGetValue('name')."', '".$icon."') ";
                     }
 
-                    if (mysql_query($dbrSetGame))
-                    {
+                    if (mysql_query($dbrSetGame)) {
                         header('Refresh:0, url='.nkGetLink(true));
                     }
                 }
-                else
-                {
+                else {
                     ?>
                         <div class="nNote nFailure nNoteHideable">
                             <p>
@@ -124,15 +112,13 @@ function GamesPostProcess($op, $action, $id)
                 }
             }
         }
-        else if ($action === 'del')
-        {
+        else if ($action === 'del') {
             $game = nkGetGames($id);
             if ($game && sizeof($game)) {
                 $dbdRanks = 'DELETE FROM ' . GAMES_TABLE . ' WHERE id = ' . (int) $id . ' ';
                 $dbdRanksMaps = 'DELETE FROM ' . GAMES_MAP_TABLE . ' WHERE game_id = ' . (int) $id . ' ';
 
-                if (file_exists($path . $game['icon']))
-                {
+                if (file_exists($path . $game['icon'])) {
                     unlink($path . $game['icon']);
                 }
 
@@ -162,8 +148,7 @@ function GamesPostProcess($op, $action, $id)
  * Affiche le menu
  * @param  string $op
  */
-function GamesDisplayMenu ($op, $action)
-{
+function GamesDisplayMenu  ($op, $action) {
     $menus = array(
         'games'        => array('name' => 'Jeux', 'icon' => ''),
         'maps'           => array('name' => 'Cartes', 'icon' => ''),
@@ -179,8 +164,7 @@ function GamesDisplayMenu ($op, $action)
  * @param string $op     Operation
  * @param string $action Action
  */
-function GamesDisplaySubMenu($op, $action)
-{
+function GamesDisplaySubMenu ($op, $action) {
 
     switch ($op) {
         case 'games':
@@ -209,8 +193,7 @@ function GamesDisplaySubMenu($op, $action)
  * @param string $action Action
  * @param integer $id     DEscription
  */
-function GamesDisplayContent($op, $action, $id = null)
-{
+function GamesDisplayContent ($op, $action, $id = null) {
     switch ($op) {
         case "games":
             switch ($action) {
@@ -231,8 +214,7 @@ function GamesDisplayContent($op, $action, $id = null)
 /**
  * Display list in BO
  */
-function GamesDisplayList($op)
-{
+function GamesDisplayList ($op) {
 
     $games = nkGetGames();
 
@@ -258,10 +240,8 @@ function GamesDisplayList($op)
             </thead>
             <tbody>
                 <?php
-                if (isset($games) && is_array($games) && count($games))
-                {
-                    foreach ($games as $game)
-                    {
+                if (isset($games) && is_array($games) && count($games)) {
+                    foreach ($games as $game) {
                         ?>
                             <tr>
                                 <td>
@@ -306,15 +286,12 @@ function GamesDisplayList($op)
  * Affiche le formulaire
  * @param integer $id Identifier
  */
-function GamesDisplayForm($id = false)
-{
-    if ($id)
-    {
+function GamesDisplayForm ($id = false) {
+    if ($id) {
         $game = nkGetGames($id);
         $name = nkGetValue('name', $game['name']);
     }
-    else
-    {
+    else {
         $name = nkGetValue('name');
     }
 

@@ -22,8 +22,7 @@ if (nkHasAdmin() === true) {
     require_once 'modules/Admin/libraries/Games/inc/AdminDisplay.php';
     GamesDisplayAdmin();
 }
-else
-{
+else {
     printMessage(ADMIN_ACCESS_DENIED, 'Failure');
     ?>
         <div class="backButton center">

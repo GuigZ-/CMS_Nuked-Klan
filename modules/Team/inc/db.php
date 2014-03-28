@@ -18,15 +18,17 @@ defined('INDEX_CHECK') or die('You can\'t run this file alone.');
  */
 function save ($table, $datas) {
 	// Test
-	if (preg_match("#^[A-Za-z_]$#isD", $table) === 0)
+	if (preg_match("#^[A-Za-z_]$#isD", $table) === 0) {
 		return false;
+    }
 
 	// if is an array or is not empty
 	if (is_array($datas) && sizeof($datas)) {
 		// If current is list
 		$current = current($datas);
-		if (is_array($current) === false)
+		if (is_array($current) === false) {
 			$datas = array($datas);
+        }
 
 		$values_stringified = $keys = array();
 		$keys_stringified = null;
@@ -41,7 +43,8 @@ function save ($table, $datas) {
 					if (!in_array($key, $keys)) {
 						return false;
 					}
-				} else {
+				}
+                else {
 					$keys[] = $key;
 				}
 				// keys
@@ -56,7 +59,8 @@ function save ($table, $datas) {
 
 		$dbiSaveTeams = "INSERT INTO `".$table."`  (".$keys_stringified.") VALUES ".implode(', ', $values_stringified)."  ";
 		return mysql_query($dbiSaveTeams);
-	} else {
+	}
+    else {
 		return false;
 	}
 }

@@ -118,7 +118,7 @@ function displaySubMenu ($op, $action) {
  * @param  string $action
  */
 function displayContent ($op, $action, $id = null) {
-    switch($op){
+    switch ($op) {
         case 'teams':
                 switch ($action) {
                     case 'add':
@@ -286,8 +286,7 @@ function listTeams () {
                         <?php
                     }
                 }
-                else
-                {
+                else {
                     ?>
                     <tr>
                         <td colspan="5">
@@ -324,7 +323,8 @@ function formTeams ($id = false) {
         $prefix      = nkGetValue('prefix',      $team['prefix']);
         $teamGroups  = nkGetValue('groups',      $team['groups']);
         $teamGames   = nkGetValue('games',       $team['games']);
-    } else {
+    }
+    else {
         $name        = nkGetValue('name');
         $image       = nkGetValue('image');
         $description = nkGetValue('description');
@@ -334,16 +334,21 @@ function formTeams ($id = false) {
         $teamGames   = nkGetValue('games');
     }
 
-    if ($teamGroups != null && is_array($teamGroups) === false)
+    if ($teamGroups != null && is_array($teamGroups) === false) {
         $teamGroups = explode(',', $teamGroups);
+    }
 
-    if ($teamGames != null && is_array($teamGames) === false)
+    if ($teamGames != null && is_array($teamGames) === false) {
         $teamGames = explode(',', $teamGames);
+    }
 
-    if ($teamGroups && sizeof($teamGroups))
+    if ($teamGroups && sizeof($teamGroups)) {
         $teamGroups = array_unique($teamGroups);
-    if ($teamGames && sizeof($teamGames))
+    }
+
+    if ($teamGames && sizeof($teamGames)) {
         $teamGames = array_unique($teamGames);
+    }
 
     ?>
     <form action="" method="POST" class="form" autocomplete="off" enctype="multipart/form-data">
@@ -435,9 +440,11 @@ function formTeams ($id = false) {
                 <div class="grid9">
                     <?php
                         $groups = getNkGroups();
-                        if ($groups)
-                            foreach ($groups as $id => $name)
+                        if ($groups) {
+                            foreach ($groups as $id => $name) {
                                 echo '<div><input type="checkbox" class="check" name="groups[]" value="'.$id.'" id="group_' . $id . '" ' . ( is_array($teamGroups) && in_array($id, $teamGroups) ? 'checked="checked"' : '') . ' /> <label for="group_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($name)) . '</label><br /></div>';
+                            }
+                        }
                     ?>
                 </div>
                 <div class="clear both"></div>
@@ -455,10 +462,11 @@ function formTeams ($id = false) {
                 <div class="grid9">
                     <?php
                         $games = nkGetGames();
-                        if ($games)
+                        if ($games) {
                             foreach ($games as $id => $game) {
                                 echo '<div><input type="checkbox" class="check" name="games[]" value="'.$id.'" id="game_' . $id . '" ' . ( is_array($teamGames) && in_array($id, $teamGames) ? 'checked="checked"' : '') . ' /> <label for="game_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($game['name'])) . '</label><br /></div>';
                             }
+                        }
                     ?>
                 </div>
                 <div class="clear both"></div>
@@ -924,7 +932,8 @@ function formStatus ($id = false) {
     if ($id) {
         $status = nkGetTeamsStatus((int) $id);
         $name = nkGetValue('name', $status['name']);
-    } else {
+    }
+    else {
         $name =  nkGetValue('name');
     }
 
@@ -1043,7 +1052,8 @@ function formRanks ($id = false) {
     if ($id) {
         $ranks = nkGetTeamsRanks((int) $id);
         $name = nkGetValue('name', $ranks['name']);
-    } else {
+    }
+    else {
         $name =  nkGetValue('name');
     }
 
@@ -1162,7 +1172,7 @@ function postProcess ($op, $action, $id) {
     if ($op === 'teams') {
         if (nkGetValue('btnSubmit') && ($action === 'add' || $action === 'edit')) {
             // Si tous les champs ne sont pas remplis
-            if(!nkGetValue('name') || (!$id && empty($_FILES['image']['tmp_name']))) {
+            if (!nkGetValue('name') || (!$id && empty($_FILES['image']['tmp_name']))) {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
                         <p>
@@ -1195,8 +1205,9 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbrSetTeam)) {
-                    if (!$id)
+                    if (!$id) {
                         $id = mysql_last_insert();
+                    }
                     else {
                         // Groups
                         $dbdTeamGroup = 'DELETE FROM ' . TEAM_GROUPS_TABLE . ' WHERE team_id = ' . $id ;
@@ -1229,8 +1240,9 @@ function postProcess ($op, $action, $id) {
                     if (is_array($games) && sizeof($games)) {
                         $i = 0;
                         foreach($games as $game) {
-                            if ($i > 0)
+                            if ($i > 0) {
                                 $dbrTeamGame .= ', ';
+                            }
                             $dbrTeamGame .= ' ( '. (int)$id .', ' . (int)$game . ' ) ';
                             $i++;
                         }
