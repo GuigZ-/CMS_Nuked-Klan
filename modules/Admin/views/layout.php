@@ -20,6 +20,7 @@ require_once 'modules/Admin/config.php';
 
 // Inclusion de la sidebar de l'administration
 require_once 'modules/Admin/views/sidebar.php';
+require_once dirname(__FILE__).'/../assets/scripts/script-dnd.php';
 
 function adminHeader(){
     // Définition du favicon
@@ -41,6 +42,7 @@ function adminHeader(){
         <link href="modules/Admin/assets/css/main.css" rel="stylesheet" type="text/css" />
         <script src="modules/Admin/assets/scripts/jquery-1.8.3.min.js"></script>
         <script src="modules/Admin/assets/scripts/jqueryUI-1.10.3.min.js"></script>
+        <script src="modules/Admin/assets/scripts/jquery.plugin.tableDnD.js"></script>
         <script src="modules/Admin/assets/scripts/main.js"></script>
         <script src="modules/Admin/assets/scripts/jquery.validationEngine-<?php echo substr($GLOBALS['language'], 0, 2); ?>.js"></script>
         <script src="modules/Admin/assets/scripts/nk.js"></script>

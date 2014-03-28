@@ -73,11 +73,11 @@ function displayAdmin () {
  */
 function displayMenu ($op) {
     $menus = array(
-        "teams"        => TEAM_MANAGEMENT_TEAMS,
-        "manage_users" => TEAM_MANAGEMENT_USERS,
-        "status"       => TEAM_MANAGEMENT_STATUS,
-        "ranks"        => TEAM_MANAGEMENT_RANKS,
-        "settings"     => TEAM_PREFERENCES,
+        'teams'        => array('name' => TEAM_MANAGEMENT_TEAMS, 'icon' => 'groups'),
+        'manage_users' => array('name' => TEAM_MANAGEMENT_USERS, 'icon' => 'users'),
+        'status'       => array('name' => TEAM_MANAGEMENT_STATUS, 'icon' => ''),
+        'ranks'        => array('name' => TEAM_MANAGEMENT_RANKS, 'icon' => ''),
+        'settings'     => array('name' => TEAM_PREFERENCES, 'icon' => 'settings'),
     );
 
     displayContentMenu($menus, $op);
@@ -92,35 +92,35 @@ function displaySubMenu ($op, $action) {
     switch ($op) {
         case 'teams':
             $menus = array(
-                "list" => TEAM_ADMIN_LIST,
-                "add"  => TEAM_ADMIN_ADD_TEAM
+                'list' => array('name' => TEAM_ADMIN_LIST, 'icon' => ''),
+                'add'  => array('name' => TEAM_ADMIN_ADD_TEAM,'icon' => 'add' )
                 );
-            displayContentMenu($menus, $action, "action", $op);
+            displayContentMenu($menus, $action, 'action', $op);
             break;
 
         case 'manage_users':
             $menus = array(
-                "list" => TEAM_ADMIN_LIST,
-                "add"  => TEAM_ADMIN_ADD_COMBINAISON,
-                "list_status"  => TEAM_ADMIN_LIST_STATUS
+                'list' => array('name' => TEAM_ADMIN_LIST, 'icon' => ''),
+                'add'  => array('name' => TEAM_ADMIN_ADD_COMBINAISON, 'icon' => 'add'),
+                'list_status'  => array('name' => TEAM_ADMIN_LIST_STATUS,'icon' => '' )
                 );
-            displayContentMenu($menus, $action, "action", $op);
+            displayContentMenu($menus, $action, 'action', $op);
             break;
 
         case 'status':
             $menus = array(
-                "list" => TEAM_ADMIN_LIST,
-                "add"  => TEAM_ADMIN_ADD_STATUS
+                'list' => array('name' => TEAM_ADMIN_LIST, 'icon' => ''),
+                'add'  => array('name' => TEAM_ADMIN_ADD_STATUS,'icon' => 'add' )
                 );
-            displayContentMenu($menus, $action, "action", $op);
+            displayContentMenu($menus, $action, 'action', $op);
             break;
 
         case 'ranks':
             $menus = array(
-                "list" => TEAM_ADMIN_LIST,
-                "add"  => TEAM_ADMIN_ADD_RANK
+                'list' => array('name' => TEAM_ADMIN_LIST, 'icon' => ''),
+                'add'  => array('name' => TEAM_ADMIN_ADD_RANK,'icon' => 'add' )
                 );
-            displayContentMenu($menus, $action, "action", $op);
+            displayContentMenu($menus, $action, 'action', $op);
             break;
 
         default:
@@ -151,8 +151,8 @@ function displayContentMenu ($menus, $search, $type = "op", $op = null) {
                 }
     ?>
                 <li>
-                    <a class="tipN" href="index.php?file=Team&page=admin&<?php echo $isNotOp.$type; ?>=<?php echo $key; ?>" original-title="<?php echo $menu; ?>">
-                        <span class="nkIcons icon-add"></span>
+                    <a class="tipN" href="index.php?file=Team&page=admin&<?php echo $isNotOp.$type; ?>=<?php echo $key; ?>" original-title="<?php echo $menu['name']; ?>">
+                        <span class="nkIcons icon-<?php echo (isset($menu['icon']) && !empty($menu['icon']) ? $menu['icon'] : 'help' ) ?>"></span>
                     </a>
                 </li>
     <?php
@@ -235,10 +235,12 @@ function displayContent ($op, $action, $id = null) {
 
         default:
             ?>
-            <div class="error notification">
-                <div>
-                    <?php echo TEAM_404; ?>
-                </div>
+            <div class="nNote nFailure nNoteHideable">
+                <p>
+                    <?php
+                    echo TEAM_404;
+                    ?>
+                </p>
             </div>
             <?php
             break;
@@ -267,7 +269,7 @@ function listTeams () {
         <h6>&nbsp;</h6>
         <div class="clear both"></div>
     </div>
-    <table class="tDefault">
+    <table class="tDefault tableDnD" data-table="<?php echo TEAM_TABLE; ?>">
         <thead>
             <tr>
                 <td>
@@ -294,7 +296,7 @@ function listTeams () {
                 if ($teams !== false && is_array($teams) && sizeof($teams)) {
                     foreach ($teams as $team) {
                         ?>
-                        <tr>
+                        <tr data-id="<?php echo $team['id']; ?>">
                             <!-- Nom -->
                             <td>
                                 <?php
@@ -324,7 +326,7 @@ function listTeams () {
                                 ?>
                             </td>
                             <!-- Ordre -->
-                            <td>
+                            <td class="order">
                                 <?php
                                     echo printSecuTags($team['order']);
                                 ?>
@@ -731,14 +733,14 @@ function formUsers ($id = false) {
 
     if ($teams === false || (int) sizeof($teams) === 0){
         ?>
-        <div class="margin0-10 borderBox">
-            <div class="notification error widthAuto">
-                <div>
-                    <?php echo TEAM_NO_TEAM_REGISTERED; ?>
-                </div>
-            </div>
+        <div class="nNote nFailure nNoteHideable">
+            <p>
+                <?php
+                echo TEAM_NO_TEAM_REGISTERED;
+                ?>
+            </p>
         </div>
-        <?php
+            <?php
         return;
     }
 
@@ -1231,15 +1233,13 @@ function postProcess ($op, $action, $id) {
             // Si tous les champs ne sont pas remplis
             if(!isset($_REQUEST['name']) || empty($_REQUEST['name']) || (!$id && empty($_FILES['image']['tmp_name']))) {
                 ?>
-                <div class="borderBox margin0-10">
-                    <div class="notification error widthAuto">
-                        <div>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
                             <?php
                             echo TEAM_FORM_EMPTY;
                             ?>
-                        </div>
+                        </p>
                     </div>
-                </div>
                 <?php
                 return;
             }
@@ -1312,28 +1312,24 @@ function postProcess ($op, $action, $id) {
                 // Si la requete n'a pas réussi
                 else {
                     ?>
-                    <div class="borderBox margin0-10">
-                        <div class="notification error widthAuto">
-                            <div>
-                                <?php
-                                echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetTeam ;
-                                ?>
-                            </div>
-                        </div>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
+                            <?php
+                            echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetTeam ;
+                            ?>
+                        </p>
                     </div>
                     <?php
                 }
             }
             else {
                 ?>
-                <div class="borderBox margin0-10">
-                    <div class="notification error widthAuto">
-                        <div>
-                            <?php
-                            echo TEAM_EXISTS;
-                            ?>
-                        </div>
-                    </div>
+                <div class="nNote nFailure nNoteHideable">
+                    <p>
+                        <?php
+                        echo TEAM_EXISTS;
+                        ?>
+                    </p>
                 </div>
                 <?php
             }
@@ -1351,15 +1347,13 @@ function postProcess ($op, $action, $id) {
                 else {
 
                     ?>
-                    <div class="borderBox margin0-10">
-                        <div class="notification error widthAuto">
-                            <div>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
                                 <?php
                                 echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbdTeam ;
                                 ?>
-                            </div>
+                            </p>
                         </div>
-                    </div>
                     <?php
                 }
             }
@@ -1373,15 +1367,13 @@ function postProcess ($op, $action, $id) {
             // Si tous les champs ne sont pas remplis
             if (!isset($_REQUEST['name']) || empty($_REQUEST['name'])) {
                 ?>
-                <div class="borderBox margin0-10">
-                    <div class="notification error widthAuto">
-                        <div>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
                             <?php
                             echo TEAM_FORM_EMPTY;
                             ?>
-                        </div>
+                        </p>
                     </div>
-                </div>
                 <?php
                 return;
             }
@@ -1406,15 +1398,13 @@ function postProcess ($op, $action, $id) {
                 // Si la requete n'a pas réussi
                 else {
                     ?>
-                    <div class="borderBox margin0-10">
-                        <div class="notification error widthAuto">
-                            <div>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
                                 <?php
                                 echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetStatus ;
                                 ?>
-                            </div>
+                            </p>
                         </div>
-                    </div>
                     <?php
                 }
             }
@@ -1432,15 +1422,13 @@ function postProcess ($op, $action, $id) {
                 else {
 
                     ?>
-                    <div class="borderBox margin0-10">
-                        <div class="notification error widthAuto">
-                            <div>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
                                 <?php
                                 echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbdStatus ;
                                 ?>
-                            </div>
+                            </p>
                         </div>
-                    </div>
                     <?php
                 }
             }
@@ -1454,15 +1442,13 @@ function postProcess ($op, $action, $id) {
             // Si tous les champs ne sont pas remplis
             if (!isset($_REQUEST['name']) || empty($_REQUEST['name'])) {
                 ?>
-                <div class="borderBox margin0-10">
-                    <div class="notification error widthAuto">
-                        <div>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
                             <?php
                             echo TEAM_FORM_EMPTY;
                             ?>
-                        </div>
+                        </p>
                     </div>
-                </div>
                 <?php
                 return;
             }
@@ -1488,15 +1474,13 @@ function postProcess ($op, $action, $id) {
                 // Si la requete n'a pas réussi
                 else {
                     ?>
-                    <div class="borderBox margin0-10">
-                        <div class="notification error widthAuto">
-                            <div>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
                                 <?php
                                 echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetRanks ;
                                 ?>
-                            </div>
+                            </p>
                         </div>
-                    </div>
                     <?php
                 }
             }
@@ -1514,15 +1498,13 @@ function postProcess ($op, $action, $id) {
                 else {
 
                     ?>
-                    <div class="borderBox margin0-10">
-                        <div class="notification error widthAuto">
-                            <div>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
                                 <?php
                                 echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbdRanks ;
                                 ?>
-                            </div>
+                            </p>
                         </div>
-                    </div>
                     <?php
                 }
             }
@@ -1535,15 +1517,13 @@ function postProcess ($op, $action, $id) {
             // Si tous les champs ne sont pas remplis
             if (!isset($_REQUEST['user']) || empty($_REQUEST['user']) || !isset($_REQUEST['team']) || empty($_REQUEST['team']) || !isset($_REQUEST['ranks']) || sizeof($_REQUEST['ranks']) === 0) {
                 ?>
-                <div class="borderBox margin0-10">
-                    <div class="notification error widthAuto">
-                        <div>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
                             <?php
                             echo TEAM_FORM_EMPTY;
                             ?>
-                        </div>
+                        </p>
                     </div>
-                </div>
                 <?php
                 return;
             }
@@ -1604,15 +1584,13 @@ function postProcess ($op, $action, $id) {
             // Si la requete n'a pas réussi
             else {
                 ?>
-                <div class="borderBox margin0-10">
-                    <div class="notification error widthAuto">
-                        <div>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
                             <?php
                             echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetUser ;
                             ?>
-                        </div>
+                        </p>
                     </div>
-                </div>
                 <?php
             }
 
@@ -1630,15 +1608,13 @@ function postProcess ($op, $action, $id) {
                 else {
 
                     ?>
-                    <div class="borderBox margin0-10">
-                        <div class="notification error widthAuto">
-                            <div>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
                                 <?php
                                 echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbdRanks ;
                                 ?>
-                            </div>
+                            </p>
                         </div>
-                    </div>
                     <?php
                 }
             }
@@ -1664,15 +1640,13 @@ function postProcess ($op, $action, $id) {
             // Si la requete n'a pas réussi
             else {
                 ?>
-                <div class="borderBox margin0-10">
-                    <div class="notification error widthAuto">
-                        <div>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
                             <?php
                             echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetUser ;
                             ?>
-                        </div>
+                        </p>
                     </div>
-                </div>
                 <?php
             }
 
@@ -1692,15 +1666,13 @@ function postProcess ($op, $action, $id) {
             // Si la requete n'a pas réussi
             else {
                 ?>
-                <div class="borderBox margin0-10">
-                    <div class="notification error widthAuto">
-                        <div>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
                             <?php
                             echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetUser ;
                             ?>
-                        </div>
+                        </p>
                     </div>
-                </div>
                 <?php
             }
         }
@@ -1727,53 +1699,51 @@ function getValue ($key, $default = false) {
  */
 function displayConf ($case) {
     ?>
-    <div class="margin0-10 borderBox">
-        <div class="notification success widthAuto">
-            <div>
-                <?php
-                    switch ($case) {
-                        case '1':
-                            echo TEAM_REGISTERED;
-                            break;
+    <div class="nNote nSuccess nNoteHideable">
+        <p>
+            <?php
+                switch ($case) {
+                    case '1':
+                        echo TEAM_REGISTERED;
+                        break;
 
-                        case '2':
-                            echo TEAM_DELETED;
-                            break;
+                    case '2':
+                        echo TEAM_DELETED;
+                        break;
 
-                        case '3':
-                            echo TEAM_STATUS_REGISTERED;
-                            break;
+                    case '3':
+                        echo TEAM_STATUS_REGISTERED;
+                        break;
 
-                        case '4':
-                            echo TEAM_STATUS_DELETED;
-                            break;
+                    case '4':
+                        echo TEAM_STATUS_DELETED;
+                        break;
 
-                        case '5':
-                            echo TEAM_RANK_REGISTERED;
-                            break;
+                    case '5':
+                        echo TEAM_RANK_REGISTERED;
+                        break;
 
-                        case '6':
-                            echo TEAM_RANK_DELETED;
-                            break;
+                    case '6':
+                        echo TEAM_RANK_DELETED;
+                        break;
 
-                        case '7':
-                            echo TEAM_USER_REGISTERED;
-                            break;
+                    case '7':
+                        echo TEAM_USER_REGISTERED;
+                        break;
 
-                        case '8':
-                            echo TEAM_USER_DELETED;
-                            break;
+                    case '8':
+                        echo TEAM_USER_DELETED;
+                        break;
 
-                        case '9':
-                            echo TEAM_SETTINGS_SAVED;
-                            break;
+                    case '9':
+                        echo TEAM_SETTINGS_SAVED;
+                        break;
 
-                        default:
-                            break;
-                    }
-                ?>
-            </div>
-        </div>
+                    default:
+                        break;
+                }
+            ?>
+        </p>
     </div>
     <?php
 }

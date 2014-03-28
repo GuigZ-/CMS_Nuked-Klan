@@ -126,17 +126,17 @@ function displayTeamContent($config, $team)
  */
 function displayTeamBlock($member, $team, $config, $right = false) {
     $picture = $config['picture'] ? 'photo' : 'avatar';
-    $img = file_exists($member[$picture]) ? $member[$picture] : 'media/images/noAvatar.png';
+    $img = file_exists($member[$picture]) ? $member[$picture] : 'assets/images/nkNoAvatar.png';
     ?>
         <div class="teamMemberBlock<?php echo ($right ? ' rightAlign' : ''); ?>">
             <?php
                 if ($right === false) {
                     blockImage($img);
                     blockInfos($member, $team);
-                    blockResults($member, $results);
+                    blockResults($member, array());
                 }
                 else {
-                    blockResults($member, $results);
+                    blockResults($member, array());
                     blockInfos($member, $team);
                     blockImage($img);
                 }
@@ -164,7 +164,7 @@ function blockInfos($member, $team){
             </div>
             <i><?php echo $member['ranks_name'] ?></i>
             <ul>
-                <li><?php echo TEAM_COUNTRY . ' : <img src="images/flags/'. printSecuTags($member['country']) . '" alt="" /> ' . strstr(printSecuTags($member['country']), '.', true);; ?></li>
+                <li><?php echo TEAM_COUNTRY . ' : <img src="assets/images/flags/'. printSecuTags($member['country']) . '" alt="" /> ' . strstr(printSecuTags($member['country']), '.', true);; ?></li>
                 <li><?php echo TEAM_AGE . ' : ' . printSecuTags($member['age']); ?></li>
                 <li><?php echo TEAM_SEXE . ' : ' . printSecuTags($member['sexe']); ?></li>
                 <li><?php echo TEAM_TOWN . ' : ' . printSecuTags($member['ville']); ?></li>

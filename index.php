@@ -320,8 +320,7 @@ else if ( ( $_REQUEST['file'] != 'Admin' AND $_REQUEST['page'] != 'admin' )
     else {
         require_once 'modules/404/index.php';
     }
-
-    if ($_REQUEST['file'] != 'Admin' && $_REQUEST['page'] != 'admin' && defined('EDITOR_CHECK')) {
+    if ($_REQUEST['file'] != 'Admin' && $_REQUEST['page'] != 'admin' && !isset($_GET['ajax'])) {
 
         ?>
             <script type="text/javascript" src="assets/ckeditor/ckeditor.js"></script>

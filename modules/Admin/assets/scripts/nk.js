@@ -169,4 +169,45 @@ $(document).ready(function(){
     //===== Breadcrumbs =====//
 
     $('#breadcrumbs').xBreadcrumbs();
+
+    $(".tableDnD").tableDnD({
+        onDrop : function(table, row)
+        {
+
+            var old = parseInt($(row).find('.order').html());
+            $(row).addClass("current");
+
+            var i = 0;
+            var newOrder;
+            $(table).find('tbody tr').each(function(){
+                $(this).find('.order').html(i);
+                console.log($(this).hasClass('current'));
+                if ($(this).hasClass('current'))
+                {
+                    newOrder = i;
+                }
+                i++;
+            });
+
+
+
+            $.ajax({
+                url: '',
+                type: 'POST',
+                dataType: 'json',
+                data: { 'tableDnD' : '1', 'old' : old, 'new' : newOrder, 'table' : $(table).data('table'), 'id' : $(row).data('id')},
+            })
+            .done(function() {
+                console.log("success");
+            })
+            .fail(function() {
+                console.log("error");
+            })
+            .always(function() {
+                console.log("complete");
+            });
+
+            $(row).removeClass("current");
+        }
+    });
 });

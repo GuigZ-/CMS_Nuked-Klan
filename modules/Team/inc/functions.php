@@ -240,7 +240,7 @@ function getUsersStatus($id = false) {
 
 function getNkUsers(){
     $dbsGetNkUsers = '
-        SELECT u.id, u.pseudo, ud.prenom, ud.age, ud.sexe, ud.ville, u.avatar, ud.photo, u.country
+        SELECT u.id, u.pseudo, ud.prenom, ud.age, ud.sexe, ud.ville, u.avatar, ud.photo, u.country, ud.nom
         FROM ' . USERS_TABLE. ' AS u
             LEFT OUTER JOIN ' . USERS_DETAIL_TABLE . ' AS ud
                 ON u.id = ud.user_id

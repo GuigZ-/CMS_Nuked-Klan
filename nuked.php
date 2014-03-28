@@ -21,6 +21,20 @@ unset($sql_conf, $row);
 // CONVERT ALL HTML ENTITIES TO THEIR APPLICABLE CHARACTERS
 $nuked['prefix'] = $db_prefix;
 
+function nk_debug_bt($die = false)
+{
+    ob_clean();
+    echo mysql_error();
+    $debug = debug_backtrace();
+    foreach($debug as $func) {
+        echo '<pre>';
+        var_dump(array_slice($func, 0, 3));
+        echo '</pre>';
+    }
+    if ($die)
+        die;
+}
+
 // FUNCTION TO FIX PRINTING TAGS
 function printSecuTags($value){
     $value = nkHtmlEntities(nkHtmlEntityDecode(nkHtmlEntityDecode($value)));
@@ -82,8 +96,9 @@ function nkDate($timestamp, $block = false) {
     }
 
     $format = ((($block === false) ? $isBlock : $block) === true) ? ($language == 'french') ? '%d/%m/%Y' : '%m/%d/%Y' : $nuked['dateformat'];
+    return strftime($format, $timestamp);
     // iconv pour eviter les caracteres speciaux dans la date
-    return iconv('UTF-8','ISO-8859-1//TRANSLIT',strftime($format, $timestamp));
+    return iconv('UTF-8','ISO-8859-1//TRANSLIT', strftime($format, $timestamp));
     //return iconv('UTF-8','ISO-8859-1',utf8_encode(strftime($format, $timestamp))); // For Windows servers
 
 }
@@ -681,7 +696,7 @@ function secu_html($texte){
     $bad = false;
     $size = count($Tags);
     for($i=0; $i<$size; $i++){
-        $TagName = $Tags[$i][3] == '' ? $Tags[$i][2].$Tags[$i][4]:$Tags[$i][2];
+        $TagName = $Tags[$i][3] == '' ? $Tags[$i][2].(isset($Tags[$i][4]) ? $Tags[$i][4] : ''):$Tags[$i][2];
         if(!in_array($TagName, $arrayOnly1Tag) && in_array($TagName, $allowedTags)){
             if ($Tags[$i][1] == '/'){
                 $bad = $bad | array_pop($TagList) != $TagName;
@@ -1116,15 +1131,15 @@ function erreursql($errno, $errstr, $errfile, $errline, $errcontext){
 }
 
 function send_stats_nk() {
-	global $nuked;
+    global $nuked;
 
-	if($nuked['stats_share'] == "1")
-	{
-		$timediff = (time() - $nuked['stats_timestamp'])/60/60/24/60; // Tous les 60 jours
-		if($timediff >= 60)
-		{
+    if($nuked['stats_share'] == "1")
+    {
+        $timediff = (time() - $nuked['stats_timestamp'])/60/60/24/60; // Tous les 60 jours
+        if($timediff >= 60)
+        {
 
-			?>
+            ?>
      <script type="text/javascript">
           if ( typeof jQuery == 'undefined' )
                {
@@ -1132,15 +1147,15 @@ function send_stats_nk() {
                }
      </script>
             <script type="text/javascript">
-			$(document).ready(function() {
-				data="nuked_nude=ajax";
-				$.ajax({url:'index.php', data:data, type: "GET", success: function(html) {
-				 }});
-			});
-			</script>
+            $(document).ready(function() {
+                data="nuked_nude=ajax";
+                $.ajax({url:'index.php', data:data, type: "GET", success: function(html) {
+                 }});
+            });
+            </script>
             <?php
-		}
-	}
+        }
+    }
 }
 
 // Control valid DB prefix
@@ -1179,6 +1194,10 @@ function nkHtmlSpecialChars($var){
 
 function nkHtmlEntities($var){
     return htmlentities($var,ENT_QUOTES,'ISO-8859-1');
+}
+
+function nkUtf8Encode ($var) {
+    return utf8_encode(nkHtmlEntityDecode($var));
 }
 
 $GLOBALS['includeLanguage'] = array();
@@ -1391,7 +1410,7 @@ function groupsCheckbox($groups = null) {
  */
 function nkModEnabled(){
     $dbsMods = "SELECT name FROM ".MODULES_TABLE." WHERE status = 'on'";
-    $dbeMods = mysql_query($dbsMods) or die(mysql_error());
+    $dbeMods = mysql_query($dbsMods) or die(nk_debug_bt());
 
     $arrayModsEnabled = array();
     while($data = mysql_fetch_assoc($dbeMods)){
@@ -1509,12 +1528,33 @@ function colorGroup($userMainGroup) {
     $dbsGroup = " SELECT color
                   FROM ".GROUPS_TABLE."
                   WHERE id = ".$userMainGroup." ";
-    $dbeGroup = mysql_query($dbsGroup) or die(mysql_error());
+    $dbeGroup = mysql_query($dbsGroup) or die(nk_debug_bt());
     while ($data = mysql_fetch_assoc($dbeGroup)) {
         return $data['color'];
     }
 }
+/**
+ * send mail
+ * @return boolean
+ */
+function nkMail ($fromName, $fromMail, $sendMail, $subject, $msg) {
+    if (empty($fromName)) {
+        $fromName  = $GLOBALS['nuked']['name'];
+    }
+    if (empty($frommMail)) {
+        $fromMail = $GLOBALS['nuked']['mail'];
+    }
 
+    $headers   = array();
+    $headers[] = "MIME-Version: 1.0";
+    $headers[] = "Content-type: text/html; charset=iso-8859-1";
+    $headers[] = "From: {$fromName} <{$fromMail}>";
+    $headers[] = "Reply-To: No Reply <{$fromMail}>";
+    $headers[] = "Subject: {$fromName}";
+    $headers[] = "X-Mailer: PHP/".phpversion();
+
+    return @mail($sendMail, nkUtf8Encode($subject), $msg, implode("\r\n", $headers));
+}
 /**
  * This function format var dump display
  * @param  string $content param to var dump
