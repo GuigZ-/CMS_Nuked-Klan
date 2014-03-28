@@ -1112,7 +1112,7 @@ function formPreferences() {
                     </label>
                 </div>
                 <div class="grid9">
-                    <input type="text" name="team_page" id="team_page" value="<?php echo $config['team_page']; ?>" class="validate[required]">
+                    <input type="text" name="team_page" id="team_page" value="<?php echo isset($config['team_page']) && $config['team_page']; ?>" class="validate[required]">
                 </div>
                 <div class="clear both"></div>
             </div>
@@ -1128,9 +1128,9 @@ function formPreferences() {
                 </div>
                 <div class="grid9 noSearch">
                     <select name="display_type" id="display_type" class="select validate[required]">
-                        <option value="table"<?php echo ($config['display_type']  == 'table' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_TABLE; ?></option>
-                        <option value="alternate"<?php echo ($config['display_type']  == 'alternate' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_ALT; ?></option>
-                        <option value="bloc"<?php echo ($config['display_type']  == 'bloc' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_BLOC; ?></option>
+                        <option value="table"<?php echo (isset($config['display_type']) && $config['display_type']  == 'table' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_TABLE; ?></option>
+                        <option value="alternate"<?php echo (isset($config['display_type']) && $config['display_type']  == 'alternate' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_ALT; ?></option>
+                        <option value="bloc"<?php echo (isset($config['display_type']) && $config['display_type']  == 'bloc' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_BLOC; ?></option>
                     </select>
                 </div>
                 <div class="clear both"></div>
@@ -1146,7 +1146,7 @@ function formPreferences() {
                     </label>
                 </div>
                 <div class="grid9">
-                    <input type="checkbox" value="1" name="picture" id="picture" <?php echo ($config['picture']  == 1 ? ' checked' : ''); ?>class="check validate[required]" />
+                    <input type="checkbox" value="1" name="picture" id="picture" <?php echo (isset($config['picture']) && $config['picture']  == 1 ? ' checked' : ''); ?>class="check validate[required]" />
                 </div>
                 <div class="clear both"></div>
             </div>
@@ -1206,7 +1206,7 @@ function postProcess ($op, $action, $id) {
                 // execution de la requete
                 if (mysql_query($dbrSetTeam)) {
                     if (!$id) {
-                        $id = mysql_last_insert();
+                        $id = mysql_insert_id();
                     }
                     else {
                         // Groups

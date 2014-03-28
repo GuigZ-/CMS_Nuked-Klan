@@ -497,6 +497,10 @@
             }
             echo "OK";
         break;
+        case 'table_team':
+
+            echo "OK";
+        break;
         case 'table_wars':
             // Update fields to NK 1.8
             /***********************************************************************************************************************/
@@ -581,6 +585,7 @@
                     `score` VARCHAR(30) NOT NULL
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
             ") or die(nk_debug_bt());
+            echo "OK";
         break;
         default:
             echo _WRONGTABLENAME;
