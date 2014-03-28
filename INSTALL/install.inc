@@ -582,7 +582,7 @@
                         $req = mysql_query($sql) or die (nk_debug_bt());
                         $sql="CREATE TABLE `" . $db_prefix . "_groups` (
                           `id` int(11) NOT NULL auto_increment,
-                          `name` varchar(20) NOT NULL,
+                          `nameGroup` varchar(20) NOT NULL,
                           `access` text NOT NULL,
                           `accessAdmin` text NOT NULL,
                           `description` text NOT NULL,
