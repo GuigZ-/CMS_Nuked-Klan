@@ -14,18 +14,18 @@ require_once 'modules/Wars/inc/functions.php';
 function WarsDisplayAdmin()
 {
 
-    if (!($op = WarsGetValue('op')) || $op === 'index') {
+    if (!($op = nkGetValue('op')) || $op === 'index') {
         $op = "matchs";
     }
 
-    if (!$action = WarsGetValue('action')) {
+    if (!$action = nkGetValue('action')) {
         $action = "list";
     }
 
     $id = null;
 
-    if(($op === 'edit' || $op === 'del') && preg_match("#^[0-9]+$#isD", WarsGetValue('id'))) {
-        $id = WarsGetValue('id');
+    if(($op === 'edit' || $op === 'del') && preg_match("#^[0-9]+$#isD", nkGetValue('id'))) {
+        $id = nkGetValue('id');
     }
 
 
@@ -56,42 +56,7 @@ function WarsDisplayMenu ($op)
         'settings'      => array('name' => 'Préférences', 'icon' => 'settings'),
     );
 
-    WarsdisplayContentMenu($menus, $op);
-}
-
-/**
- *  Affiche le contenu d'un menu
- *  @param array $menus Liste des menus
- *  @param string $search Valeur à chercher pour le liens courant
- *  @param string $op Type d'action op|action
- *  @param string $op Si c'est pas le menu principal, c'est la valeur du op
- */
-function WarsDisplayContentMenu ($menus, $search, $type = "op", $op = null)
-{
-    if(is_array($menus)) {
-    ?>
-        <ul class="middleNavR">
-    <?php
-            foreach ($menus as $key => $menu) {
-
-                $isNotOp = null;
-
-                if($type !== "op") {
-                    $isNotOp = "op=" . $op . "&";
-                }
-    ?>
-                <li>
-                    <a class="tipN" href="index.php?file=<?php echo WarsGetValue('file'); ?>&page=<?php echo WarsGetValue('page'); ?>&<?php echo $isNotOp.$type; ?>=<?php echo $key; ?>" original-title="<?php echo $menu['name']; ?>">
-                        <span class="nkIcons icon-<?php echo (isset($menu['icon']) && !empty($menu['icon']) ? $menu['icon'] : 'help' ) ?>"></span>
-                    </a>
-                </li>
-    <?php
-
-            }
-    ?>
-        </ul>
-    <?php
-    }
+    nkDisplayContentMenu($menus, $op);
 }
 
 /**
@@ -149,28 +114,28 @@ function WarsDisplayList()
                 <?php
                 if (isset($wars) && is_array($wars) && count($wars))
                 {
-                    foreach ($wars as $war)
+                    foreach ($wars as $value)
                     {
                         ?>
                             <tr>
                                 <td>
                                     <?php
-                                    echo nkDate($war['date']);
+                                    echo nkDate($value['date']);
                                     ?>
                                 </td>
                                 <td>
                                     <?php
-                                        echo printSecuTags($war['versus']);
+                                        echo printSecuTags($value['versus']);
                                     ?>
                                 </td>
                                 <td>
-                                    <img src="assets/images/flags/<?php echo printSecuTags($war['country']); ?>" alt="<?php echo strstr(printSecuTags($war['country']), '.', true); ?>" />
-                                    <?php echo strstr(printSecuTags($war['country']), '.', true);
+                                    <img src="assets/images/flags/<?php echo printSecuTags($value['country']); ?>" alt="<?php echo strstr(printSecuTags($value['country']), '.', true); ?>" />
+                                    <?php echo strstr(printSecuTags($value['country']), '.', true);
                                     ?>
                                 </td>
                                 <td class="center">
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=<?php echo WarsGetValue('file'); ?>&page=<?php echo WarsGetValue('page'); ?>&op=edit&id=<?php echo $war['id'];?>"></a>
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=<?php echo WarsGetValue('file'); ?>&page=<?php echo WarsGetValue('page'); ?>&op=del&id=<?php echo $war['id'];?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("op" => "edit", "id" => $value['id'])); ?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("op" => "del", "id" => $value['id'])); ?>"></a>
                                 </td>
                             </tr>
                         <?php
@@ -198,26 +163,26 @@ function WarsDisplayList()
 
 function WarsDisplayForm($id = fale)
 {
-    $games = WarsGetGames();
-    $countries = WarsGetCountries();
+    $games = nkGetGames();
+    $countries = nkGetCountries();
     if ($id)
     {
         $match = getMatchs((int)$id);
-        $versus = WarsGetValue('versus', $match['versus']);
-        $game_id = WarsGetValue('game_id', $match['game_id']);
-        $link = WarsGetValue('link', $match['link']);
-        $country = WarsGetValue('country', $match['country']);
-        $status = WarsGetValue('status', $match['status']);
-        $date = WarsGetValue('date', $match['date']);
+        $versus = nkGetValue('versus', $match['versus']);
+        $game_id = nkGetValue('game_id', $match['game_id']);
+        $link = nkGetValue('link', $match['link']);
+        $country = nkGetValue('country', $match['country']);
+        $status = nkGetValue('status', $match['status']);
+        $date = nkGetValue('date', $match['date']);
     }
     else
     {
-        $versus = WarsGetValue('versus');
-        $game_id = WarsGetValue('game_id');
-        $link = WarsGetValue('link');
-        $country = WarsGetValue('country');
-        $status = WarsGetValue('status');
-        $date = WarsGetValue('date');
+        $versus = nkGetValue('versus');
+        $game_id = nkGetValue('game_id');
+        $link = nkGetValue('link');
+        $country = nkGetValue('country');
+        $status = nkGetValue('status');
+        $date = nkGetValue('date');
     }
 
     ?>

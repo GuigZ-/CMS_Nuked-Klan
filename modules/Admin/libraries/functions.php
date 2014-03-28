@@ -12,6 +12,83 @@ defined('INDEX_CHECK') or die('You can\'t run this file alone.');
 if (nkHasAdmin())
 {
 
+
+    /**
+     * Affiche un message de confirmation
+     * @param  int $case Clé du message
+     */
+    function nkDisplayConf ($case)
+    {
+        ?>
+        <div class="nNote nSuccess nNoteHideable">
+            <p>
+                <?php
+                    switch ($case)
+                    {
+                        case '1':
+                            echo 'Création réussie';
+                            break;
+
+                        case '2':
+                            echo 'Suppression réussie';
+                            break;
+
+                        case '3':
+                            echo 'Mise à jour réussie';
+                            break;
+
+                        default:
+                            break;
+                    }
+                ?>
+            </p>
+        </div>
+        <?php
+    }
+
+    /**
+     *  Affiche le contenu d'un menu
+     *  @param array $menus Liste des menus
+     *  @param string $search Valeur à chercher pour le liens courant
+     *  @param string $op Type d'action op|action
+     *  @param string $op Si c'est pas le menu principal, c'est la valeur du op
+     */
+    function nkDisplayContentMenu($menus, $search, $type = "op", $op = null)
+    {
+        if(is_array($menus))
+        {
+
+            $i = 0;
+        ?>
+            <ul class="middleNavR">
+        <?php
+                foreach ($menus as $key => $menu)
+                {
+
+                    $request = array();
+
+                    if($type !== "op")
+                    {
+                        $request = array('op' => $op);
+                    }
+
+                    $request = array_merge(array($type => $key), $request);
+        ?>
+                    <li>
+                        <a class="tipN" href="<?php echo nkGetLink(false, null, $request); ?>" original-title="<?php echo $menu['name']; ?>">
+                            <span class="nkIcons icon-<?php echo (isset($menu['icon']) && !empty($menu['icon']) ? $menu['icon'] : 'help' ) ?>"></span>
+                        </a>
+                    </li>
+        <?php
+
+                    $i++;
+                }
+        ?>
+            </ul>
+        <?php
+        }
+    }
+
     /**
      * Retourne une liste des pays
      * @return array Liste des pays
@@ -139,6 +216,51 @@ if (nkHasAdmin())
     }
 
     /**
+     * Génère un lien pour l'admin
+     * @param  boolean $conf    Si on utilise une conf
+     * @param  integer $id_conf Identifiant de la conf
+     * @param  array   $others  Si d'autres éléments sont à ajoutés
+     * @return string           Lien construit
+     */
+    function nkGetLink($conf = false, $id_conf = null, $others = array())
+    {
+
+        $request = array();
+
+        if ($file = nkGetValue('file'))
+        {
+            $request['file'] = $file;
+        }
+
+        if ($page = nkGetValue('page'))
+        {
+            $request['page'] = $page;
+        }
+
+        if ($op = nkGetValue('op'))
+        {
+            $request['op'] = $op;
+        }
+
+        if ($conf)
+        {
+            if (!$id_conf)
+                $conf = (nkGetValue('id') ? '3' : '1');
+            else
+                $conf = $id_conf;
+
+            $request['conf'] = $conf;
+        }
+
+        if (is_array($others))
+        {
+            $request = array_merge($request, $others);
+        }
+
+        return 'index.php?' . http_build_query($request);
+    }
+
+    /**
      * Liste des champs sociaux
      * @param  integer $id Identifiant du champ social
      * @return mixed       Données trouvées
@@ -188,7 +310,7 @@ if (nkHasAdmin())
     /**
      * Liste des équipes
      * @param  integer $id Identifiant de l'équipe
-     * @return mixed      Données trouvées
+     * @return mixed       Données trouvées
      */
     function nkGetTeams ($id = false)
     {
@@ -405,78 +527,13 @@ if (nkHasAdmin())
         }
     }
 
-
     /**
-     * Affiche un message de confirmation
-     * @param  int $case Clé du message
+     * Upload une image
+     * @param  mixed  $file      Tableau ($_FILES) ou clé du tableau $_FILES
+     * @param  string $dest_path Chemin relatif pour l'image
+     * @param  string $dest_file Nouveau nom du fichier
+     * @return string            Nom du fichier
      */
-    function nkDisplayConf ($case)
-    {
-        ?>
-        <div class="nNote nSuccess nNoteHideable">
-            <p>
-                <?php
-                    switch ($case)
-                    {
-                        case '1':
-                            echo 'Création réussie';
-                            break;
-
-                        case '2':
-                            echo 'Suppression réussie';
-                            break;
-
-                        case '3':
-                            echo 'Mise à jour réussie';
-                            break;
-
-                        default:
-                            break;
-                    }
-                ?>
-            </p>
-        </div>
-        <?php
-    }
-
-    function nkGetLink($conf = false, $id_conf = null, $others = array())
-    {
-
-        $request = array();
-
-        if ($file = nkGetValue('file'))
-        {
-            $request['file'] = $file;
-        }
-
-        if ($page = nkGetValue('page'))
-        {
-            $request['page'] = $page;
-        }
-
-        if ($op = nkGetValue('op'))
-        {
-            $request['op'] = $op;
-        }
-
-        if ($conf)
-        {
-            if (!$id_conf)
-                $conf = (nkGetValue('id') ? '3' : '1');
-            else
-                $conf = $id_conf;
-
-            $request['conf'] = $conf;
-        }
-
-        if (is_array($others))
-        {
-            $request = array_merge($request, $others);
-        }
-
-        return 'index.php?' . http_build_query($request);
-    }
-
     function nkUploadImage($file, $dest_path, $dest_file = null)
     {
 

@@ -64,7 +64,7 @@ function displayMenu ($op) {
         'settings'     => array('name' => TEAM_PREFERENCES, 'icon' => 'settings'),
     );
 
-    displayContentMenu($menus, $op);
+    nkDisplayContentMenu($menus, $op);
 }
 
 /**
@@ -79,7 +79,7 @@ function displaySubMenu ($op, $action) {
                 'list' => array('name' => TEAM_ADMIN_LIST, 'icon' => ''),
                 'add'  => array('name' => TEAM_ADMIN_ADD_TEAM,'icon' => 'add' )
                 );
-            displayContentMenu($menus, $action, 'action', $op);
+            nkDisplayContentMenu($menus, $action, 'action', $op);
             break;
 
         case 'manage_users':
@@ -88,7 +88,7 @@ function displaySubMenu ($op, $action) {
                 'add'  => array('name' => TEAM_ADMIN_ADD_COMBINAISON, 'icon' => 'add'),
                 'list_status'  => array('name' => TEAM_ADMIN_LIST_STATUS,'icon' => '' )
                 );
-            displayContentMenu($menus, $action, 'action', $op);
+            nkDisplayContentMenu($menus, $action, 'action', $op);
             break;
 
         case 'status':
@@ -96,7 +96,7 @@ function displaySubMenu ($op, $action) {
                 'list' => array('name' => TEAM_ADMIN_LIST, 'icon' => ''),
                 'add'  => array('name' => TEAM_ADMIN_ADD_STATUS,'icon' => 'add' )
                 );
-            displayContentMenu($menus, $action, 'action', $op);
+            nkDisplayContentMenu($menus, $action, 'action', $op);
             break;
 
         case 'ranks':
@@ -104,50 +104,11 @@ function displaySubMenu ($op, $action) {
                 'list' => array('name' => TEAM_ADMIN_LIST, 'icon' => ''),
                 'add'  => array('name' => TEAM_ADMIN_ADD_RANK,'icon' => 'add' )
                 );
-            displayContentMenu($menus, $action, 'action', $op);
+            nkDisplayContentMenu($menus, $action, 'action', $op);
             break;
 
         default:
             break;
-    }
-}
-
-/**
- *  Affiche le contenu d'un menu
- *  @param array $menus Liste des menus
- *  @param string $search Valeur à chercher pour le liens courant
- *  @param string $op Type d'action op|action
- *  @param string $op Si c'est pas le menu principal, c'est la valeur du op
- */
-function displayContentMenu ($menus, $search, $type = "op", $op = null) {
-    if(is_array($menus)) {
-
-        $i = 0;
-    ?>
-        <ul class="middleNavR">
-    <?php
-            foreach ($menus as $key => $menu) {
-
-                $request = array();
-
-                if($type !== "op") {
-                    $request = array('op' => $op);
-                }
-
-                $request = array_merge(array($type => $key), $request);
-    ?>
-                <li>
-                    <a class="tipN" href="<?php echo nkGetLink(false, null, $request); ?>" original-title="<?php echo $menu['name']; ?>">
-                        <span class="nkIcons icon-<?php echo (isset($menu['icon']) && !empty($menu['icon']) ? $menu['icon'] : 'help' ) ?>"></span>
-                    </a>
-                </li>
-    <?php
-
-                $i++;
-            }
-    ?>
-        </ul>
-    <?php
     }
 }
 

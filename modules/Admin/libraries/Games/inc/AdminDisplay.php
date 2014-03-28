@@ -170,7 +170,7 @@ function GamesDisplayMenu ($op, $action)
         'settings'      => array('name' => 'Préférences', 'icon' => 'settings'),
     );
 
-    GamesdisplayContentMenu($menus, $op);
+    nkDisplayContentMenu($menus, $op);
     GamesDisplaySubMenu($op, $action);
 }
 
@@ -188,53 +188,18 @@ function GamesDisplaySubMenu($op, $action)
                 'list' => array('name' => 'Liste', 'icon' => ''),
                 'add'  => array('name' => 'Ajouter' ,'icon' => 'add' )
                 );
-            GamesDisplayContentMenu($menus, $action, 'action', $op);
+            nkDisplayContentMenu($menus, $action, 'action', $op);
             break;
         case 'maps':
             $menus = array(
                 'list' => array('name' => 'Liste', 'icon' => ''),
                 'add'  => array('name' => 'Ajouter' ,'icon' => 'add' )
                 );
-            GamesDisplayContentMenu($menus, $action, 'action', $op);
+            nkDisplayContentMenu($menus, $action, 'action', $op);
             break;
 
         default:
             break;
-    }
-}
-
-/**
- *  Affiche le contenu d'un menu
- *  @param array $menus Liste des menus
- *  @param string $search Valeur à chercher pour le liens courant
- *  @param string $op Type d'action op|action
- *  @param string $op Si c'est pas le menu principal, c'est la valeur du op
- */
-function GamesDisplayContentMenu ($menus, $search, $type = "op", $op = null)
-{
-    if(is_array($menus)) {
-    ?>
-        <ul class="middleNavR">
-    <?php
-            foreach ($menus as $key => $menu) {
-
-                $isNotOp = null;
-
-                if($type !== "op") {
-                    $isNotOp = "op=" . $op . "&";
-                }
-    ?>
-                <li>
-                    <a class="tipN" href="index.php?file=<?php echo nkGetValue('file'); ?>&page=<?php echo nkGetValue('page'); ?>&<?php echo $isNotOp.$type; ?>=<?php echo $key; ?>" original-title="<?php echo $menu['name']; ?>">
-                        <span class="nkIcons icon-<?php echo (isset($menu['icon']) && !empty($menu['icon']) ? $menu['icon'] : 'help' ) ?>"></span>
-                    </a>
-                </li>
-    <?php
-
-            }
-    ?>
-        </ul>
-    <?php
     }
 }
 
