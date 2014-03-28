@@ -96,7 +96,7 @@ function nkDate($timestamp, $block = false) {
     }
 
     $format = ((($block === false) ? $isBlock : $block) === true) ? ($language == 'french') ? '%d/%m/%Y' : '%m/%d/%Y' : $nuked['dateformat'];
-    return strftime($format, $timestamp);
+    return strftime($format, intval($timestamp));
     // iconv pour eviter les caracteres speciaux dans la date
     return iconv('UTF-8','ISO-8859-1//TRANSLIT', strftime($format, $timestamp));
     //return iconv('UTF-8','ISO-8859-1',utf8_encode(strftime($format, $timestamp))); // For Windows servers
