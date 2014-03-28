@@ -257,6 +257,10 @@ if (nkHasAdmin())
             $dbsGetRank .= " AND id = '" . (int) $id . "' ";
         }
 
+        $dbsGetRank .= '
+            ORDER BY `order` ASC
+        ';
+
         $dbeGetRank = mysql_query($dbsGetRank) or die(nk_debug_bt());
 
         $ranks = array();

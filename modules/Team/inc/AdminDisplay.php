@@ -998,24 +998,11 @@ function formStatus ($id = false) {
  */
 function listRanks ($op) {
     ?>
-    <script type="text/javascript">
-          $(function() {
-            $( "#sortable" ).sortable({
-                cursor : "move",
-                stop : function (event, ui) {
-                    // @TODO Drag and Drop (defined)
-                    // table : TEAM_RANK_TABLE
-                    // Field : order
-                }
-            });
-            $( "#sortable" ).disableSelection();
-          });
-    </script>
     <div class="whead">
         <h6>&nbsp;</h6>
         <div class="clear both"></div>
     </div>
-    <table class="tDefault">
+    <table class="tDefault tableDnD" data-table="<?php echo TEAM_RANK_TABLE; ?>">
         <thead>
             <tr>
                 <td>
@@ -1036,7 +1023,7 @@ function listRanks ($op) {
             if ($ranks !== false && is_array($ranks) && sizeof($ranks)) {
                 foreach ($ranks as $value) {
                     ?>
-                        <tr>
+                        <tr data-id="<?php echo $value['id']; ?>">
                             <td>
                                 <?php
                                     if (isset($value['name']) && empty($value['name']) === false) {
@@ -1047,9 +1034,9 @@ function listRanks ($op) {
                                     }
                                 ?>
                             </td>
-                            <td>
+                            <td class="order">
                                 <?php
-                                    echo (int) $value['order'];
+                                    echo printSecuTags($value['order']);
                                 ?>
                             </td>
                             <td class="center">
