@@ -188,7 +188,7 @@ function WarsDisplayForm ($id = fale) {
                     <div class="grid3">
                         <label for="game">Jeu :</label>
                     </div>
-                    <div class="grid9 noSearch">
+                    <div class="grid9 searchDrop">
                         <select name="jeu" id="game" class="select">
                             <option value="0">=== CHOISIR ===</option>
                             <?php
@@ -208,7 +208,7 @@ function WarsDisplayForm ($id = fale) {
                     <div class="grid3">
                         <label for="status">Statut :</label>
                     </div>
-                    <div class="grid9 noSearch">
+                    <div class="grid9 searchDrop">
                         <select name="jeu" id="status" class="select">
                             <option value="">=== CHOISIR ===</option>
                             <option value="0"<?php echo ($status == 0 ? ' selected' : ''); ?>>A jouer</option>
@@ -221,7 +221,7 @@ function WarsDisplayForm ($id = fale) {
                     <div class="grid3">
                         <label for="date">Date :</label>
                     </div>
-                    <div class="grid2 noSearch">
+                    <div class="grid2 searchDrop">
                         <input type="text" name="date" id="date" class="datetimepicker" value="<?php echo strftime('%Y-%m-%d %H:%M'); ?>" />
                     </div>
                     <div class="clear both"></div>
@@ -254,7 +254,7 @@ function WarsDisplayForm ($id = fale) {
                     <div class="grid3">
                         <label for="country">Pays :</label>
                     </div>
-                    <div class="grid9 noSearch">
+                    <div class="grid9 searchDrop">
                         <select name="jeu" id="country" class="select">
                             <option value="0">=== CHOISIR ===</option>
                             <?php
