@@ -191,8 +191,8 @@ function GamesDisplayList($op)
                                     ?>
                                 </td>
                                 <td class="center">
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Games&page=admin&op=<?php echo $op; ?>&action=edit&id=<?php echo $game['id'];?>"></a>
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Games&page=admin&op=<?php echo $op; ?>&action=del&id=<?php echo $game['id'];?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=<?php echo GamesGetValue('file'); ?>&page=<?php echo GamesGetValue('page'); ?>&op=<?php echo $op; ?>&action=edit&id=<?php echo $game['id'];?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=<?php echo GamesGetValue('file'); ?>&page=<?php echo GamesGetValue('page'); ?>&op=<?php echo $op; ?>&action=del&id=<?php echo $game['id'];?>"></a>
                                 </td>
                             </tr>
                         <?php
