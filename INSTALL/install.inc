@@ -563,6 +563,7 @@
                           PRIMARY KEY (`id`)
                         ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                         $req = mysql_query($sql) or die (nk_debug_bt());
+                        echo 'OK';
         break;
         case'games_prefs':
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_games_prefs`";
@@ -1105,7 +1106,7 @@
         break;
         case 'team':
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_team`;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `name` varchar(100) NOT NULL,
@@ -1116,46 +1117,46 @@
                                   `image` varchar(255) NOT NULL,
                                   PRIMARY KEY (`id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
-                        $req = mysql_query($sql) or die (mysql_error());
+                        $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_games':
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_team_games`;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team_games` (
                                   `team_id` int(11) NOT NULL,
                                   `game_id` int(11) NOT NULL
                                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
-                        $req = mysql_query($sql) or die (mysql_error());
+                        $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_rank':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_rank`;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_rank` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `name` varchar(100) NOT NULL,
                                   `order` tinyint(2) NOT NULL,
                                   PRIMARY KEY (`id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
-                        $req = mysql_query($sql) or die (mysql_error());
+                        $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_groups':
                         $sql = "DROP TABLE IF EXISTS `" . $db_prefix . "_team_groups`;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team_groups` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `team_id` int(11) NOT NULL,
                                   `groups_id` int(11) NOT NULL,
                                   PRIMARY KEY (`id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
-                        $req = mysql_query($sql) or die (mysql_error());
+                        $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_settings':
-                        $req = mysql_query($sql) or die(mysql_error());
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_settings`;";
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_settings` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `name` varchar(255) NOT NULL,
@@ -1163,23 +1164,23 @@
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `name` (`name`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
-                        $req = mysql_query($sql) or die (mysql_error());
+                        $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_status':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_status`;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_status` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `name` varchar(100) NOT NULL,
                                   PRIMARY KEY (`id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_user':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user`;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `user_id` varchar(50) NOT NULL,
@@ -1187,23 +1188,23 @@
                                   PRIMARY KEY (`id`,`user_id`),
                                   UNIQUE KEY `team` (`user_id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_user_rank':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user_rank`;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_rank` (
                                   `teamuserteam_id` varchar(50) NOT NULL,
                                   `teamrank_id` int(11) NOT NULL,
                                   UNIQUE KEY `teamuser_id` (`teamuserteam_id`,`teamrank_id`)
                                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_user_team':
                         $sql = "DROP TABLE IF EXISTS `".$db_prefix."_team_user_team`;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_team` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `teamuser_id` int(11) NOT NULL,
@@ -1212,7 +1213,7 @@
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `teamuser_id` (`teamuser_id`,`team_id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
-                        $req = mysql_query($sql) or die(mysql_error());
+                        $req = mysql_query($sql) or die(nk_debug_bt());
                         echo 'OK';
         break;
         case'tmpses':
