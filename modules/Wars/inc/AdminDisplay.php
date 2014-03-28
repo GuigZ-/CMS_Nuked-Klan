@@ -37,8 +37,6 @@ function WarsDisplayAdmin()
         <div class="tab-content">
             <?php
                 WarsDisplayMenu($op);
-            ?>
-            <?php
                 WarsDisplayContent($op, $action, $id);
             ?>
         </div>

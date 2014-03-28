@@ -1,30 +1,26 @@
 <?php
 /**
- * Admin page of Team Mod
+ * About.php
  *
- * @version     1.8
- * @link http://www.nuked-klan.org Clan Clan Management System for Gamers
+ * Games display
+ *
+ * @version 1.8
+ * @link http://www.nuked-klan.org Clan Management System for Gamers
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  * @copyright 2001-2013 Nuked-Klan (Registred Trademark)
  */
-defined('INDEX_CHECK') or die('You can\'t run this file alone.');
 
-translate('modules/Team/lang/' . $GLOBALS['language'] . '.lang.php');
+if (!defined("INDEX_CHECK")) exit('You can\'t run this file alone.');
+
 
 // Inclusion du layout de l'administration
 require_once 'modules/Admin/views/layout.php';
 
-// Haut
 adminHeader();
 
-
 if (nkHasAdmin() === true) {
-    require_once 'modules/Team/inc/constants.php';
-    require_once 'modules/Team/inc/db.php';
-    require_once 'modules/Team/inc/functions.php';
-    require_once 'modules/Team/inc/AdminDisplay.php';
-    // Affichage de l'admin l'admin
-    displayAdmin();
+    require_once 'modules/Games/inc/AdminDisplay.php';
+    GamesDisplayAdmin();
 }
 else
 {
@@ -36,7 +32,5 @@ else
     <?php
 }
 
-// Bas
 adminFooter();
-
 ?>

@@ -1110,7 +1110,7 @@
                                   `order` tinyint(2) NOT NULL,
                                   `image` varchar(255) NOT NULL,
                                   PRIMARY KEY (`id`)
-                                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die (mysql_error());
                         echo 'OK';
         break;
@@ -1120,7 +1120,7 @@
                         $sql = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_team_games` (
                                   `team_id` int(11) NOT NULL,
                                   `game_id` int(11) NOT NULL
-                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                         $req = mysql_query($sql) or die (mysql_error());
                         echo 'OK';
         break;
@@ -1132,7 +1132,7 @@
                                   `name` varchar(100) NOT NULL,
                                   `order` tinyint(2) NOT NULL,
                                   PRIMARY KEY (`id`)
-                                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
+                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
                         $req = mysql_query($sql) or die (mysql_error());
                         echo 'OK';
         break;
@@ -1144,7 +1144,7 @@
                                   `team_id` int(11) NOT NULL,
                                   `groups_id` int(11) NOT NULL,
                                   PRIMARY KEY (`id`)
-                                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
+                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
                         $req = mysql_query($sql) or die (mysql_error());
                         echo 'OK';
         break;
@@ -1157,7 +1157,7 @@
                                   `value` text NOT NULL,
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `name` (`name`)
-                                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die (mysql_error());
                         echo 'OK';
         break;
@@ -1168,7 +1168,7 @@
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `name` varchar(100) NOT NULL,
                                   PRIMARY KEY (`id`)
-                                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die(mysql_error());
                         echo 'OK';
         break;
@@ -1181,7 +1181,7 @@
                                   `teamstatus_id` int(11) NOT NULL,
                                   PRIMARY KEY (`id`,`user_id`),
                                   UNIQUE KEY `team` (`user_id`)
-                                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die(mysql_error());
                         echo 'OK';
         break;
@@ -1192,7 +1192,7 @@
                                   `teamuserteam_id` varchar(50) NOT NULL,
                                   `teamrank_id` int(11) NOT NULL,
                                   UNIQUE KEY `teamuser_id` (`teamuserteam_id`,`teamrank_id`)
-                                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+                                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                         $req = mysql_query($sql) or die(mysql_error());
                         echo 'OK';
         break;
@@ -1206,7 +1206,7 @@
                                   `description` text NOT NULL,
                                   PRIMARY KEY (`id`),
                                   UNIQUE KEY `teamuser_id` (`teamuser_id`,`team_id`)
-                                ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+                                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
                         $req = mysql_query($sql) or die(mysql_error());
                         echo 'OK';
         break;

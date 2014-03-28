@@ -32,6 +32,7 @@ function getMatchs($id = false)
                 FROM ' . MATCH_TABLE . ' AS m
                 LEFT OUTER JOIN ' . MATCH_TABLE_MAP . ' AS mm
                     ON mm.`match_id` = m.`id`
+                WHERE 1
         ';
 
     if ($id)

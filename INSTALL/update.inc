@@ -95,7 +95,7 @@
             $texte = preg_replace("/\[url=(.*?)\](.*?)\[\/url\]/i", "<a href=\"\\1\" onclick=\"window.open(this.href); return false;\">\\2</a>", $texte);
             $texte = preg_replace("#\[s\](http://)?(.*?)\[/s\]#si", "<img style=\"border: 0;\" src=\"images/icones/\\2\" alt=\"\" />", $texte);
             $texte = ltrim($texte);
-            $sql = mysql_query('SELECT code, url, name FROM `'.$db_prefix.'_smilies`') or die (mysql_error());
+            $sql = mysql_query('SELECT code, url, name FROM `'.$db_prefix.'_smilies`') or die (nk_debug_bt());
             while(list($code, $url, $name) = mysql_fetch_array($sql)){
                 $texte = str_replace($code, '<img src="images/icones/'.$url.'" alt="'.$name.'" />', $texte);
             }
@@ -140,13 +140,13 @@
     );
 
     function tableExist($tablename, $prefix){
-        $sql = mysql_query("SHOW TABLES FROM `".$_SESSION['db_name']."` LIKE '".$prefix."_".$tablename."'") or die (mysql_error());
+        $sql = mysql_query("SHOW TABLES FROM `".$_SESSION['db_name']."` LIKE '".$prefix."_".$tablename."'") or die (nk_debug_bt());
         $count = mysql_num_rows($sql);
         return $count == 0 ? false : true;
     }
 
     function fieldExist($tablename, $fieldname, $prefix){
-        $sql = mysql_query("SHOW COLUMNS FROM `".$prefix."_".$tablename."` LIKE '".$fieldname."'") or die (mysql_error());
+        $sql = mysql_query("SHOW COLUMNS FROM `".$prefix."_".$tablename."` LIKE '".$fieldname."'") or die (nk_debug_bt());
         $count = mysql_num_rows($sql);
         return $count == 0 ? false : true;
     }
@@ -155,7 +155,7 @@
     switch($table){
         case'table_match':
                             if(!fieldExist('match', 'map', $db_prefix)){
-                                $sql = mysql_query('SELECT warid, map_1, map_2, map_3, score_team, score_adv FROM `'.$db_prefix.'_match`') or die(mysql_error());
+                                $sql = mysql_query('SELECT warid, map_1, map_2, map_3, score_team, score_adv FROM `'.$db_prefix.'_match`') or die(nk_debug_bt());
                                 $i=0;
                                 $array_matchs = array();
                                 while(list($id, $map_1, $map_2, $map_3, $score_team, $score_adv) = mysql_fetch_array($sql)){
@@ -165,17 +165,17 @@
                                     $array_matchs[$i]['score_adv'] = $score_adv;
                                     $i++;
                                 }
-                                mysql_query('ALTER TABLE `'.$db_prefix.'_match` DROP `map_1`, DROP `map_2`, DROP `map_3`') or die(mysql_error());
+                                mysql_query('ALTER TABLE `'.$db_prefix.'_match` DROP `map_1`, DROP `map_2`, DROP `map_3`') or die(nk_debug_bt());
                                 mysql_query('ALTER TABLE `'.$db_prefix.'_match` ADD `map` TEXT NOT NULL ,
                                                                 ADD `tscore_team` FLOAT DEFAULT NULL ,
                                                                 ADD `tscore_adv` FLOAT DEFAULT NULL
-                                                                ') or die(mysql_error());
+                                                                ') or die(nk_debug_bt());
                                 $i=0;
                                 foreach($array_matchs as $k){
                                     mysql_query('UPDATE `'.$db_prefix.'_match` SET map = \''.mysql_real_escape_string($array_matchs[$i]['map']).'\',
                                                                         tscore_team = \''.$array_matchs[$i]['score_team'].'\',
                                                                         tscore_adv = \''.$array_matchs[$i]['score_adv'].'\'
-                                                                        WHERE warid = \''.$array_matchs[$i]['id'].'\' ') or die(mysql_error());
+                                                                        WHERE warid = \''.$array_matchs[$i]['id'].'\' ') or die(nk_debug_bt());
                                     $i++;
                                 }
                             }
@@ -183,7 +183,7 @@
         break;
     	case'table_match_files':
                                 if(!tableExist('match_files', $db_prefix)){
-                                    mysql_query('ALTER TABLE `'.$db_prefix.'_fichiers_joins` RENAME AS `'.$db_prefix.'_match_files`') or die (mysql_error());
+                                    mysql_query('ALTER TABLE `'.$db_prefix.'_fichiers_joins` RENAME AS `'.$db_prefix.'_match_files`') or die (nk_debug_bt());
                                 }
                                 echo 'OK';
     	break;
@@ -195,16 +195,16 @@
                                     `pseudo`  text NOT NULL,
                                     `action`  text NOT NULL,
                                     PRIMARY KEY  (`id`)
-                                  ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;")or die(mysql_error());
+                                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
         case'table_banned':
                             if(!fieldExist('banned', 'date', $db_prefix)){
-                                mysql_query('ALTER TABLE `' . $db_prefix . '_banned` ADD `date` VARCHAR(20)  NULL AFTER `email`')or die(mysql_error());
+                                mysql_query('ALTER TABLE `' . $db_prefix . '_banned` ADD `date` VARCHAR(20)  NULL AFTER `email`')or die(nk_debug_bt());
                             }
                             if(!fieldExist('banned', 'dure', $db_prefix)){
-                                mysql_query('ALTER TABLE `' . $db_prefix . '_banned` ADD `dure` VARCHAR(20)  NULL AFTER `date`')or die(mysql_error());
+                                mysql_query('ALTER TABLE `' . $db_prefix . '_banned` ADD `dure` VARCHAR(20)  NULL AFTER `date`')or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
@@ -215,7 +215,7 @@
                                     `module` text NOT NULL,
                                     `active` int(1) NOT NULL,
                                     PRIMARY KEY  (`id`)
-                                  ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;")or die(mysql_error());
+                                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;")or die(nk_debug_bt());
 
                                 mysql_query("INSERT INTO `" . $db_prefix . "_comment_mod` (`id`, `module`, `active`) VALUES
                                     (1, 'news', 1),
@@ -224,13 +224,13 @@
                                     (4, 'survey', 1),
                                     (5, 'wars', 1),
                                     (6, 'gallery', 1),
-                                    (7, 'sections', 1);")or die(mysql_error());
+                                    (7, 'sections', 1);")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
         case'table_contact':
                             if(!tableExist('contact', $db_prefix)){
-                                $sql = mysql_query('SHOW TABLES FROM `'.$this->data['db_name'].'` ') or die (mysql_error());
+                                $sql = mysql_query('SHOW TABLES FROM `'.$this->data['db_name'].'` ') or die (nk_debug_bt());
                                 while(list($table_db) = mysql_fetch_array($sql)){
                                     $array_db[] = $table_db;
                                 }
@@ -245,7 +245,7 @@
                                         `date` varchar(30) NOT NULL default '',
                                         PRIMARY KEY  (`id`),
                                         KEY `titre` (`titre`)
-                                    ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;") or die (mysql_error());
+                                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;") or die (nk_debug_bt());
                                 }
                             }
                             echo 'OK';
@@ -258,7 +258,7 @@
                                     `pseudo`  text NOT NULL,
                                     `texte`  text NOT NULL,
                                     PRIMARY KEY  (`id`)
-                                  ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;")or die(mysql_error());
+                                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
@@ -270,21 +270,21 @@
                                     `lien`  text NOT NULL,
                                     `texte`  text NOT NULL,
                                     PRIMARY KEY  (`id`)
-                                  ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;")or die(mysql_error());
+                                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
         case'table_games':
                             if(!fieldExist('games', 'map', $db_prefix)){
-                                mysql_query("ALTER TABLE `" . $db_prefix . "_games` ADD `map` TEXT NOT NULL;")or die(mysql_error());
+                                mysql_query("ALTER TABLE `" . $db_prefix . "_games` ADD `map` TEXT NOT NULL;")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
         case'table_module':
                             if(!fieldExist('modules', 'status', $db_prefix)){
-                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` ADD `status` varchar(3) NOT NULL default 'on';")or die(mysql_error());
-                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` DELETE `niveau`;")or die(mysql_error());
-                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` DELETE `admin`;")or die(mysql_error());
+                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` ADD `status` varchar(3) NOT NULL default 'on';")or die(nk_debug_bt());
+                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` DELETE `niveau`;")or die(nk_debug_bt());
+                                mysql_query("ALTER TABLE `" . $db_prefix . "_modules` DELETE `admin`;")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
@@ -296,7 +296,7 @@
                                     `type`  text NOT NULL,
                                     `texte`  text NOT NULL,
                                     PRIMARY KEY  (`id`)
-                                  ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;")or die(mysql_error());
+                                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
@@ -307,16 +307,16 @@
                                     `session_vars` text NOT NULL,
                                     `session_start` bigint(20) NOT NULL,
                                     PRIMARY KEY (`session_id`)
-                                    ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;")or die(mysql_error());
+                                    ) ENGINE=MyISAM DEFAULT CHARSET=utf8;")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
         case'table_users':
                             if(!fieldExist('users', 'erreur', $db_prefix)){
-                                mysql_query("ALTER TABLE `" . $db_prefix . "_users` ADD `erreur` INT(10) NOT NULL default '0'")or die(mysql_error());
+                                mysql_query("ALTER TABLE `" . $db_prefix . "_users` ADD `erreur` INT(10) NOT NULL default '0'")or die(nk_debug_bt());
                             }
                             if(!fieldExist('users', 'token', $db_prefix)){
-                                mysql_query("ALTER TABLE `" . $db_prefix . "_users` ADD `token` VARCHAR(13) NULL DEFAULT NULL, ADD `token_time` varchar(10) NOT NULL DEFAULT '0'")or die(mysql_error());
+                                mysql_query("ALTER TABLE `" . $db_prefix . "_users` ADD `token` VARCHAR(13) NULL DEFAULT NULL, ADD `token_time` varchar(10) NOT NULL DEFAULT '0'")or die(nk_debug_bt());
                             }
                             echo 'OK';
         break;
@@ -337,7 +337,7 @@
                                         $select = 'SELECT '.$v[0].', '.$v[1].' FROM '.$db_prefix.$k.' ';
                                     }
 
-                                    $sql = mysql_query($select) or die(mysql_error());
+                                    $sql = mysql_query($select) or die(nk_debug_bt());
                                     while($row = mysql_fetch_row($sql)){
                                         if(isset($row[1])){
                                             $row[1] = mysql_real_escape_string(bbcode(stripslashes($row[1]), $db_prefix));
@@ -354,87 +354,87 @@
                                         {
                                             $update = "UPDATE `".$db_prefix.$k."` SET ".$v[1]."='".$row[1]."' WHERE ".$v[0]."='".$row[0]."' ";
                                         }
-                                        mysql_query($update) or die (mysql_error());
+                                        mysql_query($update) or die (nk_debug_bt());
                                     }
                                 }
                             }
                              echo 'OK';
         break;
         case'update_config':
-                            $sql = mysql_query('SELECT value FROM `'.$db_prefix.'_config` WHERE name=\'version\' ')or die (mysql_error());
+                            $sql = mysql_query('SELECT value FROM `'.$db_prefix.'_config` WHERE name=\'version\' ')or die (nk_debug_bt());
                             list($old_version) = mysql_fetch_array($sql);
                             if($old_version != '1.7.9'){
-                                mysql_query('UPDATE `' . $db_prefix . '_config` SET value = \'1.7.9\' WHERE name = \'version\'')or die(mysql_error());
+                                mysql_query('UPDATE `' . $db_prefix . '_config` SET value = \'1.7.9\' WHERE name = \'version\'')or die(nk_debug_bt());
                                 if($this->data['version']['rev'] == 7 || $this->data['version']['rev'] == 8){
                                     // version 1.7.7 ou 1.7.8
-                                    mysql_query('UPDATE `' . $db_prefix . '_config` SET value = \'Impact_Nk\' WHERE name = \'theme\'')or die(mysql_error());
-                                    mysql_query('UPDATE `' . $db_prefix . '_config` SET value = \'quakenet.org\' WHERE name = \'irc_serv\'')or die(mysql_error());
-                                    mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'screen\', \'on\')')or die(mysql_error());
-                                    mysql_query('INSERT INTO `' . $db_prefix . '_modules` (`nom`, `niveau`, `admin`) VALUES (\'Stats\', 0, 2)')or die(mysql_error());
+                                    mysql_query('UPDATE `' . $db_prefix . '_config` SET value = \'Impact_Nk\' WHERE name = \'theme\'')or die(nk_debug_bt());
+                                    mysql_query('UPDATE `' . $db_prefix . '_config` SET value = \'quakenet.org\' WHERE name = \'irc_serv\'')or die(nk_debug_bt());
+                                    mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'screen\', \'on\')')or die(nk_debug_bt());
+                                    mysql_query('INSERT INTO `' . $db_prefix . '_modules` (`nom`, `niveau`, `admin`) VALUES (\'Stats\', 0, 2)')or die(nk_debug_bt());
                                     if(!tableExist('contact', $db_prefix)){
-                                        mysql_query('INSERT INTO `' . $db_prefix . '_modules` (`nom`, `niveau`, `admin`) VALUES (\'Contact\', 0, 3)')or die(mysql_error());
-                                        $recup_mail = mysql_query("SELECT value FROM `" . $db_prefix . "_config` WHERE name = 'mail'")or die(mysql_error());
-                                        list($mail_admin) = mysql_fetch_array($recup_mail)or die(mysql_error());
-                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'contact_mail\', \''.$mail_admin.'\')')or die(mysql_error());
-                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'contact_flood\', \'60\')')or die(mysql_error());
+                                        mysql_query('INSERT INTO `' . $db_prefix . '_modules` (`nom`, `niveau`, `admin`) VALUES (\'Contact\', 0, 3)')or die(nk_debug_bt());
+                                        $recup_mail = mysql_query("SELECT value FROM `" . $db_prefix . "_config` WHERE name = 'mail'")or die(nk_debug_bt());
+                                        list($mail_admin) = mysql_fetch_array($recup_mail)or die(nk_debug_bt());
+                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'contact_mail\', \''.$mail_admin.'\')')or die(nk_debug_bt());
+                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'contact_flood\', \'60\')')or die(nk_debug_bt());
                                     }
                                 }
                                 if($old_version != '1.7.9 RC6'){
                                     // Tout sauf 1.7.9 RC6
                                     if ($this->data['lang_install'] == 'french'){
-                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'dateformat\', \'%d/%m/%Y - %H:%M:%S\')')or die(mysql_error());
-                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'datezone\', \'1\')')or die(mysql_error());
+                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'dateformat\', \'%d/%m/%Y - %H:%M:%S\')')or die(nk_debug_bt());
+                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'datezone\', \'1\')')or die(nk_debug_bt());
                                     }
                                     else{
-                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'dateformat\', \'%m/%d/%Y - %H:%M:%S\')')or die(mysql_error());
-                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'datezone\', \'0\')')or die(mysql_error());
+                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'dateformat\', \'%m/%d/%Y - %H:%M:%S\')')or die(nk_debug_bt());
+                                        mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'datezone\', \'0\')')or die(nk_debug_bt());
                                     }
-                                    mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'time_generate\', \'on\')')or die(mysql_error());
-                                    mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'video_editeur\', \'on\')')or die(mysql_error());
-                                    mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'scayt_editeur\', \'on\')')or die(mysql_error());
+                                    mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'time_generate\', \'on\')')or die(nk_debug_bt());
+                                    mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'video_editeur\', \'on\')')or die(nk_debug_bt());
+                                    mysql_query('INSERT INTO `' . $db_prefix . '_config` (name, value) VALUES (\'scayt_editeur\', \'on\')')or die(nk_debug_bt());
                                 }
                             }
                             echo 'OK';
         break;
         case'update_pass':
-                            $sql = mysql_query('SELECT pass FROM `'.$db_prefix.'_users` ORDER BY RAND() LIMIT 1') or die(mysql_error());
+                            $sql = mysql_query('SELECT pass FROM `'.$db_prefix.'_users` ORDER BY RAND() LIMIT 1') or die(nk_debug_bt());
                             list($result) = mysql_fetch_array($sql);
                             if(substr($result, 0, 1) != '%' && substr($result, 0, 1) != '#'){
                                 $sql_user = mysql_query("SELECT id, pass FROM `" . $db_prefix . "_users`");
                                 while (list($userid, $userpass) = mysql_fetch_row($sql_user)){
-                                    mysql_query('UPDATE `' . $db_prefix . '_users` SET pass=\'' . UpdatePassCrypt($userpass) . '\' WHERE id = \'' . $userid . '\'')or die(mysql_error());
+                                    mysql_query('UPDATE `' . $db_prefix . '_users` SET pass=\'' . UpdatePassCrypt($userpass) . '\' WHERE id = \'' . $userid . '\'')or die(nk_debug_bt());
                                 }
                             }
 
                             echo 'OK';
         break;
         case 'table_smilies' :
-            $sql = mysql_query('SELECT id FROM `'.$db_prefix.'_smilies` WHERE code LIKE \'%\\\'%\'') or die(mysql_error());
+            $sql = mysql_query('SELECT id FROM `'.$db_prefix.'_smilies` WHERE code LIKE \'%\\\'%\'') or die(nk_debug_bt());
             $i = 0;
             while ( $idSmiley = mysql_fetch_row($sql)){
                 $i++;
-                mysql_query('UPDATE `' . $db_prefix . '_smilies` SET code=\'#smiley' . $i . '#\'' . ' WHERE id = \'' . $idSmiley[0] . '\'') or die(mysql_error());
+                mysql_query('UPDATE `' . $db_prefix . '_smilies` SET code=\'#smiley' . $i . '#\'' . ' WHERE id = \'' . $idSmiley[0] . '\'') or die(nk_debug_bt());
             }
             echo 'OK';
         break;
         case'remove_style':
-                            mysql_query("DROP TABLE IF EXISTS  `" . $db_prefix . "_style` ")or die(mysql_error());
+                            mysql_query("DROP TABLE IF EXISTS  `" . $db_prefix . "_style` ")or die(nk_debug_bt());
                             echo 'OK';
         break;
         case'remove_editeur':
-                            mysql_query("DROP TABLE IF EXISTS `" . $db_prefix . "_editeur` ")or die(mysql_error());
+                            mysql_query("DROP TABLE IF EXISTS `" . $db_prefix . "_editeur` ")or die(nk_debug_bt());
                             if($this->data['version']['rev'] == '9'){
-                                $sql = mysql_query('SELECT id, comment FROM `'.$db_prefix.'_forums` ')or die(mysql_error());
+                                $sql = mysql_query('SELECT id, comment FROM `'.$db_prefix.'_forums` ')or die(nk_debug_bt());
                                 while(list($id, $comment) = mysql_fetch_array($sql)){
                                     $comment = str_replace('<p>', '', $comment);
                                     $comment = str_replace('</p>', '', $comment);
-                                    mysql_query('UPDATE `'.$db_prefix.'_forums` set comment = \''.mysql_real_escape_string($comment).'\' WHERE id=\''.$id.'\' ')or die(mysql_error());
+                                    mysql_query('UPDATE `'.$db_prefix.'_forums` set comment = \''.mysql_real_escape_string($comment).'\' WHERE id=\''.$id.'\' ')or die(nk_debug_bt());
                                 }
                             }
                             echo 'OK';
         break;
         case'remove_package_manager':
-                            mysql_query("DROP TABLE IF EXISTS `" . $db_prefix . "_packages` ")or die(mysql_error());
+                            mysql_query("DROP TABLE IF EXISTS `" . $db_prefix . "_packages` ")or die(nk_debug_bt());
                             echo 'OK';
         break;
         case'remove_turkish.lang.php':
@@ -455,11 +455,11 @@
                             }
                             echo 'OK';
         break;
-     case 'table_forums_read':
-          $req = mysql_query("SELECT * FROM `" . $db_prefix . "_forums_read` ") or die(mysql_error());
-          if ($req) {
-               $users = array();
-               while ($data = mysql_fetch_assoc($req)) {
+        case 'table_forums_read':
+            $req = mysql_query("SELECT * FROM `" . $db_prefix . "_forums_read` ") or die(nk_debug_bt());
+            if ($req) {
+                $users = array();
+                while ($data = mysql_fetch_assoc($req)) {
                     if (!isset($data['id'])) {
                          echo "OK";
                          break;
@@ -469,32 +469,123 @@
 
                     if (!isset($users[$data['user_id']]['forum_id']) || empty($users[$data['user_id']]['forum_id']))
                          $users[$data['user_id']]['forum_id'] = ',';
+
                     if (strrpos($users[$data['user_id']]['thread_id'], ',' . $data['thread_id'] . ',') === false)
                          $users[$data['user_id']]['thread_id'] .= $data['thread_id'] . ',';
+
                     if (strrpos($users[$data['user_id']]['forum_id'], ',' . $data['forum_id'] . ',') === false)
-                    $users[$data['user_id']]['forum_id'] .= $data['forum_id'] . ',';
-               }
-               if (sizeof($users)) {
-                    mysql_query("DROP TABLE IF EXISTS `" . $db_prefix . "_forums_read`") or die(mysql_error());
+                        $users[$data['user_id']]['forum_id'] .= $data['forum_id'] . ',';
+                }
+                if (sizeof($users)) {
+                    mysql_query("DROP TABLE IF EXISTS `" . $db_prefix . "_forums_read`") or die(nk_debug_bt());
                     $SQL = "CREATE TABLE IF NOT EXISTS `" . $db_prefix . "_forums_read`(
                               `user_id` varchar(20) NOT NULL PRIMARY KEY,
                               `forum_id` text NOT NULL,
                               `thread_id` text NOT NULL
-                         ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;";
-                    mysql_query($SQL) or die(mysql_error());
+                        ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+                    mysql_query($SQL) or die(nk_debug_bt());
                     $SQL = "INSERT INTO `" . $db_prefix . "_forums_read` (user_id, forum_id, thread_id) VALUES ";
                     $i = 0;
                     foreach ($users as $key => $user) {
-                         if ($i > 0)
-                              $SQL .= ', ';
-                         $SQL .= "('" . $key . "', '" . $user['forum_id'] . "', '" . $user['thread_id'] . "') ";
-                         $i++;
+                        if ($i > 0)
+                            $SQL .= ', ';
+                        $SQL .= "('" . $key . "', '" . $user['forum_id'] . "', '" . $user['thread_id'] . "') ";
+                        $i++;
                     }
-                    mysql_query($SQL) or die(mysql_error());
-               }
-          }
-          echo "OK";
-          break;
+                    mysql_query($SQL) or die(nk_debug_bt());
+                }
+            }
+            echo "OK";
+        break;
+        case 'table_wars':
+            // Update fields to NK 1.8
+            /***********************************************************************************************************************/
+            // Game tables
+            mysql_query("DROP TABLE IF EXISTS `".$db_prefix."_games_map`;") or die(nk_debug_bt());
+            mysql_query("
+                CREATE TABLE IF NOT EXISTS `".$db_prefix."_games_map` (
+                    `id` INT(11) NOT NULL AUTO_INCREMENT,
+                    `game_id` INT(11) NOT NULL,
+                    `name` VARCHAR(255) NOT NULL,
+                    `picture` VARCHAR(255) NOT NULL,
+                    PRIMARY KEY (`id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;") or die(nk_debug_bt());
+
+            // Get old maps
+            $dbsGetGames = "SELECT `id`, `map` FROM `".$db_prefix."_games` ";
+            $dbeGetGames = mysql_query($dbsGetGames) or die(nk_debug_bt());
+
+            $games = "INSERT INTO `".$db_prefix."_games_map` (`game_id`, `name`) VALUES ";
+
+            $mapsArray = array();
+
+            if ($dbeGetGames)
+            {
+                while ($dbaGetGames = mysql_fetch_array($dbeGetGames))
+                {
+                    $maps = explode('|', $dbaGetGames['map']);
+                    if ($maps && is_array($maps) && count($maps))
+                    {
+                        foreach ($maps as $map)
+                            $mapsArray[] = " (".(int) $dbaGetGames['id'].", '".mysql_real_escape_string($map)."') ";
+                    }
+                }
+            }
+
+            if (count($mapsArray))
+            {
+                mysql_query($games.implode(',', $mapsArray)) or die(nk_debug_bt());
+            }
+
+            // Delete fields
+            mysql_query("
+                ALTER TABLE `" . $db_prefix . "_games_map`
+                    DROP `map`,
+                    DROP `titre`,
+                    DROP `pref_1`,
+                    DROP `pref_2`,
+                    DROP `pref_3`,
+                    DROP `pref_4`,
+                    DROP `pref_5`;
+            ") or die(nk_debug_bt());
+            /***********************************************************************************************************************/
+            // Match tables
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `warid`  `id` INT( 10 ) NOT NULL AUTO_INCREMENT") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `pays_adv`  `country` VARCHAR( 50 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ;") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `team`  `team_id` INT( 11 ) NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `game`  `game_id` INT( 11 ) NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `etat`  `status` INT( 1 ) NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `url_adv`  `link` VARCHAR( 255 ) NOT NULL") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` CHANGE `adversaire`  `versus` TEXT") or die(nk_debug_bt());
+            mysql_query("ALTER TABLE `" . $db_prefix . "_match` ADD `date` BIGINT( 20 ) NOT NULL AFTER  `style` ;") or die(nk_debug_bt());
+            // Update date to TIMESTAMP
+            mysql_query("UPDATE `" . $db_prefix . "_match` SET `date` = UNIX_TIMESTAMP(CONCAT(`date_an`,'-', `date_mois`, '-', `date_jour`, ' ', `heure`, ':00') ;") or die(nk_debug_bt());
+            // Delete fields
+            mysql_query("
+                ALTER TABLE `" . $db_prefix . "_match`
+                    DROP `date_jour`,
+                    DROP `date_mois`,
+                    DROP `date_an`,
+                    DROP `heure`,
+                    DROP `map`,
+                    DROP `tscore_team`,
+                    DROP `tscore_adv`,
+                    DROP `score_team`,
+                    DROP `score_adv`;
+            ") or die(nk_debug_bt());
+            // Drop Association Table if update failed (Match, Map)
+            mysql_query("DROP TABLE IF EXISTS `" .$db_prefix . "_match_map`;") or die(nk_debug_bt());
+            // Create Association Table (Match, Map)
+            mysql_query("
+                CREATE TABLE IF NOT EXISTS `" .$db_prefix . "_match_map` (
+                    `match_id` INT(11) NOT NULL,
+                    `map_id` INT(11) NOT NULL,
+                    `players` TEXT NOT NULL,
+                    `substitute` TEXT NOT NULL,
+                    `score` VARCHAR(30) NOT NULL
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+            ") or die(nk_debug_bt());
+        break;
         default:
             echo _WRONGTABLENAME;
         break;

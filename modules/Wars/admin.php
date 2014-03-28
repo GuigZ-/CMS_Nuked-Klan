@@ -14,13 +14,23 @@ translate('modules/Wars/lang/' . $GLOBALS['language'] . '.lang.php');
 // Inclusion du layout de l'administration
 require_once 'modules/Admin/views/layout.php';
 
-require_once 'modules/Wars/inc/AdminDisplay.php';
-
 // Haut
 adminHeader();
 
-// Affiche l'admin
-WarsDisplayAdmin();
+if (nkHasAdmin() === true) {
+    require_once 'modules/Wars/inc/AdminDisplay.php';
+    // Affiche l'admin
+    WarsDisplayAdmin();
+}
+else
+{
+    printMessage(ADMIN_ACCESS_DENIED, 'Failure');
+    ?>
+        <div class="backButton center">
+            <a class="buttonM bDefault" href="index.php?file=Admin"><?php echo BACK; ?></a>
+        </div>
+    <?php
+}
 
 // Bas
 adminFooter();
