@@ -10,7 +10,9 @@
 defined('INDEX_CHECK') or die('You can\'t run this file alone.');
 
 translate('modules/Team/lang/' . $GLOBALS['language'] . '.lang.php');
-include 'modules/Admin/design.php';
+
+// Inclusion du layout de l'administration
+require_once 'modules/Admin/views/layout.php';
 require_once dirname(__FILE__).'/inc/constants.php';
 require_once dirname(__FILE__).'/inc/db.php';
 require_once dirname(__FILE__).'/inc/functions.php';
@@ -42,43 +44,27 @@ function displayAdmin () {
     /**
      * @TODO DELETE NEXT LINE
      */
-	?>
+    ?>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-	<div class="content-box">
-		<div class="content-box-header">
-			<h3><?php echo TEAM_ADMIN_TITLE; ?></h3>
-		</div>
-		<div class="tab-content">
-			<div style="text-align:center;">
-	<?php
-				displayMenu($op);
-	?>
-			</div>
-            <br />
-			<div style="text-align:center;">
-                <br />
-	<?php
-				displaySubMenu($op, $action);
-	?>
-			</div>
-			<br />
+    <div class="content-box">
+        <div class="tab-content">
     <?php
-                postProcess($op, $action, $id);
+            displayMenu($op);
+            displaySubMenu($op, $action);
+            postProcess($op, $action, $id);
 
-                if (isset($_REQUEST['conf'])) {
-                    displayConf($_REQUEST['conf']);
-                }
-
+            if (isset($_REQUEST['conf'])) {
+                displayConf($_REQUEST['conf']);
+            }
+    ?>
+            <div class="widget">
+    <?php
                 displayContent($op, $action, $id);
     ?>
-            <div class="back">
-                <br />
-                [ <a href="index.php?file=Admin" class="boldCenter"><?php echo _BACK; ?></a> ]
             </div>
-            <br />
-		</div>
-	</div>
-	<?php
+        </div>
+    </div>
+    <?php
 }
 
 /**
@@ -86,13 +72,13 @@ function displayAdmin () {
  * @param  string $op
  */
 function displayMenu ($op) {
-	$menus = array(
-		"teams"        => TEAM_MANAGEMENT_TEAMS,
-		"manage_users" => TEAM_MANAGEMENT_USERS,
-		"status"       => TEAM_MANAGEMENT_STATUS,
+    $menus = array(
+        "teams"        => TEAM_MANAGEMENT_TEAMS,
+        "manage_users" => TEAM_MANAGEMENT_USERS,
+        "status"       => TEAM_MANAGEMENT_STATUS,
         "ranks"        => TEAM_MANAGEMENT_RANKS,
-		"settings"     => TEAM_PREFERENCES,
-	);
+        "settings"     => TEAM_PREFERENCES,
+    );
 
     displayContentMenu($menus, $op);
 }
@@ -105,44 +91,36 @@ function displaySubMenu ($op, $action) {
 
     switch ($op) {
         case 'teams':
-            echo "[ ";
             $menus = array(
                 "list" => TEAM_ADMIN_LIST,
                 "add"  => TEAM_ADMIN_ADD_TEAM
                 );
             displayContentMenu($menus, $action, "action", $op);
-            echo " ]";
             break;
 
         case 'manage_users':
-            echo "[ ";
             $menus = array(
                 "list" => TEAM_ADMIN_LIST,
                 "add"  => TEAM_ADMIN_ADD_COMBINAISON,
                 "list_status"  => TEAM_ADMIN_LIST_STATUS
                 );
             displayContentMenu($menus, $action, "action", $op);
-            echo " ]";
             break;
 
         case 'status':
-            echo "[ ";
             $menus = array(
                 "list" => TEAM_ADMIN_LIST,
                 "add"  => TEAM_ADMIN_ADD_STATUS
                 );
             displayContentMenu($menus, $action, "action", $op);
-            echo " ]";
             break;
 
         case 'ranks':
-            echo "[ ";
             $menus = array(
                 "list" => TEAM_ADMIN_LIST,
                 "add"  => TEAM_ADMIN_ADD_RANK
                 );
             displayContentMenu($menus, $action, "action", $op);
-            echo " ]";
             break;
 
         default:
@@ -161,47 +139,29 @@ function displayContentMenu ($menus, $search, $type = "op", $op = null) {
     if(is_array($menus)) {
 
         $i = 0;
-
-        foreach ($menus as $key => $menu) {
-
-            // Si ce n'est pas l'onglet en cours
-            if ($key !== $search) {
-                echo "<strong>";
-            }
-            // if not first while
-            if ($i > 0) {
-	?>
-                |
-	<?php
-            }
-            // Si c'est l'onglet en cours
-            if ($key === $search) {
-                echo $menu;
-            }
-            else {
+    ?>
+        <ul class="middleNavR">
+    <?php
+            foreach ($menus as $key => $menu) {
 
                 $isNotOp = null;
 
                 if($type !== "op") {
                     $isNotOp = "op=" . $op . "&";
                 }
-	?>
-                <a href="index.php?file=Team&page=admin&<?php echo $isNotOp.$type; ?>=<?php echo $key; ?>">
-	<?php
-                    echo $menu;
-	?>
-                </a>
-	<?php
+    ?>
+                <li>
+                    <a class="tipN" href="index.php?file=Team&page=admin&<?php echo $isNotOp.$type; ?>=<?php echo $key; ?>" original-title="<?php echo $menu; ?>">
+                        <span class="nkIcons icon-add"></span>
+                    </a>
+                </li>
+    <?php
+
+                $i++;
             }
-
-            // Si ce n'est pas l'onglet en cours
-            if ($key !== $search) {
-                echo "</strong>";
-            }
-
-
-            $i++;
-        }
+    ?>
+        </ul>
+    <?php
     }
 }
 
@@ -303,112 +263,101 @@ function listTeams () {
             $( "#sortable" ).disableSelection();
           });
     </script>
-    <div class="tableWidth100 lineHeight1_3 table">
-        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-            <!-- Nom -->
-            <div class="tableWidth20 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_NAME;
-                ?>
-            </div>
-            <!-- Prefix -->
-            <div class="tableWidth20 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_PREFIX;
-                ?>
-            </div>
-            <!-- Suffix -->
-            <div class="tableWidth20 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_SUFFIX;
-                ?>
-            </div>
-            <!-- Ordre -->
-            <div class="tableWidth20 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_ORDER;
-                ?>
-            </div>
-            <!-- Action -->
-            <div class="tableWidth20 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_ACTIONS;
-                ?>
-            </div>
-            <div class="clear both"></div>
-        </div>
+    <div class="whead">
+        <h6>&nbsp;</h6>
+        <div class="clear both"></div>
     </div>
-    <div id="sortable" class="tableWidth100 lineHeight1_3 table">
-        <!-- Equipes -->
-        <?php
+    <table class="tDefault">
+        <thead>
+            <tr>
+                <td>
+                    <strong><?php echo TEAM_NAME; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_PREFIX; ?></strong>
+                    </td>
+                <td>
+                    <strong><?php echo TEAM_SUFFIX; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_ORDER; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_ACTIONS; ?></strong>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Equipes -->
+            <?php
                 $teams = getTeams();
                 if ($teams !== false && is_array($teams) && sizeof($teams)) {
                     foreach ($teams as $team) {
                         ?>
-                            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                                <!-- Nom -->
-                                <div class="tableWidth20 inlineBlock center tableCell">
-                                    <?php
-                                        echo printSecuTags($team['name']);
-                                    ?>
-                                </div>
-                                <!-- Prefix -->
-                                <div class="tableWidth20 inlineBlock center tableCell">
-                                    <?php
-                                        if (isset($team['prefix']) && empty($team['prefix']) === false) {
-                                            echo printSecuTags($team['prefix']);
-                                        }
-                                        else {
-                                            echo "-";
-                                        }
-                                    ?>
-                                </div>
-                                <!-- Suffix -->
-                                <div class="tableWidth20 inlineBlock center tableCell">
-                                    <?php
-                                        if (isset($team['suffix']) && empty($team['suffix']) === false) {
-                                            echo printSecuTags($team['suffix']);
-                                        }
-                                        else {
-                                            echo "-";
-                                        }
-                                    ?>
-                                </div>
-                                <!-- Ordre -->
-                                <div class="tableWidth20 inlineBlock center tableCell">
-                                    <?php
-                                        echo printSecuTags($team['order']);
-                                    ?>
-                                </div>
-                                <!-- Action -->
-                                <div class="tableWidth20 inlineBlock center tableCell">
-                                    <a href="index.php?file=Team&page=admin&op=teams&action=edit&id=<?php echo $team['id'];?>"><img src="images/edit.gif" alt=""/></a>
-                                    <a href="index.php?file=Team&page=admin&op=teams&action=del&id=<?php echo $team['id'];?>"><img src="images/del.gif" alt=""/></a>
-                                </div>
-                                <div class="clear both"></div>
-                            </div>
+                        <tr>
+                            <!-- Nom -->
+                            <td>
+                                <?php
+                                    echo printSecuTags($team['name']);
+                                ?>
+                            </td>
+                            <!-- Prefix -->
+                            <td>
+                                <?php
+                                    if (isset($team['prefix']) && empty($team['prefix']) === false) {
+                                        echo printSecuTags($team['prefix']);
+                                    }
+                                    else {
+                                        echo "-";
+                                    }
+                                ?>
+                            </td>
+                            <!-- Suffix -->
+                            <td>
+                                <?php
+                                    if (isset($team['suffix']) && empty($team['suffix']) === false) {
+                                        echo printSecuTags($team['suffix']);
+                                    }
+                                    else {
+                                        echo "-";
+                                    }
+                                ?>
+                            </td>
+                            <!-- Ordre -->
+                            <td>
+                                <?php
+                                    echo printSecuTags($team['order']);
+                                ?>
+                            </td>
+                            <td class="center">
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=teams&action=edit&id=<?php echo $team['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=teams&action=del&id=<?php echo $team['id'];?>"></a>
+                            </td>
+                        </tr>
                         <?php
                     }
                 }
-                else {
+                else
+                {
                     ?>
-                    <br />
-                    <div class="margin0-10 borderBox">
-                        <div class="notification information widthAuto ">
-                            <div>
-                                <?php
-                                    echo TEAM_NO_TEAM_REGISTERED;
-                                ?>
-                            </div>
-                        </div>
-                    </div>
+                    <tr>
+                        <td colspan="5">
+                            <?php echo TEAM_NO_TEAM_REGISTERED; ?>
+                        </td>
+                    </tr>
                     <?php
                 }
-        ?>
-        <!-- /Equipes -->
-    </div>
-    <div class="clear both"></div>
-    <br />
+            ?>
+            <!-- /Equipes -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="body center">
+                    <a class="buttonM bDefault" href="index.php?file=Admin"><?php echo BACK; ?></a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
     <?php
 }
 
@@ -450,136 +399,126 @@ function formTeams ($id = false) {
 
     ?>
     <form action="" method="POST" class="form" autocomplete="off" enctype="multipart/form-data">
-        <div class="tableWidth100 lineHeight1_3 table">
+        <div class="fluid">
             <!-- Name -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="name">
                         <?php
                             echo TEAM_NAME . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <input type="text" name="name" id="name" value="<?php echo $name; ?>">
-                    <sup>*</sup>
+                <div class="grid9">
+                    <input type="text" name="name" id="name" value="<?php echo $name; ?>" class="validate[required]">
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Name -->
             <!-- Image -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold quarter">
+            <div class="formRow">
+                <div class="grid3 quarter">
                     <label for="name">
                         <?php
                             echo TEAM_IMAGE . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <input type="file" name="image" id="image" value="<?php echo $image; ?>" />
-                    <?php echo ($id ? '' : '<sup>*</sup>'); ?>
+                <div class="grid9">
+                    <input type="file" name="image" id="image" value="<?php echo $image; ?>" class="validate[required]" />
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Image -->
             <!-- Description -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold quarter">
+            <div class="formRow">
+                <div class="grid3 quarter">
                     <label for="name">
                         <?php
                             echo TEAM_DESCRIPTION . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <textarea type="text" name="description" id="description" class="editor"><?php echo $description; ?></textarea>
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Description -->
             <!-- Prefix -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="prefix">
                         <?php
                             echo TEAM_PREFIX . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <input type="text" name="prefix" id="prefix" value="<?php echo $prefix; ?>">
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Prefix -->
             <!-- Suffix -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="suffix">
                         <?php
                             echo TEAM_SUFFIX . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <input type="text" name="suffix" id="suffix" value="<?php echo $suffix; ?>">
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Suffix -->
             <!-- Groups -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="suffix">
                         <?php
                             echo TEAM_GROUPS . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <?php
                         $groups = getNkGroups();
                         if ($groups)
                             foreach ($groups as $id => $name)
-                                echo '<input type="checkbox" name="groups[]" value="'.$id.'" id="group_' . $id . '" ' . ( is_array($teamGroups) && in_array($id, $teamGroups) ? 'checked="checked"' : '') . ' /> <label for="group_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($name)) . '</label><br />';
+                                echo '<div><input type="checkbox" class="check" name="groups[]" value="'.$id.'" id="group_' . $id . '" ' . ( is_array($teamGroups) && in_array($id, $teamGroups) ? 'checked="checked"' : '') . ' /> <label for="group_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($name)) . '</label><br /></div>';
                     ?>
                 </div>
+                <div class="clear both"></div>
             </div>
             <!-- /Groups -->
             <!-- Games -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="suffix">
                         <?php
                             echo TEAM_GAMES . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <?php
                         $games = getNkGames();
                         if ($games)
                             foreach ($games as $id => $name) {
-                                echo '<input type="checkbox" name="games[]" value="'.$id.'" id="game_' . $id . '" ' . ( is_array($teamGames) && in_array($id, $teamGames) ? 'checked="checked"' : '') . ' /> <label for="game_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($name)) . '</label><br />';
+                                echo '<div><input type="checkbox" class="check" name="games[]" value="'.$id.'" id="game_' . $id . '" ' . ( is_array($teamGames) && in_array($id, $teamGames) ? 'checked="checked"' : '') . ' /> <label for="game_' . $id . '" class="inlineBlock">' . ucfirst(strtolower($name)) . '</label><br /></div>';
                             }
                     ?>
                 </div>
+                <div class="clear both"></div>
             </div>
             <!-- /Games -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <input type="submit" name="btnSubmit" class="button">
-                </div>
-                <div></div>
-            </div>
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <small>
-                        <sup>*</sup> <?php echo FIELDS_REQUIRE; ?>
-                    </small>
-                </div>
-                <div></div>
+            <div class="body center">
+                <input type="submit" name="btnSubmit" class="buttonM bBlue">
+                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -592,43 +531,36 @@ function formTeams ($id = false) {
  */
 function listUsers () {
     ?>
-    <div class="tableWidth100 lineHeight1_3 table">
-        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-            <!-- Name -->
-            <div class="tableWidth25 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_NICKAME;
-                ?>
-            </div>
-            <!-- Team -->
-            <div class="tableWidth25 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_TEAM;
-                ?>
-            </div>
-            <!-- Team -->
-            <div class="tableWidth25 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_RANKS;
-                ?>
-            </div>
-            <!-- Action -->
-            <div class="tableWidth25 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_ACTIONS;
-                ?>
-            </div>
-            <div class="clear both"></div>
-        </div>
-        <!-- Status -->
-        <?php
+    <div class="whead">
+        <h6>&nbsp;</h6>
+        <div class="clear both"></div>
+    </div>
+    <table class="tDefault">
+        <thead>
+            <tr>
+                <td>
+                    <strong><?php echo TEAM_NICKAME; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_TEAM; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_RANKS; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_ACTIONS; ?></strong>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Status -->
+            <?php
             $users = getUsers();
             if ($users !== false && is_array($users) && sizeof($users)) {
                 foreach ($users as $value) {
                     ?>
-                        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                            <!-- Name -->
-                            <div class="tableWidth25 inlineBlock boldCenter tableCell">
+                        <tr>
+                            <td>
                                 <?php
                                     if (isset($value['pseudo']) && empty($value['pseudo']) === false) {
                                         echo printSecuTags($value['pseudo']);
@@ -637,9 +569,8 @@ function listUsers () {
                                         echo "-";
                                     }
                                 ?>
-                            </div>
-                            <!-- Team -->
-                            <div class="tableWidth25 inlineBlock center tableCell">
+                            </td>
+                            <td>
                                 <?php
                                     if (isset($value['team_name']) && empty($value['team_name']) === false) {
                                         echo printSecuTags($value['team_name']);
@@ -648,9 +579,8 @@ function listUsers () {
                                         echo "-";
                                     }
                                 ?>
-                            </div>
-                            <!-- Team -->
-                            <div class="tableWidth25 inlineBlock center tableCell">
+                            </td>
+                            <td>
                                 <?php
                                     if (isset($value['ranks_name']) && empty($value['ranks_name']) === false) {
                                         echo printSecuTags($value['ranks_name']);
@@ -659,36 +589,37 @@ function listUsers () {
                                         echo "-";
                                     }
                                 ?>
-                            </div>
-                            <!-- Action -->
-                            <div class="tableWidth25 inlineBlock boldCenter tableCell">
-                                <a href="index.php?file=Team&page=admin&op=manage_users&action=edit&id=<?php echo $value['id'];?>"><img src="images/edit.gif" alt=""/></a>
-                                <a href="index.php?file=Team&page=admin&op=manage_users&action=del&id=<?php echo $value['id'];?>"><img src="images/del.gif" alt=""/></a>
-                            </div>
-                            <div class="clear both"></div>
-                        </div>
+                            </td>
+                            <td class="center">
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=manage_users&action=edit&id=<?php echo $value['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=manage_users&action=del&id=<?php echo $value['id'];?>"></a>
+                            </td>
+                        </tr>
                     <?php
                 }
             }
             else {
                 ?>
-                <br />
-                <div class="margin0-10 borderBox">
-                    <div class="notification information widthAuto ">
-                        <div>
-                            <?php
-                                echo TEAM_NO_USERS_REGISTERED;
-                            ?>
-                        </div>
-                    </div>
-                </div>
+                <tr>
+                    <td colspan="4">
+                        <?php
+                            echo TEAM_NO_USERS_REGISTERED;
+                        ?>
+                    </td>
+                </tr>
                 <?php
             }
-        ?>
-        <!-- /Status -->
-    </div>
-    <div class="clear both"></div>
-    <br />
+            ?>
+            <!-- /Status -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="body center">
+                    <a class="buttonM bDefault" href="index.php?file=Admin"><?php echo BACK; ?></a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
     <?php
 }
 
@@ -697,86 +628,81 @@ function listUsers () {
  */
 function listUsersStatus() {
     ?>
-    <div class="tableWidth100 lineHeight1_3 table">
-        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-            <!-- Name -->
-            <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                <?php
-                    echo _LOGIN;
-                ?>
-            </div>
-            <!-- Team -->
-            <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_STATUS;
-                ?>
-            </div>
-            <!-- Action -->
-            <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_ACTIONS;
-                ?>
-            </div>
-            <div class="clear both"></div>
-        </div>
-        <!-- Status -->
+
+    <div class="whead">
+        <h6>&nbsp;</h6>
+        <div class="clear both"></div>
+    </div>
+    <table class="tDefault">
+        <thead>
+            <tr>
+                <td>
+                    <strong><?php echo LOGIN; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_STATUS; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_ACTIONS; ?></strong>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
         <?php
             $users = getUsersStatus();
             if ($users !== false && is_array($users) && sizeof($users)) {
                 foreach ($users as $value) {
                     ?>
-                        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                            <!-- Name -->
-                            <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                                <?php
-                                    if (isset($value['pseudo']) && empty($value['pseudo']) === false) {
-                                        echo printSecuTags($value['pseudo']);
-                                    }
-                                    else {
-                                        echo "-";
-                                    }
-                                ?>
-                            </div>
-                            <!-- Team -->
-                            <div class="tableWidth33 inlineBlock center tableCell">
-                                <?php
-                                    if (isset($value['status_name']) && empty($value['status_name']) === false) {
-                                        echo printSecuTags($value['status_name']);
-                                    }
-                                    else {
-                                        echo "-";
-                                    }
-                                ?>
-                            </div>
-                            <!-- Action -->
-                            <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                                <a href="index.php?file=Team&page=admin&op=manage_users&action=edit_user&id=<?php echo $value['id'];?>"><img src="images/edit.gif" alt=""/></a>
-                                <a href="index.php?file=Team&page=admin&op=manage_users&action=del_user&id=<?php echo $value['id'];?>"><img src="images/del.gif" alt=""/></a>
-                            </div>
-                            <div class="clear both"></div>
-                        </div>
+                    <tr>
+                        <td>
+                            <?php
+                                if (isset($value['pseudo']) && empty($value['pseudo']) === false) {
+                                    echo printSecuTags($value['pseudo']);
+                                }
+                                else {
+                                    echo "-";
+                                }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                                if (isset($value['status_name']) && empty($value['status_name']) === false) {
+                                    echo printSecuTags($value['status_name']);
+                                }
+                                else {
+                                    echo "-";
+                                }
+                            ?>
+                        </td>
+                        <td class="center">
+                            <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=manage_users&action=edit_user&id=<?php echo $value['id'];?>"></a>
+                            <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=manage_users&action=del_user&id=<?php echo $value['id'];?>"></a>
+                        </td>
+                    </tr>
                     <?php
                 }
             }
             else {
                 ?>
-                <br />
-                <div class="margin0-10 borderBox">
-                    <div class="notification information widthAuto ">
-                        <div>
-                            <?php
-                                echo TEAM_NO_USERS_REGISTERED;
-                            ?>
-                        </div>
-                    </div>
-                </div>
+                <tr>
+                    <td colspan="3">
+                        <?php
+                            echo TEAM_NO_USERS_REGISTERED;
+                        ?>
+                    </td>
+                </tr>
                 <?php
             }
-        ?>
-        <!-- /Status -->
-    </div>
-    <div class="clear both"></div>
-    <br />
+            ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="body center">
+                    <a class="buttonM bDefault" href="index.php?file=Admin"><?php echo BACK; ?></a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
     <?php
 }
 
@@ -818,18 +744,18 @@ function formUsers ($id = false) {
 
     ?>
     <form action="" method="POST" class="form" autocomplete="off">
-        <div class="tableWidth100 lineHeight1_3 table">
+        <div class="fluid">
             <!-- Membre -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="name">
                         <?php
-                            echo _MEMBER . ' :' ;
+                            echo MEMBER . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <select name="user">
+                <div class="grid9">
+                    <select name="user" class="validate[required]">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
                             foreach ($users as $user) {
@@ -839,21 +765,20 @@ function formUsers ($id = false) {
                             }
                         ?>
                     </select>
-                    <sup>*</sup>
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Membre -->
             <!-- Team -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="name">
                         <?php
-                            echo _TEAM . ' :' ;
+                            echo TEAM . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <select name="team">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
@@ -863,78 +788,56 @@ function formUsers ($id = false) {
                                 <?php
                             }
                         ?>
-                    </select>
-                    <sup>*</sup>
+                    </select class="validate[required]">
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Team -->
             <!-- Description -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold quarter">
+            <div class="formRow">
+                <div class="grid3 quarter">
                     <label for="name">
                         <?php
                             echo TEAM_DESCRIPTION . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <textarea type="text" name="description" id="description" class="editor"><?php echo $description; ?></textarea>
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Description -->
             <!-- Ranks -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="name">
                         <?php
                             echo TEAM_RANK . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <div class="table tableWidth100">
-                        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                            <?php
-                                $i = 0;
-                                foreach ($ranks as $rank) {
-                                    ?>
-                                    <div class="tableWidth10 tableCell inlineBlock bold">
-                                            <input name="ranks[<?php echo $rank['id']; ?>]" value="<?php echo $rank['id']; ?>" type="checkbox" id="rank_<?php echo $rank['id']; ?>"<?php echo (in_array($rank['id'], $rank_ids) ? ' checked' : ''); ?> />
-                                    </div>
-                                    <div class="tableWidth20 tableCell inlineBlock bold">
+                        <?php
+                            $i = 0;
+                            foreach ($ranks as $rank) {
+                                ?>
+                                    <div>
+                                        <input name="ranks[<?php echo $rank['id']; ?>]" value="<?php echo $rank['id']; ?>" type="checkbox" class="check" id="rank_<?php echo $rank['id']; ?>"<?php  echo (in_array($rank['id'], $rank_ids) ? ' checked' : ''); ?> />
                                         <label for="rank_<?php echo $rank['id']; ?>"><?php echo $rank['name']; ?></label>
                                     </div>
-                                    <?php
-                                    $i++;
-                                    if($i % 3 === 0){
-                                        echo '
-                                        </div>
-                                        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">';
-                                    }
-                                }
-                            ?>
-                            </div>
-                        </div>
+                                <?php
+                            }
+                        ?>
                     </div>
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Ranks -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <input type="submit" name="btnSubmit" class="button">
-                </div>
-                <div></div>
-            </div>
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <small>
-                        <sup>*</sup> <?php echo FIELDS_REQUIRE; ?>
-                    </small>
-                </div>
-                <div></div>
+            <div class="body center">
+                <input type="submit" name="btnSubmit" class="buttonM bBlue">
+                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -957,33 +860,33 @@ function formUsersStatus ($id = false) {
 
     ?>
     <form action="" method="POST" class="form" autocomplete="off">
-        <div class="tableWidth100 lineHeight1_3 table">
+        <div class="fluid">
             <!-- Membre -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="name">
                         <?php
-                            echo _MEMBER . ' :' ;
+                            echo MEMBER . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
+                <div class="grid9">
                     <?php echo $pseudo; ?>
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Membre -->
             <!-- Team -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="name">
                         <?php
                             echo TEAM_STATUS . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <select name="status">
+                <div class="grid9">
+                    <select name="status" class="validate[required]">
                         <option value=""><?php echo TEAM_CHOOSE; ?></option>
                         <?php
                             foreach ($status as $state) {
@@ -993,24 +896,13 @@ function formUsersStatus ($id = false) {
                             }
                         ?>
                     </select>
-                    <sup>*</sup>
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Team -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <input type="submit" name="btnSubmit" class="button">
-                </div>
-                <div></div>
-            </div>
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <small>
-                        <sup>*</sup> <?php echo FIELDS_REQUIRE; ?>
-                    </small>
-                </div>
-                <div></div>
+            <div class="body center">
+                <input type="submit" name="btnSubmit" class="buttonM bBlue">
+                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1023,31 +915,29 @@ function formUsersStatus ($id = false) {
  */
 function listStatus () {
     ?>
-    <div class="tableWidth100 lineHeight1_3 table">
-        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-            <!-- Name -->
-            <div class="tableWidth50 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_NAME;
-                ?>
-            </div>
-            <!-- Action -->
-            <div class="tableWidth50 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_ACTIONS;
-                ?>
-            </div>
-            <div class="clear both"></div>
-        </div>
-        <!-- Status -->
+    <div class="whead">
+        <h6>&nbsp;</h6>
+        <div class="clear both"></div>
+    </div>
+    <table class="tDefault">
+        <thead>
+            <tr>
+                <td>
+                    <strong><?php echo TEAM_NAME; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_ACTIONS; ?></strong>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
         <?php
             $status = getStatus();
             if ($status !== false && is_array($status) && sizeof($status)) {
                 foreach ($status as $value) {
                     ?>
-                        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                            <!-- Name -->
-                            <div class="tableWidth50 inlineBlock boldCenter tableCell">
+                        <tr>
+                            <td>
                                 <?php
                                     if (isset($value['name']) && empty($value['name']) === false) {
                                         echo printSecuTags($value['name']);
@@ -1056,36 +946,25 @@ function listStatus () {
                                         echo "-";
                                     }
                                 ?>
-                            </div>
-                            <!-- Action -->
-                            <div class="tableWidth50 inlineBlock boldCenter tableCell">
-                                <a href="index.php?file=Team&page=admin&op=status&action=edit&id=<?php echo $value['id'];?>"><img src="images/edit.gif" alt=""/></a>
-                                <a href="index.php?file=Team&page=admin&op=status&action=del&id=<?php echo $value['id'];?>"><img src="images/del.gif" alt=""/></a>
-                            </div>
-                            <div class="clear both"></div>
-                        </div>
+                            </td>
+                            <td class="center">
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=status&action=edit&id=<?php echo $value['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=status&action=del&id=<?php echo $value['id'];?>"></a>
+                            </td>
+                        </tr>
                     <?php
                 }
             }
-            else {
-                ?>
-                <br />
-                <div class="margin0-10 borderBox">
-                    <div class="notification information widthAuto ">
-                        <div>
-                            <?php
-                                echo TEAM_NO_STATUS_REGISTERED;
-                            ?>
-                        </div>
-                    </div>
-                </div>
-                <?php
-            }
-        ?>
-        <!-- /Status -->
-    </div>
-    <div class="clear both"></div>
-    <br />
+                    ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" class="body center">
+                    <a class="buttonM bDefault" href="index.php?file=Admin"><?php echo BACK; ?></a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
     <?php
 }
 /**
@@ -1104,36 +983,25 @@ function formStatus ($id = false) {
 
     ?>
     <form action="" method="POST" class="form" autocomplete="off">
-        <div class="tableWidth100 lineHeight1_3 table">
+        <div class="fluid">
             <!-- Name -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="name">
                         <?php
                             echo TEAM_NAME . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <input type="text" name="name" id="name" value="<?php echo $name; ?>">
-                    <sup>*</sup>
+                <div class="grid9">
+                    <input type="text" name="name" id="name" value="<?php echo $name; ?>" class="validate[required]">
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Name -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <input type="submit" name="btnSubmit" class="button">
-                </div>
-                <div></div>
-            </div>
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <small>
-                        <sup>*</sup> <?php echo FIELDS_REQUIRE; ?>
-                    </small>
-                </div>
-                <div></div>
+            <div class="body center">
+                <input type="submit" name="btnSubmit" class="buttonM bBlue">
+                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1159,83 +1027,76 @@ function listRanks () {
             $( "#sortable" ).disableSelection();
           });
     </script>
-    <div class="tableWidth100 lineHeight1_3 table">
-        <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-            <!-- Name -->
-            <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_NAME;
-                ?>
-            </div>
-            <!-- Ordre -->
-            <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_ORDER;
-                ?>
-            </div>
-            <!-- Action -->
-            <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                <?php
-                    echo TEAM_ACTIONS;
-                ?>
-            </div>
-            <div class="clear both"></div>
-        </div>
+    <div class="whead">
+        <h6>&nbsp;</h6>
+        <div class="clear both"></div>
     </div>
-    <div id="sortable" class="tableWidth100 lineHeight1_3 table">
+    <table class="tDefault">
+        <thead>
+            <tr>
+                <td>
+                    <strong><?php echo TEAM_NAME; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_ORDER; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_ACTIONS; ?></strong>
+                </td>
+            </tr>
+        </thead>
+        <tbody>
         <!-- ranks -->
         <?php
-                $ranks = getRanks();
-                if ($ranks !== false && is_array($ranks) && sizeof($ranks)) {
-                    foreach($ranks as $value) {
-                        ?>
-                            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                                <!-- Name -->
-                                <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                                    <?php
-                                        if (isset($value['name']) && empty($value['name']) === false) {
-                                            echo printSecuTags($value['name']);
-                                        }
-                                        else {
-                                            echo "-";
-                                        }
-                                    ?>
-                                </div>
-                                <!-- Ordre -->
-                                <div class="tableWidth33 inlineBlock center tableCell">
-                                    <?php
-                                        echo (int) $value['order'];
-                                    ?>
-                                </div>
-                                <!-- Action -->
-                                <div class="tableWidth33 inlineBlock boldCenter tableCell">
-                                    <a href="index.php?file=Team&page=admin&op=<?php echo $_REQUEST['op']; ?>&action=edit&id=<?php echo $value['id'];?>"><img src="images/edit.gif" alt=""/></a>
-                                    <a href="index.php?file=Team&page=admin&op=<?php echo $_REQUEST['op']; ?>&action=del&id=<?php echo $value['id'];?>"><img src="images/del.gif" alt=""/></a>
-                                </div>
-                                <div class="clear both"></div>
-                            </div>
-                        <?php
-                    }
-                }
-                else {
+            $ranks = getRanks();
+            if ($ranks !== false && is_array($ranks) && sizeof($ranks)) {
+                foreach ($ranks as $value) {
                     ?>
-                    <br />
-                    <div class="margin0-10 borderBox">
-                        <div class="notification information widthAuto ">
-                            <div>
+                        <tr>
+                            <td>
                                 <?php
-                                    echo TEAM_NO_RANK_REGISTERED;
+                                    if (isset($value['name']) && empty($value['name']) === false) {
+                                        echo printSecuTags($value['name']);
+                                    }
+                                    else {
+                                        echo "-";
+                                    }
                                 ?>
-                            </div>
-                        </div>
-                    </div>
+                            </td>
+                            <td>
+                                <?php
+                                    echo (int) $value['order'];
+                                ?>
+                            </td>
+                            <td class="center">
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="index.php?file=Team&page=admin&op=<?php echo $_REQUEST['op']; ?>&action=edit&id=<?php echo $value['id'];?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="index.php?file=Team&page=admin&op=<?php echo $_REQUEST['op']; ?>&action=del&id=<?php echo $value['id'];?>"></a>
+                            </td>
+                        </tr>
                     <?php
                 }
-        ?>
-        <!-- /Ranks -->
-    </div>
-    <div class="clear both"></div>
-    <br />
+            }
+            else {
+                ?>
+                <tr>
+                    <td colspan="3">
+                            <?php
+                                echo TEAM_NO_RANK_REGISTERED;
+                            ?>
+                    </td>
+                </tr>
+                <?php
+            }
+                    ?>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="body center">
+                    <a class="buttonM bDefault" href="index.php?file=Admin"><?php echo BACK; ?></a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
     <?php
 }
 
@@ -1255,36 +1116,25 @@ function formRanks ($id = false) {
 
     ?>
     <form action="" method="POST" class="form" autocomplete="off">
-        <div class="tableWidth100 lineHeight1_3 table">
+        <div class="fluid">
             <!-- Name -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="name">
                         <?php
                             echo TEAM_NAME . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <input type="text" name="name" id="name" value="<?php echo $name; ?>">
-                    <sup>*</sup>
+                <div class="grid9">
+                    <input type="text" name="name" id="name" value="<?php echo $name; ?>" class="validate[required]">
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Name -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <input type="submit" name="btnSubmit" class="button">
-                </div>
-                <div></div>
-            </div>
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <small>
-                        <sup>*</sup> <?php echo FIELDS_REQUIRE; ?>
-                    </small>
-                </div>
-                <div></div>
+            <div class="body center">
+                <input type="submit" name="btnSubmit" class="buttonM bBlue">
+                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1308,72 +1158,59 @@ function formPreferences() {
 
     ?>
     <form action="" method="POST" class="form" autocomplete="off">
-        <div class="tableWidth100 lineHeight1_3 table">
+        <div class="fluid">
             <!-- Team par page -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="team_page">
                         <?php
                             echo TEAM_SETTINGS_TEAM_PAGE . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <input type="number" name="team_page" id="team_page" value="<?php echo $config['team_page']; ?>">
-                    <sup>*</sup>
+                <div class="grid9">
+                    <input type="text" name="team_page" id="team_page" value="<?php echo $config['team_page']; ?>" class="validate[required]">
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Team par page -->
             <!-- Affichage -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="display_type">
                         <?php
                             echo TEAM_SETTINGS_DISPLAY_TYPE . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <select name="display_type" id="display_type">
+                <div class="grid9">
+                    <select name="display_type" id="display_type" class="validate[required]">
                         <option value="table"<?php echo ($config['display_type']  == 'table' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_TABLE; ?></option>
                         <option value="alternate"<?php echo ($config['display_type']  == 'alternate' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_ALT; ?></option>
                         <option value="bloc"<?php echo ($config['display_type']  == 'bloc' ? ' selected' : ''); ?>><?php echo TEAM_DISPLAY_TYPE_BLOC; ?></option>
                     </select>
-                    <sup>*</sup>
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Affichage -->
             <!-- Choose photo -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock bold">
+            <div class="formRow">
+                <div class="grid3">
                     <label for="picture">
                         <?php
                             echo TEAM_SETTINGS_PICTURE . ' :' ;
                         ?>
                     </label>
                 </div>
-                <div class="tableWidth80 tableCell inlineBlock bold">
-                    <input type="checkbox" value="1" name="picture" id="picture" <?php echo ($config['picture']  == 1 ? ' checked' : ''); ?>/>
-                    <sup>*</sup>
+                <div class="grid9">
+                    <input type="checkbox" value="1" name="picture" id="picture" <?php echo ($config['picture']  == 1 ? ' checked' : ''); ?>class="check validate[required]" />
                 </div>
                 <div class="clear both"></div>
             </div>
             <!-- /Choose photo -->
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <input type="submit" name="btnSubmit" class="button">
-                </div>
-                <div></div>
-            </div>
-            <div class="borderBox clear both tableWidth100 padding0-10 tableRow">
-                <div class="tableWidth20 tableCell inlineBlock">
-                    <small>
-                        <sup>*</sup> <?php echo FIELDS_REQUIRE; ?>
-                    </small>
-                </div>
-                <div></div>
+            <div class="body center">
+                <input type="submit" name="btnSubmit" class="buttonM bBlue">
+                <a class="buttonM bDefault" href="index.php?file=<?php echo $_REQUEST['file']; ?>&page=<?php echo $_REQUEST['page'] . (isset($_REQUEST['op']) ? '&op='.$_REQUEST['op'] : ''); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1979,12 +1816,12 @@ function uploadImage($file, $dest_path, $dest_file) {
 }
 
 // Haut
-admintop();
+adminHeader();
 
 // Affichage de l'admin l'admin
 displayAdmin();
 
 // Bas
-adminfoot();
+adminFooter();
 
 ?>

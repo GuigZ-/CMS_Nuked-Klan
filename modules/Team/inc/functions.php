@@ -16,9 +16,9 @@ defined('INDEX_CHECK') or die('You can\'t run this file alone.');
  */
 function getTeams ($id = false) {
 
-	$dbsGetTeams = '
-			SELECT t.name, t.prefix, t.suffix, t.`order`, t.`description`, t.id, GROUP_CONCAT(tg.groups_id) AS groups, GROUP_CONCAT(tga.game_id) AS games
-			FROM ' . TEAM_TABLE . ' AS t
+    $dbsGetTeams = '
+            SELECT t.name, t.prefix, t.suffix, t.`order`, t.`description`, t.id, GROUP_CONCAT(tg.groups_id) AS groups, GROUP_CONCAT(tga.game_id) AS games, image
+            FROM ' . TEAM_TABLE . ' AS t
                 LEFT OUTER JOIN ' . TEAM_GROUPS_TABLE . ' AS tg
                     ON tg.team_id = t.id
                 LEFT OUTER JOIN ' . TEAM_GAMES_TABLE . ' AS tga
@@ -33,20 +33,20 @@ function getTeams ($id = false) {
         GROUP BY t.id
         ORDER BY t.`order` ASC ';
 
-	$dbeGetTeams = mysql_query($dbsGetTeams) or die(nk_debug_bt());
+    $dbeGetTeams = mysql_query($dbsGetTeams) or die(nk_debug_bt());
 
-	$teams = array();
-	if ($dbeGetTeams !== false) {
-		while ($dbaGetTeams = mysql_fetch_assoc($dbeGetTeams))
-			$teams[] = $dbaGetTeams;
-	}
-	// Check results
-	if ($teams !== false && sizeof($teams)) {
-		return $teams;
-	}
-	else {
-		return false;
-	}
+    $teams = array();
+    if ($dbeGetTeams !== false) {
+        while ($dbaGetTeams = mysql_fetch_assoc($dbeGetTeams))
+            $teams[] = $dbaGetTeams;
+    }
+    // Check results
+    if ($teams !== false && sizeof($teams)) {
+        return $teams;
+    }
+    else {
+        return false;
+    }
 }
 
 /**
@@ -115,28 +115,28 @@ function getGames ($id = false) {
  */
 function getRanks ($id = false) {
 
-	$dbsGetRank = '
-			SELECT name, `order`, id
-			FROM ' . TEAM_RANK_TABLE . '';
+    $dbsGetRank = '
+            SELECT name, `order`, id
+            FROM ' . TEAM_RANK_TABLE . '';
     // Si une id est défini
     if($id) {
         $dbsGetRank .= ' WHERE id = "' . (int) $id . '" ';
     }
 
-	$dbeGetRank = mysql_query($dbsGetRank) or die(nk_debug_bt());
+    $dbeGetRank = mysql_query($dbsGetRank) or die(nk_debug_bt());
 
-	$rank = array();
-	if ($dbeGetRank !== false) {
-		while ($dbaGetRank = mysql_fetch_assoc($dbeGetRank))
-			$rank[] = $dbaGetRank;
-	}
-	// Check results
-	if ($rank !== false && sizeof($rank)) {
-		return $rank;
-	}
-	else {
-		return false;
-	}
+    $rank = array();
+    if ($dbeGetRank !== false) {
+        while ($dbaGetRank = mysql_fetch_assoc($dbeGetRank))
+            $rank[] = $dbaGetRank;
+    }
+    // Check results
+    if ($rank !== false && sizeof($rank)) {
+        return $rank;
+    }
+    else {
+        return false;
+    }
 }
 
 /**
@@ -147,9 +147,9 @@ function getUsers ($id = false, $by_team = false) {
 
     $nkUsers = getNkUsers();
 
-	$dbsGetUsers = '
-		SELECT u.user_id, s.name AS status, ut.id, ut.team_id, t.name AS team_name, GROUP_CONCAT(" ", r.name) AS ranks_name, GROUP_CONCAT(" ", r.id) AS ranks, u.teamstatus_id, ut.teamuser_id, t.prefix, t.suffix, t.description, g.name AS gameName, g.icon AS gameIcon, ut.description AS userDescription, t.image
-		FROM ' . TEAM_USER_TEAM_TABLE . ' AS ut
+    $dbsGetUsers = '
+        SELECT u.user_id, s.name AS status, ut.id, ut.team_id, t.name AS team_name, GROUP_CONCAT(" ", r.name) AS ranks_name, GROUP_CONCAT(" ", r.id) AS ranks, u.teamstatus_id, ut.teamuser_id, t.prefix, t.suffix, t.description, g.name AS gameName, g.icon AS gameIcon, ut.description AS userDescription, t.image
+        FROM ' . TEAM_USER_TEAM_TABLE . ' AS ut
             INNER JOIN ' . TEAM_USER_TABLE . ' AS u
                 ON ut.teamuser_id = u.id';
 
@@ -172,24 +172,24 @@ function getUsers ($id = false, $by_team = false) {
                 ON g.id = tg.game_id
         ';
     $dbsGetUsers .= '
-		GROUP BY ut.team_id, ut.teamuser_id
-		ORDER BY t.`order` ASC, r.`order` ASC';
+        GROUP BY ut.team_id, ut.teamuser_id
+        ORDER BY t.`order` ASC, r.`order` ASC';
 
-	// Exec query
-	$dbeGetUsers = mysql_query($dbsGetUsers) or die(nk_debug_bt());
-	$users = array();
-	if ($dbeGetUsers !== false) {
-		while ($dbaGetUsers = mysql_fetch_assoc($dbeGetUsers))
-			$users[] = array_merge($nkUsers[$dbaGetUsers['user_id']], $dbaGetUsers);
-	}
+    // Exec query
+    $dbeGetUsers = mysql_query($dbsGetUsers) or die(nk_debug_bt());
+    $users = array();
+    if ($dbeGetUsers !== false) {
+        while ($dbaGetUsers = mysql_fetch_assoc($dbeGetUsers))
+            $users[] = array_merge($nkUsers[$dbaGetUsers['user_id']], $dbaGetUsers);
+    }
 
     if ($users !== false && sizeof($users)) {
-    	// Check results
-    	if ($by_team === true) {
-    		// initialize un tableau
-    		$temp = array();
-    		// While results
-    		foreach ($users as $value) {
+        // Check results
+        if ($by_team === true) {
+            // initialize un tableau
+            $temp = array();
+            // While results
+            foreach ($users as $value) {
                 $temp[$value['team_name']]['team_id'] = $value['team_id'];
                 $temp[$value['team_name']]['name'] = $value['team_name'];
                 $temp[$value['team_name']]['image'] = $value['image'];
@@ -197,18 +197,18 @@ function getUsers ($id = false, $by_team = false) {
                 $temp[$value['team_name']]['suffix'] = $value['suffix'];
                 $temp[$value['team_name']]['description'] = $value['description'];
                 $temp[$value['team_name']]['members'][] = $value;
-    			$temp[$value['team_name']]['games'][] = array('gameName' => $value['gameName'], 'gameIcon' => $value['gameIcon']);
-    		}
+                $temp[$value['team_name']]['games'][] = array('gameName' => $value['gameName'], 'gameIcon' => $value['gameIcon']);
+            }
 
-    		return $temp;
-    	}
+            return $temp;
+        }
         else {
             return $users;
         }
     }
-	else {
-		return false;
-	}
+    else {
+        return false;
+    }
 }
 
 function getUsersStatus($id = false) {
@@ -241,15 +241,15 @@ function getUsersStatus($id = false) {
 function getNkUsers(){
     $dbsGetNkUsers = '
         SELECT u.id, u.pseudo, ud.prenom, ud.age, ud.sexe, ud.ville, u.avatar, ud.photo, u.country
-        FROM ' . USER_TABLE . ' AS u
-            LEFT OUTER JOIN ' . USER_DETAIL_TABLE . ' AS ud
+        FROM ' . USERS_TABLE. ' AS u
+            LEFT OUTER JOIN ' . USERS_DETAIL_TABLE . ' AS ud
                 ON u.id = ud.user_id
             LEFT OUTER JOIN ' . USERS_PROFILS . ' AS up
                 ON up.user_id = u.id
         ORDER BY u.niveau DESC, u.pseudo ASC
     ';
 
-    $dbeGetNkUsers = mysql_query($dbsGetNkUsers) or (die(nk_debug_bt());
+    $dbeGetNkUsers = mysql_query($dbsGetNkUsers) or die(nk_debug_bt());
     $users = array();
 
     if ($dbeGetNkUsers !== false) {
