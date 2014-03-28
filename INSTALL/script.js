@@ -5,7 +5,7 @@ var ajaxBusy = false;
 var arrayTablesInstall = new Array(
                             "actions", "banned", "block", "calendar", "comment", "comment_mod", "config", "contact", "defie", "discussion", "downloads",
                             "downloads_cat", "erreursql", "forums", "forums_cat", "forums_messages", "forums_threads", "forums_rank",
-                            "forums_reads", "forums_poll", "forums_options", "forums_vote", "gallery", "gallery_cat", "games", "games_map", "games_prefs", "groups", "guestbook",
+                            "forums_reads", "forums_poll", "forums_options", "forums_vote", "gallery", "gallery_cat", "games", "games_map", "groups", "guestbook",
                             "irc_awards", "liens", "liens_cat", "match", "match_files", "modules", "nbconnecte", "news", "news_cat", "notification", "recrute", "sections",
                             "sections_cat", "serveur", "serveur_cat", "sessions", "smilies", "sondage", "sondage_check", "sondage_data", "stats", "stats_visitor",
                             "suggest", "shoutbox", "team", "team_games", "team_rank", "team_groups", "team_settings", "team_status", "team_user", "team_user_rank", "team_user_team",

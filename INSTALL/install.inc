@@ -563,6 +563,13 @@
                           PRIMARY KEY (`id`)
                         ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                         $req = mysql_query($sql) or die (nk_debug_bt());
+
+
+                        $sql = "INSERT INTO `" . $db_prefix . "_map`
+                        VALUES
+                        ('', 1, 'de_nuke', '42bf71fde4.jpg')
+                        ";
+                        $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
         case'groups':
