@@ -9,7 +9,7 @@
 // -------------------------------------------------------------------------//
 if (!defined("INDEX_CHECK"))
 {
-	die ("<div style=\"text-align: center;\">You cannot open this page directly</div>");
+    die ("<div style=\"text-align: center;\">You cannot open this page directly</div>");
 }
 
 global $nuked, $theme, $language, $bgcolor3;
