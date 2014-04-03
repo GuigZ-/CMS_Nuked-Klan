@@ -360,8 +360,8 @@ function GamesDisplayList ($op) {
                                     ?>
                                 </td>
                                 <td class="center">
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("op" => "edit", "id" => $value['id'])); ?>"></a>
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("op" => "del", "id" => $value['id'])); ?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
                                 </td>
                             </tr>
                         <?php
