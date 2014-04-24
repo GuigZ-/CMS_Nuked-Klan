@@ -21,7 +21,7 @@ function getUsers ($id = false, $by_team = false) {
     $nkUsers = nkGetUsers();
 
 	$dbsGetUsers = '
-		SELECT u.user_id, s.name AS status, ut.id, ut.team_id, t.name AS team_name, GROUP_CONCAT(" ", r.name) AS ranks_name, GROUP_CONCAT(" ", r.id) AS ranks, u.team_status_id, ut.team_user_id, t.prefix, t.suffix, t.description, g.name AS gameName, g.icon AS gameIcon, ut.description AS userDescription, t.image
+		SELECT u.user_id, s.name AS team_status, ut.id, ut.team_id, t.name AS team_name, GROUP_CONCAT(" ", r.name) AS ranks_name, GROUP_CONCAT(" ", r.id) AS ranks, ut.team_status_id, ut.team_user_id, t.prefix, t.suffix, t.description, g.name AS gameName, g.icon AS gameIcon, ut.description AS userDescription, t.image
 		FROM ' . TEAM_USER_TEAM_TABLE . ' AS ut
             INNER JOIN ' . TEAM_USER_TABLE . ' AS u
                 ON ut.team_user_id = u.id';
@@ -38,7 +38,7 @@ function getUsers ($id = false, $by_team = false) {
             INNER JOIN ' . TEAM_RANK_TABLE . ' AS r
                 ON ur.team_rank_id = r.id
             LEFT OUTER JOIN ' . TEAM_STATUS_TABLE . ' AS s
-                ON u.team_status_id = s.id
+                ON ut.team_status_id = s.id
             LEFT OUTER JOIN ' . TEAM_GAMES_TABLE . ' AS tg
                 ON tg.team_id = ut.team_id
             LEFT OUTER JOIN ' . GAMES_TABLE . ' AS g
@@ -91,10 +91,12 @@ function getUsersStatus ($id = false) {
     $nkUsers = nkGetUsers();
 
     $dbsGetUsers = '
-        SELECT u.id, u.user_id, s.name AS status_name, s.id AS status
-        FROM ' . TEAM_USER_TABLE . ' AS u
+        SELECT u.id, u.user_id, ut.team_user_id, s.name AS status_name, s.id AS status
+        FROM ' . TEAM_USER_TEAM_TABLE . ' AS ut
+            INNER JOIN ' . TEAM_USER_TABLE . ' AS u
+                ON ut.team_user_id = u.id
             INNER JOIN ' . TEAM_STATUS_TABLE . ' AS s
-                ON u.team_status_id = s.id
+                ON ut.team_status_id = s.id
         ';
 
     // Exec query

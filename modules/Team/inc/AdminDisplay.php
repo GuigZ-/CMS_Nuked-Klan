@@ -85,8 +85,7 @@ function displaySubMenu ($op, $action) {
         case 'manage_users':
             $menus = array(
                 'list' => array('name' => TEAM_ADMIN_LIST, 'icon' => ''),
-                'add'  => array('name' => TEAM_ADMIN_ADD_COMBINAISON, 'icon' => 'add'),
-                'list_status'  => array('name' => TEAM_ADMIN_LIST_STATUS,'icon' => '' )
+                'add'  => array('name' => TEAM_ADMIN_ADD_COMBINAISON, 'icon' => 'add')
                 );
             nkDisplayContentMenu($menus, $action, 'action', $op);
             break;
@@ -137,12 +136,6 @@ function displayContent ($op, $action, $id = null) {
                     case 'add':
                     case 'edit':
                         formUsers($id);
-                        break;
-                    case 'list_status';
-                        listUsersStatus();
-                        break;
-                    case 'edit_user';
-                        formUsersStatus($id);
                         break;
                     default:
                         listUsers();
@@ -279,8 +272,8 @@ function listTeams () {
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkSetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkSetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
                             </td>
                         </tr>
                         <?php
@@ -491,7 +484,7 @@ function formTeams ($id = false) {
             <!-- /Games -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkSetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -516,6 +509,9 @@ function listUsers () {
                 </td>
                 <td>
                     <strong><?php echo TEAM_TEAM; ?></strong>
+                </td>
+                <td>
+                    <strong><?php echo TEAM_STATUS; ?></strong>
                 </td>
                 <td>
                     <strong><?php echo TEAM_RANKS; ?></strong>
@@ -555,6 +551,16 @@ function listUsers () {
                             </td>
                             <td>
                                 <?php
+                                    if (isset($value['team_status']) && empty($value['team_status']) === false) {
+                                        echo stripslashes(printSecuTags($value['team_status']));
+                                    }
+                                    else {
+                                        echo "-";
+                                    }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
                                     if (isset($value['ranks_name']) && empty($value['ranks_name']) === false) {
                                         echo stripslashes(printSecuTags($value['ranks_name']));
                                     }
@@ -564,8 +570,8 @@ function listUsers () {
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkSetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkSetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
                             </td>
                         </tr>
                     <?php
@@ -597,89 +603,6 @@ function listUsers () {
 }
 
 /**
- * Affiche la liste des utilisateurs avec leur statut
- */
-function listUsersStatus() {
-    ?>
-
-    <div class="whead">
-        <h6>&nbsp;</h6>
-        <div class="clear both"></div>
-    </div>
-    <table class="tDefault">
-        <thead>
-            <tr>
-                <td>
-                    <strong><?php echo LOGIN; ?></strong>
-                </td>
-                <td>
-                    <strong><?php echo TEAM_STATUS; ?></strong>
-                </td>
-                <td>
-                    <strong><?php echo TEAM_ACTIONS; ?></strong>
-                </td>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
-            $users = getUsersStatus();
-            if ($users !== false && is_array($users) && sizeof($users)) {
-                foreach ($users as $value) {
-                    ?>
-                    <tr>
-                        <td>
-                            <?php
-                                if (isset($value['pseudo']) && empty($value['pseudo']) === false) {
-                                    echo stripslashes(printSecuTags($value['pseudo']));
-                                }
-                                else {
-                                    echo "-";
-                                }
-                            ?>
-                        </td>
-                        <td>
-                            <?php
-                                if (isset($value['status_name']) && empty($value['status_name']) === false) {
-                                    echo stripslashes(printSecuTags($value['status_name']));
-                                }
-                                else {
-                                    echo "-";
-                                }
-                            ?>
-                        </td>
-                        <td class="center">
-                            <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit_user", "id" => $value['id'])); ?>"></a>
-                            <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del_user", "id" => $value['id'])); ?>"></a>
-                        </td>
-                    </tr>
-                    <?php
-                }
-            }
-            else {
-                ?>
-                <tr>
-                    <td colspan="3">
-                        <?php
-                            echo TEAM_NO_USERS_REGISTERED;
-                        ?>
-                    </td>
-                </tr>
-                <?php
-            }
-            ?>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" class="body center">
-                    <a class="buttonM bDefault" href="index.php?file=Admin"><?php echo BACK; ?></a>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
-    <?php
-}
-
-/**
  * Formulaire d'utilisateur
  * @param integer $id id à éditer
  */
@@ -687,18 +610,21 @@ function formUsers ($id = false) {
     $users = nkGetUsers();
     $teams = nkGetTeams();
     $ranks = nkGetTeamsRanks();
+    $status = nkGetTeamsStatus();
     if ($id) {
         $associations = getUsers($id);
         $association = $associations[0];
         $user_id = nkGetValue('user', $association['user_id']);
         $team_id = nkGetValue('team', $association['team_id']);
         $description = nkGetValue('description', $association['description']);
+        $status_id = nkGetValue('status', $association['team_status_id']);
         $rank_ids = nkGetValue('ranks', explode(',', $association['ranks']));
     }
     else {
         $user_id = nkGetValue('user');
         $team_id = nkGetValue('team');
         $description = nkGetValue('description');
+        $status_id = nkGetValue('status');
         $rank_ids = nkGetValue('ranks', array());
     }
 
@@ -764,6 +690,30 @@ function formUsers ($id = false) {
                 <div class="clear both"></div>
             </div>
             <!-- /Membre -->
+            <!-- Status -->
+            <div class="formRow">
+                <div class="grid3">
+                    <label for="name">
+                        <?php
+                            echo STATUS . ' :' ;
+                        ?>
+                    </label>
+                </div>
+                <div class="grid9 searchDrop">
+                    <select name="status" class="select validate[required]">
+                        <option value=""><?php echo CHOOSE; ?></option>
+                        <?php
+                            foreach ($status as $stat) {
+                                ?>
+                                    <option value="<?php echo $stat['id']; ?>"<?php echo ($status_id == $stat['id'] ? ' selected' : ''); ?>><?php echo $stat['name']; ?></option>
+                                <?php
+                            }
+                        ?>
+                    </select>
+                </div>
+                <div class="clear both"></div>
+            </div>
+            <!-- /Status -->
             <!-- Team -->
             <div class="formRow">
                 <div class="grid3">
@@ -838,72 +788,7 @@ function formUsers ($id = false) {
             <!-- /Ranks -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
-            </div>
-            <div class="clear both"></div>
-        </div>
-    </form>
-    <?php
-}
-
-/**
- * Formulaire de statut utilisateur
- * @param integer $id id à éditer
- */
-function formUsersStatus ($id = false) {
-    $status = nkGetTeamsStatus();
-    if ($id) {
-        $associations = getUsersStatus($id);
-        $association = $associations[0];
-        $pseudo = $association['pseudo'];
-        $status_id = nkGetValue('status', $association['status']);
-    }
-
-    ?>
-    <form action="" method="POST" class="form" autocomplete="off">
-        <div class="fluid">
-            <!-- Membre -->
-            <div class="formRow">
-                <div class="grid3">
-                    <label for="name">
-                        <?php
-                            echo MEMBER . ' :' ;
-                        ?>
-                    </label>
-                </div>
-                <div class="grid9">
-                    <?php echo $pseudo; ?>
-                </div>
-                <div class="clear both"></div>
-            </div>
-            <!-- /Membre -->
-            <!-- Team -->
-            <div class="formRow">
-                <div class="grid3">
-                    <label for="name">
-                        <?php
-                            echo TEAM_STATUS . ' :' ;
-                        ?>
-                    </label>
-                </div>
-                <div class="grid9 searchDrop">
-                    <select name="status" class="select validate[required]">
-                        <option value=""><?php echo CHOOSE; ?></option>
-                        <?php
-                            foreach ($status as $state) {
-                                ?>
-                                    <option value="<?php echo $state['id']; ?>"<?php echo ($status_id == $state['id'] ? ' selected' : ''); ?>><?php echo $state['name']; ?></option>
-                                <?php
-                            }
-                        ?>
-                    </select>
-                </div>
-                <div class="clear both"></div>
-            </div>
-            <!-- /Team -->
-            <div class="body center">
-                <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkSetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -949,8 +834,8 @@ function listStatus () {
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkSetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkSetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
                             </td>
                         </tr>
                     <?php
@@ -1002,7 +887,7 @@ function formStatus ($id = false) {
             <!-- /Name -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkSetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1057,8 +942,8 @@ function listRanks () {
                                 ?>
                             </td>
                             <td class="center">
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
-                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkSetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkSetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
                             </td>
                         </tr>
                     <?php
@@ -1122,7 +1007,7 @@ function formRanks ($id = false) {
             <!-- /Name -->
             <div class="body center">
                 <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
+                <a class="buttonM bDefault" href="<?php echo nkSetLink(); ?>"><?php echo BACK; ?></a>
             </div>
             <div class="clear both"></div>
         </div>
@@ -1298,7 +1183,7 @@ function postProcess ($op, $action, $id) {
                         mysql_query($dbrTeamGame);
                     }
 
-                    header('Refresh:0, url='.nkGetLink(true));
+                    header('Refresh:0, url='.nkSetLink(true));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1333,7 +1218,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdTeam)) {
-                    header('Refresh:0, url='.nkGetLink(true, 2));
+                    header('Refresh:0, url='.nkSetLink(true, 2));
                 }
                 else {
 
@@ -1384,7 +1269,7 @@ function postProcess ($op, $action, $id) {
                 }
                 // execution de la requete
                 if (mysql_query($dbrSetStatus)) {
-                    header('Refresh:0, url='.nkGetLink(true));
+                    header('Refresh:0, url='.nkSetLink(true));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1408,7 +1293,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdStatus)) {
-                    header('Refresh:0, url='.nkGetLink(true, 2));
+                    header('Refresh:0, url='.nkSetLink(true, 2));
                 }
                 else {
 
@@ -1460,7 +1345,7 @@ function postProcess ($op, $action, $id) {
                 }
                 // execution de la requete
                 if (mysql_query($dbrSetRanks)) {
-                    header('Refresh:0, url='.nkGetLink(true));
+                    header('Refresh:0, url='.nkSetLink(true));
                 }
                 // Si la requete n'a pas réussi
                 else {
@@ -1484,7 +1369,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdRanks)) {
-                    header('Refresh:0, url='.nkGetLink(true, 2));
+                    header('Refresh:0, url='.nkSetLink(true, 2));
                 }
                 else {
 
@@ -1519,17 +1404,16 @@ function postProcess ($op, $action, $id) {
                 return;
             }
             // Get Team User ID
-            $dbsGetTeamUserId = 'SELECT id, team_status_id FROM ' . TEAM_USER_TABLE . ' WHERE user_id = "' . mysql_real_escape_string(nkGetValue('user')) . '" ';
+            $dbsGetTeamUserId = 'SELECT id FROM ' . TEAM_USER_TABLE . ' WHERE user_id = "' . mysql_real_escape_string(nkGetValue('user')) . '" ';
             // Execute
             $dbeGetTeamUserId = mysql_query($dbsGetTeamUserId) or die(nk_debug_bt());
             // Get Row
             $dbaGetTeamUserId = mysql_fetch_assoc($dbeGetTeamUserId);
 
             $TeamUserId = isset($dbaGetTeamUserId['id']) ? $dbaGetTeamUserId['id'] : null;
-            $TeamStatusId = isset($dbaGetTeamUserId['team_status_id']) ? (int) $dbaGetTeamUserId['team_status_id'] : "(SELECT id FROM " . TEAM_STATUS_TABLE . " ORDER BY id ASC LIMIT 1)";
 
             // User
-            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, team_status_id) VALUES (' . ($TeamUserId ? (int) $TeamUserId : 'NULL') . ', "' . mysql_real_escape_string(nkGetValue('user')) . '", ' . $TeamStatusId . ') ';
+            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id) VALUES (' . ($TeamUserId ? (int) $TeamUserId : 'NULL') . ', "' . mysql_real_escape_string(nkGetValue('user')) . '", ) ';
             mysql_query($dbiSetUser) ;
 
             if (!$TeamUserId) {
@@ -1547,7 +1431,7 @@ function postProcess ($op, $action, $id) {
             $TeamId = $dbaGetTeamId['id'];
 
             // Insert
-            $dbiSetTeamUserTeam = 'REPLACE INTO ' . TEAM_USER_TEAM_TABLE . ' (id, team_user_id, team_id, description) VALUES (' . (int) $TeamId .', ' . (int) $TeamUserId . ', ' . (int) nkGetValue('team') . ', "' . mysql_real_escape_string(nkGetValue('description')) . '") ';
+            $dbiSetTeamUserTeam = 'REPLACE INTO ' . TEAM_USER_TEAM_TABLE . ' (id, team_user_id, team_status_id, team_id, description) VALUES (' . (int) $TeamId .', ' . (int) $TeamUserId . ', ' . (int) nkGetValue('status') . ', ' . (int) nkGetValue('team') . ', "' . mysql_real_escape_string(nkGetValue('description')) . '") ';
             mysql_query($dbiSetTeamUserTeam);
 
             if ((int) $TeamId) {
@@ -1570,7 +1454,7 @@ function postProcess ($op, $action, $id) {
             }
 
             if (mysql_query($dbrSetUserRank)) {
-                header('Refresh:0, url='.nkGetLink(true));
+                header('Refresh:0, url='.nkSetLink(true));
             }
             // Si la requete n'a pas réussi
             else {
@@ -1594,7 +1478,7 @@ function postProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdRanks)) {
-                    header('Refresh:0, url='.nkGetLink(true, 2));
+                    header('Refresh:0, url='.nkSetLink(true, 2));
                 }
                 else {
 
@@ -1611,37 +1495,6 @@ function postProcess ($op, $action, $id) {
             }
 
         }
-        else if (nkGetValue('btnSubmit') && $action === 'edit_user') {
-            // Get Team User ID
-            $dbsGetTeamUserId = 'SELECT user_id, team_status_id FROM ' . TEAM_USER_TABLE . ' WHERE id = "' . (int) $id . '" ';
-            // Execute
-            $dbeGetTeamUserId = mysql_query($dbsGetTeamUserId);
-            // Get Row
-            $dbaGetTeamUserId = mysql_fetch_assoc($dbeGetTeamUserId);
-
-            $TeamUserId = $dbaGetTeamUserId['user_id'];
-
-            // User
-            $dbiSetUser = 'REPLACE INTO ' . TEAM_USER_TABLE . ' (id, user_id, team_status_id) VALUES (' . ($id ? (int) $id : 'NULL') . ', "' . mysql_real_escape_string($TeamUserId) . '", ' . nkGetValue('status', 'NULL') . ') ';
-
-
-            if (mysql_query($dbiSetUser)) {
-                header('Refresh:0, url='.nkGetLink(true, null, array('action' => 'list_status')));
-            }
-            // Si la requete n'a pas réussi
-            else {
-                ?>
-                    <div class="nNote nFailure nNoteHideable">
-                        <p>
-                            <?php
-                            echo nk_debug_bt() . '<br />' . TEAM_QUERY . ' ' . $dbrSetUser ;
-                            ?>
-                        </p>
-                    </div>
-                <?php
-            }
-
-        }
     }
     else if ($op === 'settings') {
         if(nkGetValue('btnSubmit')) {
@@ -1652,7 +1505,7 @@ function postProcess ($op, $action, $id) {
                 && mysql_query(sprintf($dbuSetConfig, nkGetValue('display_type'), 'display_type'))
                 && mysql_query(sprintf($dbuSetConfig, (int) nkGetValue('picture'), 'picture'))
             ) {
-                header('Refresh:0, url='.nkGetLink(true, 3));
+                header('Refresh:0, url='.nkSetLink(true, 3));
             }
             // Si la requete n'a pas réussi
             else {

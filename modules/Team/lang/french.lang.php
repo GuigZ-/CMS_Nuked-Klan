@@ -43,7 +43,6 @@ $arrayModLang = array(
     'TEAM_ADMIN_ADD_STATUS'       => 'Ajouter un statut',
     'TEAM_ADMIN_ADD_RANK'         => 'Ajouter un rang',
     'TEAM_ADMIN_ADD_COMBINAISON'  => 'Associer un membre &agrave; une &eacute;quipe',
-    'TEAM_ADMIN_LIST_STATUS'      => 'Gestion des utilisateurs associ&eacute;s',
     #####################################
     # Team - displayContent() (admin.php)
     #####################################

@@ -1221,7 +1221,6 @@
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `user_id` varchar(50) NOT NULL,
-                                  `team_status_id` int(11) NOT NULL,
                                   PRIMARY KEY (`id`,`user_id`),
                                   UNIQUE KEY `team` (`user_id`)
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
@@ -1245,6 +1244,7 @@
                         $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_team` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT,
                                   `team_user_id` int(11) NOT NULL,
+                                  `team_status_id` int(11) NOT NULL,
                                   `team_id` int(11) NOT NULL,
                                   `description` text NOT NULL,
                                   PRIMARY KEY (`id`),

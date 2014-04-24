@@ -565,8 +565,7 @@
             $req = mysql_query($sql) or die(nk_debug_bt());
             $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user` (
                       `id` INT(11) NOT NULL AUTO_INCREMENT,
-                      `user_id` VARCHAR(50) NOT NULL,
-                      `team_status_id` INT(11) NOT NULL,
+                      `user_id` VARCHAR(50) NOT NULL
                       PRIMARY KEY (`id`,`user_id`),
                       UNIQUE KEY `team` (`user_id`)
                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
@@ -586,8 +585,10 @@
             $sql = "CREATE TABLE IF NOT EXISTS `".$db_prefix."_team_user_team` (
                       `id` INT(11) NOT NULL AUTO_INCREMENT,
                       `team_user_id` INT(11) NOT NULL,
+                      `team_status_id` INT(11) NOT NULL,
                       `team_id` INT(11) NOT NULL,
                       `description` text NOT NULL,
+                      `team_rank_id` INT(11) NOT NULL,
                       PRIMARY KEY (`id`),
                       UNIQUE KEY `team_user_id` (`team_user_id`,`team_id`)
                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
@@ -601,7 +602,7 @@
             $req = mysql_query($sql) or die(nk_debug_bt());
 
             // Add association user status
-            $sql = "INSERT INTO `".$db_prefix."_team_user` (`user_id`, `team_status_id`) (SELECT id, 1 FROM `".$db_prefix."_users`); ";
+            $sql = "INSERT INTO `".$db_prefix."_team_user` (`user_id`) (SELECT id FROM `".$db_prefix."_users`); ";
             $req = mysql_query($sql) or die(nk_debug_bt());
 
             // Insert association teamuser & team
@@ -726,7 +727,7 @@
                     DROP `map`,
                     DROP `style`,
                     DROP `dispo`,
-                    DROP `non_dispo`,
+                    DROP `pas_dispo`,
                     DROP `tscore_team`,
                     DROP `tscore_adv`,
                     DROP `score_team`,
