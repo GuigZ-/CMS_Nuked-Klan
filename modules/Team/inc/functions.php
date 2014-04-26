@@ -156,7 +156,7 @@ function getNkGroups ($id = false) {
 /**
  * Liste des jeux
  * @param  integer $id Identifiant du jeu
- * @return mixed       Données trouvées
+ * @return mixed       DonnÃ©es trouvÃ©es
  */
 function nkGetTeamGames ($id = false) {
 
