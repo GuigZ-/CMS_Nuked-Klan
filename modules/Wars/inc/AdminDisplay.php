@@ -32,7 +32,7 @@ function WarsDisplayAdmin () {
 
 
     // Message de process
-    echo '<div class="nNote nWarning nNoteHideabl"><p>En cours de développement</p></div>';
+    echo '<div class="nNote nWarning nNoteHideabl"><p>En cours de dÃ©veloppement</p></div>';
     ?>
 
     <div class="content-box">
@@ -58,7 +58,7 @@ function WarsDisplayMenu ($op) {
     $menus = array(
         'matchs'        => array('name' => 'Matches', 'icon' => ''),
         'add'           => array('name' => 'Ajouter', 'icon' => 'add'),
-        'settings'      => array('name' => 'Préférences', 'icon' => 'settings'),
+        'settings'      => array('name' => 'PrÃ©fÃ©rences', 'icon' => 'settings'),
     );
 
     nkDisplayContentMenu($menus, $op);
@@ -239,12 +239,12 @@ function WarsDisplayForm ($id = fale) {
             $("#mapsbutton a").click(function(e, d){
                 if (!parseInt($("#game").val()))
                 {
-                    alert('Merci de sélectionner un jeu');
+                    alert('Merci de sÃ©lectionner un jeu');
                     return false;
                 }
                 if (!parseInt($("#team").val()))
                 {
-                    alert('Merci de sélectionner une équipe');
+                    alert('Merci de sÃ©lectionner une Ã©quipe');
                     return false;
                 }
                 // Create component
@@ -443,7 +443,7 @@ function WarsDisplayForm ($id = fale) {
                 opponent.setAttribute('class', 'grid2');
                 var inputOpponent = document.createElement('textarea');
                 inputOpponent.setAttribute('name', 'map['+maps_nb+'][opponent]');
-                inputOpponent.setAttribute('placeholder', 'Adversaires : Séparer les adversaires par une virgule');
+                inputOpponent.setAttribute('placeholder', 'Adversaires : SÃ©parer les adversaires par une virgule');
                 inputOpponent.innerHTML = (typeof(d) !== 'undefined' && d.opponent ? d.opponent : '');
                 inputOpponent.setAttribute('rows', 4);
                 opponent.appendChild(inputOpponent);
@@ -454,7 +454,7 @@ function WarsDisplayForm ($id = fale) {
                 var inputTime = document.createElement('input');
                 inputTime.setAttribute('name', 'map['+maps_nb+'][time]');
                 inputTime.setAttribute('type', 'text');
-                inputTime.setAttribute('placeholder', 'Durée de la map');
+                inputTime.setAttribute('placeholder', 'DurÃ©e de la map');
                 inputTime.setAttribute('value', (typeof(d) !== 'undefined' && d.time ? d.time : ''));
                 time.appendChild(inputTime);
 
@@ -502,7 +502,7 @@ function WarsDisplayForm ($id = fale) {
                 var label = document.createElement('label');
                 label.setAttribute('for', 'file_' + files_nb);
 
-                var name = document.createTextNode('Fichier n°' + (files_nb + 1));
+                var name = document.createTextNode('Fichier nÂ°' + (files_nb + 1));
                 label.appendChild(name);
 
                 contentLabel.appendChild(label);
@@ -599,7 +599,7 @@ function WarsDisplayForm ($id = fale) {
             <!-- Information -->
             <div class="widget grid6">
                 <div class="whead">
-                    <h6>Informations générales</h6>
+                    <h6>Informations gÃ©nÃ©rales</h6>
                     <div class="clear both"></div>
                 </div>
                 <div class="formRow">
@@ -610,7 +610,7 @@ function WarsDisplayForm ($id = fale) {
                         <select name="status" id="status" class="select">
                             <option value=""><?php echo CHOOSE; ?></option>
                             <option value="0"<?php echo ($status == 0 ? ' selected' : ''); ?>>A jouer</option>
-                            <option value="1"<?php echo ($status == 1 ? ' selected' : ''); ?>>Terminé</option>
+                            <option value="1"<?php echo ($status == 1 ? ' selected' : ''); ?>>TerminÃ©</option>
                         </select>
                     </div>
                     <div class="clear both"></div>
@@ -735,7 +735,7 @@ function WarsDisplayForm ($id = fale) {
             <!-- Tournament -->
             <div class="widget grid6">
                 <div class="whead">
-                    <h6>Compétition</h6>
+                    <h6>CompÃ©tition</h6>
                     <div class="clear both"></div>
                 </div>
                 <div class="formRow">
@@ -788,13 +788,13 @@ function WarsDisplayForm ($id = fale) {
                         Mode de jeu
                     </div>
                     <div class="grid1">
-                        Durée
+                        DurÃ©e
                     </div>
                     <div class="grid2">
                         Joueurs
                     </div>
                     <div class="grid2">
-                        Remplaçants
+                        RemplaÃ§ants
                     </div>
                     <div class="grid2">
                         Adversaires
@@ -831,10 +831,10 @@ function WarsDisplayForm ($id = fale) {
 
 /**
  * Processus
- * @param  string $op     Opération
+ * @param  string $op     OpÃ©ration
  * @param  string $action Action
  * @param  string $id     Identifier
- * @return mixed          Données retournées
+ * @return mixed          DonnÃ©es retournÃ©es
  */
 function postProcess ($op, $action, $id) {
     if ($op === 'add' || ($op === 'edit' && $id)) {
@@ -857,7 +857,7 @@ function postProcess ($op, $action, $id) {
                     <div class="nNote nFailure nNoteHideable">
                         <p>
                             <?php
-                            echo 'Merci de choisir une équipe';
+                            echo 'Merci de choisir une Ã©quipe';
                             ?>
                         </p>
                     </div>
@@ -893,7 +893,7 @@ function postProcess ($op, $action, $id) {
                     <div class="nNote nFailure nNoteHideable">
                         <p>
                             <?php
-                            echo 'Le lien du site de la compétition n\'est pas valide';
+                            echo 'Le lien du site de la compÃ©tition n\'est pas valide';
                             ?>
                         </p>
                     </div>
@@ -905,7 +905,7 @@ function postProcess ($op, $action, $id) {
 
             $sqlMaps = array();
 
-            // Check des maps si on est passé à terminer
+            // Check des maps si on est passÃ© Ã  terminer
             if (!$maps && nkGetValue('status') == '1') {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
@@ -931,7 +931,7 @@ function postProcess ($op, $action, $id) {
                     }
                 }
             }
-            // Si nous avons parcouru les maps et que celles-ci sont mals informés
+            // Si nous avons parcouru les maps et que celles-ci sont mals informÃ©s
             if (isset($i) && $i === 0) {
                 ?>
                     <div class="nNote nFailure nNoteHideable">

@@ -21,8 +21,8 @@ function index () {
 }
 
 /**
- * Afficher les équipes
- * @param  array $teams Les équipes
+ * Afficher les Ã©quipes
+ * @param  array $teams Les Ã©quipes
  */
 function displayTeam ($teams) {
 
@@ -30,7 +30,7 @@ function displayTeam ($teams) {
         // Les configurations
         $config = $GLOBALS['TEAM_CONFIG'];
 
-        // On boucle les équipes
+        // On boucle les Ã©quipes
         foreach ($teams as $team) {
             if (!isset($_REQUEST['id_team'])) {
                 ?>
@@ -91,14 +91,14 @@ function displayTeamContent ($config, $team) {
         foreach ($team['members'] as $member) {
             // Si on alterne l'affichage
             if ($config['display_type'] === 'alternate') {
-                // Si la variable $i n'est pas défini
+                // Si la variable $i n'est pas dÃ©fini
                 if (!isset($i)) {
                     $i = 0;
                 }
 
                 displayTeamBlock($member, $team, $config, (boolean) ($i % 2));
 
-                // On incrémente
+                // On incrÃ©mente
                 $i++;
             }
             else if ($config['display_type'] === 'table') {
@@ -117,9 +117,9 @@ function displayTeamContent ($config, $team) {
 /**
  * Affichage d'un block
  * @param  array   $member Information du membre
- * @param  array   $team   Information de l'équipe
- * @param  array   $config Préférences du module
- * @param  boolean $right  Aligner à droite
+ * @param  array   $team   Information de l'Ã©quipe
+ * @param  array   $config PrÃ©fÃ©rences du module
+ * @param  boolean $right  Aligner Ã  droite
  */
 function displayTeamBlock ($member, $team, $config, $right = false) {
     $picture = $config['picture'] ? 'photo' : 'avatar';
@@ -145,7 +145,7 @@ function displayTeamBlock ($member, $team, $config, $right = false) {
 /**
  * Block infos d'un membre
  * @param  array $member Information du membre
- * @param  array $team   Information de l'équipe
+ * @param  array $team   Information de l'Ã©quipe
  */
 function blockInfos ($member, $team) {
     ?>

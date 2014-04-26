@@ -188,7 +188,7 @@ function displayContent ($op, $action, $id = null) {
 }
 
 /**
- * Affiche la liste des équipes
+ * Affiche la liste des Ã©quipes
  */
 function listTeams () {
     ?>
@@ -303,8 +303,8 @@ function listTeams () {
 }
 
 /**
- * Formulaire de gestion des équipes
- * @param  boolean $id ID à éditer
+ * Formulaire de gestion des Ã©quipes
+ * @param  boolean $id ID Ã  Ã©diter
  */
 function formTeams ($id = false) {
     if ($id) {
@@ -493,7 +493,7 @@ function formTeams ($id = false) {
 }
 
 /**
- * Affiche la liste des utilisateurs associés
+ * Affiche la liste des utilisateurs associÃ©s
  */
 function listUsers () {
     ?>
@@ -604,7 +604,7 @@ function listUsers () {
 
 /**
  * Formulaire d'utilisateur
- * @param integer $id id à éditer
+ * @param integer $id id Ã  Ã©diter
  */
 function formUsers ($id = false) {
     $users = nkGetUsers();
@@ -645,7 +645,7 @@ function formUsers ($id = false) {
         ?>
             <div class="nNote nWarning nNoteHideable">
                 <p>
-                    Merci de créer des équipes pour continuer sur cette page.
+                    Merci de crÃ©er des Ã©quipes pour continuer sur cette page.
                 </p>
             </div>
         <?php
@@ -656,7 +656,7 @@ function formUsers ($id = false) {
         ?>
             <div class="nNote nWarning nNoteHideable">
                 <p>
-                    Merci de créer un rang pour continuer sur cette page.
+                    Merci de crÃ©er un rang pour continuer sur cette page.
                 </p>
             </div>
         <?php
@@ -855,7 +855,7 @@ function listStatus () {
 }
 /**
  * Formulaire de statut
- * @param integer $id id à éditer
+ * @param integer $id id Ã  Ã©diter
  */
 function formStatus ($id = false) {
 
@@ -975,7 +975,7 @@ function listRanks () {
 
 /**
  * Formulaire de rank
- * @param integer $id id à éditer
+ * @param integer $id id Ã  Ã©diter
  */
 function formRanks ($id = false) {
 
@@ -1016,7 +1016,7 @@ function formRanks ($id = false) {
 }
 
 /**
- * Préférences
+ * PrÃ©fÃ©rences
  */
 function formPreferences() {
 
@@ -1185,7 +1185,7 @@ function postProcess ($op, $action, $id) {
 
                     header('Refresh:0, url='.nkSetLink(true));
                 }
-                // Si la requete n'a pas réussi
+                // Si la requete n'a pas rÃ©ussi
                 else {
                     ?>
                     <div class="nNote nFailure nNoteHideable">
@@ -1237,7 +1237,7 @@ function postProcess ($op, $action, $id) {
         }
     }
     else if ($op === 'status') {
-        // Si le formulaire est envoyé
+        // Si le formulaire est envoyÃ©
         if (nkGetValue('btnSubmit') && ($action === 'add' || $action === 'edit')) {
 
             // Si tous les champs ne sont pas remplis
@@ -1271,7 +1271,7 @@ function postProcess ($op, $action, $id) {
                 if (mysql_query($dbrSetStatus)) {
                     header('Refresh:0, url='.nkSetLink(true));
                 }
-                // Si la requete n'a pas réussi
+                // Si la requete n'a pas rÃ©ussi
                 else {
                     ?>
                         <div class="nNote nFailure nNoteHideable">
@@ -1312,7 +1312,7 @@ function postProcess ($op, $action, $id) {
         }
     }
     else if ($op === 'ranks') {
-        // Si le formulaire est envoyé
+        // Si le formulaire est envoyÃ©
         if (nkGetValue('btnSubmit') && ($action === 'add' || $action === 'edit')) {
 
             // Si tous les champs ne sont pas remplis
@@ -1347,7 +1347,7 @@ function postProcess ($op, $action, $id) {
                 if (mysql_query($dbrSetRanks)) {
                     header('Refresh:0, url='.nkSetLink(true));
                 }
-                // Si la requete n'a pas réussi
+                // Si la requete n'a pas rÃ©ussi
                 else {
                     ?>
                         <div class="nNote nFailure nNoteHideable">
@@ -1456,7 +1456,7 @@ function postProcess ($op, $action, $id) {
             if (mysql_query($dbrSetUserRank)) {
                 header('Refresh:0, url='.nkSetLink(true));
             }
-            // Si la requete n'a pas réussi
+            // Si la requete n'a pas rÃ©ussi
             else {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
@@ -1507,7 +1507,7 @@ function postProcess ($op, $action, $id) {
             ) {
                 header('Refresh:0, url='.nkSetLink(true, 3));
             }
-            // Si la requete n'a pas réussi
+            // Si la requete n'a pas rÃ©ussi
             else {
                 ?>
                     <div class="nNote nFailure nNoteHideable">
