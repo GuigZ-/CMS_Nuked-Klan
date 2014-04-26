@@ -14,7 +14,7 @@ if (nkHasAdmin()) {
 
     /**
      * Affiche un message de confirmation
-     * @param  int $case Cl? du message
+     * @param  int $case Clé du message
      */
     function nkDisplayConf ($case) {
         ?>
@@ -46,7 +46,7 @@ if (nkHasAdmin()) {
     /**
      *  Affiche le contenu d'un menu
      *  @param array $menus Liste des menus
-     *  @param string $search Valeur ? chercher pour le liens courant
+     *  @param string $search Valeur à chercher pour le lien courant
      *  @param string $op Type d'action op|action
      *  @param string $op Si c'est pas le menu principal, c'est la valeur du op
      */
@@ -68,7 +68,7 @@ if (nkHasAdmin()) {
                     $request = array_merge(array($type => $key), $request);
         ?>
                     <li>
-                        <a class="tipN" href="<?php echo nkGetLink(false, null, $request); ?>" original-title="<?php echo $menu['name']; ?>">
+                        <a class="tipN" href="<?php echo nkSetLink(false, null, $request); ?>" original-title="<?php echo $menu['name']; ?>">
                             <span class="nkIcons icon-<?php echo (isset($menu['icon']) && !empty($menu['icon']) ? $menu['icon'] : 'help' ) ?>"></span>
                         </a>
                     </li>
@@ -104,7 +104,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des jeux
      * @param  integer $id Identifiant du jeu
-     * @return mixed       Donn?es trouv?es
+     * @return mixed       Données trouvées
      */
     function nkGetGames ($id = false) {
         $dbsGetGames = '
@@ -149,7 +149,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des groupes
      * @param  integer $id Identifiant du groupe
-     * @return mixed       Donn?es trouv?es
+     * @return mixed       Données trouvées
      */
     function nkGetGroups ($id = false) {
         $dbsGetGroups = "
@@ -194,13 +194,13 @@ if (nkHasAdmin()) {
     }
 
     /**
-     * G?n?re un lien pour l'admin
+     * Génère un lien pour l'admin
      * @param  boolean $conf    Si on utilise une conf
      * @param  integer $id_conf Identifiant de la conf
-     * @param  array   $others  Si d'autres ?l?ments sont ? ajout?s
+     * @param  array   $others  Si d'autres éléments sont à ajoutés
      * @return string           Lien construit
      */
-    function nkGetLink ($conf = false, $id_conf = null, $others = array()) {
+    function nkSetLink ($conf = false, $id_conf = null, $others = array()) {
 
         $request = array();
 
@@ -237,7 +237,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des maps
      * @param  integer $id Identifier de la map
-     * @return mixed      Donn?es trouv?es
+     * @return mixed      Données trouvées
      */
     function nkGetMaps ($id = false) {
         $dbsGetGames = '
@@ -282,7 +282,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des champs sociaux
      * @param  integer $id Identifiant du champ social
-     * @return mixed       Donn?es trouv?es
+     * @return mixed       Données trouvées
      */
     function nkGetSocials ($id = false) {
         $dbsGetSocials = '
@@ -321,9 +321,9 @@ if (nkHasAdmin()) {
     }
 
     /**
-     * Liste des ?quipes
-     * @param  integer $id Identifiant de l'?quipe
-     * @return mixed       Donn?es trouv?es
+     * Liste des équipes
+     * @param  integer $id Identifiant de l'équipe
+     * @return mixed       Données trouvées
      */
     function nkGetTeams ($id = false) {
 
@@ -335,7 +335,7 @@ if (nkHasAdmin()) {
                 LEFT OUTER JOIN " . TEAM_GAMES_TABLE . " AS tga
                     ON tga.team_id = t.id
             ";
-        // Si une id est d?fini
+        // Si une id est défini
         if($id) {
             $dbsGetTeams .= " WHERE t.id = '" . (int) $id . "' ";
         }
@@ -371,7 +371,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des rangs
      * @param  integer $id Identifiant du status
-     * @return mixed       Donn?es trouv?es
+     * @return mixed       Données trouvées
      */
     function nkGetTeamsRanks ($id = false) {
         $dbsGetRank = "
@@ -379,7 +379,7 @@ if (nkHasAdmin()) {
             FROM " . TEAM_RANK_TABLE . "
             WHERE 1
         ";
-        // Si une id est d?fini
+        // Si une id est défini
         if($id) {
             $dbsGetRank .= " AND id = '" . (int) $id . "' ";
         }
@@ -413,16 +413,16 @@ if (nkHasAdmin()) {
     }
 
     /**
-     * Liste des statut d'?quipe
+     * Liste des statut d'équipe
      * @param  string $id Identifiant du statut
-     * @return mixed      Donn?es trouv?es
+     * @return mixed      Données trouvées
      */
     function nkGetTeamsStatus ($id = false) {
 
         $dbsGetStatus = '
                 SELECT name, id
                 FROM ' . TEAM_STATUS_TABLE . '';
-        // Si une id est d?fini
+        // Si une id est défini
         if($id) {
             $dbsGetStatus .= ' WHERE id = "' . (int) $id . '" ';
         }
@@ -454,7 +454,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des utilisateurs
      * @param  string $id Identifiant de l'utilisateur
-     * @return mixed      Donn?es trouv?es
+     * @return mixed      Données trouvées
      */
     function nkGetUsers ($id = false) {
         $dbsGetUsers = "
@@ -499,10 +499,10 @@ if (nkHasAdmin()) {
     }
 
     /**
-     * Permet de r?cup?rer les donn?es de requ?tes
-     * @param  string  $key     Cl? de la donn?e
-     * @param  mixed   $default Donn?e de retour, si la cl? n'est pas trouv?
-     * @return mixed            Valeur trouv? ou de d?fault
+     * Permet de récupérer les données de requêtes
+     * @param  string  $key     Clé de la donnée
+     * @param  mixed   $default Donnée de retour, si la clé n'est pas trouvé
+     * @return mixed            Valeur trouvé ou de défault
      */
     function nkGetValue ($key, $default = false) {
         if (isset($_REQUEST[$key]) && !empty($_REQUEST[$key])) {
@@ -529,7 +529,7 @@ if (nkHasAdmin()) {
 
     /**
      * Upload une image
-     * @param  mixed  $file      Tableau ($_FILES) ou cl? du tableau $_FILES
+     * @param  mixed  $file      Tableau ($_FILES) ou clé du tableau $_FILES
      * @param  string $dest_path Chemin relatif pour l'image
      * @param  string $dest_file Nouveau nom du fichier
      * @return string            Nom du fichier
@@ -551,7 +551,7 @@ if (nkHasAdmin()) {
         if (!isset($file['tmp_name']))
             return true;
 
-        // Si le dossier existe pas on le cr??
+        // Si le dossier existe pas on le créé
         if (is_dir($dest_path) === false) {
             @mkdir($dest_path, 0755, true);
         }
@@ -564,13 +564,13 @@ if (nkHasAdmin()) {
 
         $types = array('.jpeg', '.jpg', '.png', '.gif');
 
-        // Format du fichier upload?
+        // Format du fichier uploadé
         $type = strrchr($file['name'], '.');
         if (!in_array($type, $types)) {
             return false;
         }
 
-        // Le fichier n'est pas upload?
+        // Le fichier n'est pas uploadé
         if (is_uploaded_file($file['tmp_name']) === false) {
             return false;
         }
