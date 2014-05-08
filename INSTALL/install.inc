@@ -564,7 +564,7 @@
                         ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                         $req = mysql_query($sql) or die (nk_debug_bt());
 
-                        $sql = "INSERT INTO `" . $db_prefix . "_map`
+                        $sql = "INSERT INTO `" . $db_prefix . "_games_map`
                         VALUES
                         ('', 1, 'de_nuke', '42bf71fde4.jpg')
                         ";
@@ -1151,6 +1151,12 @@
                                   `game_id` int(11) NOT NULL
                                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
                         $req = mysql_query($sql) or die (nk_debug_bt());
+
+                        $sql = "INSERT INTO `" . $db_prefix . "_team_games`
+                        VALUES
+                            ('1', '1')
+                        ";
+                        $req = mysql_query($sql) or die (nk_debug_bt());
                         echo 'OK';
         break;
         case 'team_rank':
@@ -1176,7 +1182,7 @@
                                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1";
                         $req = mysql_query($sql) or die (nk_debug_bt());
 
-                        $sql = "INSERT INTO `" . $db_prefix . "_team`
+                        $sql = "INSERT INTO `" . $db_prefix . "_team_groups`
                         VALUES
                             (1, 1, 1),
                             (2, 1, 2),

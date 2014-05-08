@@ -101,7 +101,7 @@ function GamesPostProcess ($op, $action, $id) {
                     }
 
                     if (mysql_query($dbrSetGame)) {
-                        header('Refresh:0, url='.nkGetLink(true));
+                        header('Refresh:0, url='.nkSetLink(true));
                     }
                 }
                 else {
@@ -130,7 +130,7 @@ function GamesPostProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdRanks) && mysql_query($dbdRanksMaps)) {
-                    header('Refresh:0, url='.nkGetLink(true, 2));
+                    header('Refresh:0, url='.nkSetLink(true, 2));
                 }
                 else {
 
@@ -191,7 +191,7 @@ function GamesPostProcess ($op, $action, $id) {
                     }
 
                     if (mysql_query($dbrSetMap)) {
-                        header('Refresh:0, url='.nkGetLink(true));
+                        header('Refresh:0, url='.nkSetLink(true));
                     }
                 }
                 else {
@@ -219,7 +219,7 @@ function GamesPostProcess ($op, $action, $id) {
 
                 // execution de la requete
                 if (mysql_query($dbdRanks) && mysql_query($dbdRanksMaps)) {
-                    header('Refresh:0, url='.nkGetLink(true, 2));
+                    header('Refresh:0, url='.nkSetLink(true, 2));
                 }
                 else {
 
@@ -360,8 +360,8 @@ function GamesDisplayList ($op) {
                                     ?>
                                 </td>
                                 <td class="center">
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkSetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkSetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
                                 </td>
                             </tr>
                         <?php
@@ -428,7 +428,7 @@ function GamesDisplayForm ($id = false) {
                 </div>
                 <div class="body center">
                     <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                    <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
+                    <a class="buttonM bDefault" href="<?php echo nkSetLink(); ?>"><?php echo BACK; ?></a>
                 </div>
                 <div class="clear both"></div>
             </div>
@@ -479,8 +479,8 @@ function GamesMapsDisplayList () {
                                         ?>
                                     </td>
                                     <td class="center">
-                                        <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
-                                        <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
+                                        <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkSetLink(false, null, array("action" => "edit", "id" => $value['id'])); ?>"></a>
+                                        <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkSetLink(false, null, array("action" => "del", "id" => $value['id'])); ?>"></a>
                                     </td>
                                 </tr>
                             <?php
@@ -569,7 +569,7 @@ function GamesMapsDisplayForm ($id = false) {
                 </div>
                 <div class="body center">
                     <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                    <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
+                    <a class="buttonM bDefault" href="<?php echo nkSetLink(); ?>"><?php echo BACK; ?></a>
                 </div>
                 <div class="clear both"></div>
             </div>

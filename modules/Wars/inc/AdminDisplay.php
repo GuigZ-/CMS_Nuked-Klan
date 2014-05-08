@@ -139,8 +139,8 @@ function WarsDisplayList () {
                                     ?>
                                 </td>
                                 <td class="center">
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo nkGetLink(false, null, array("op" => "edit", "id" => $value['id'])); ?>"></a>
-                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo nkGetLink(false, null, array("op" => "del", "id" => $value['id'])); ?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-edit" href="<?php echo NkSetLink(false, null, array("op" => "edit", "id" => $value['id'])); ?>"></a>
+                                    <a class="tablectrl_medium bDefault tipS nkIcons icon-delete"  href="<?php echo NkSetLink(false, null, array("op" => "del", "id" => $value['id'])); ?>"></a>
                                 </td>
                             </tr>
                         <?php
@@ -821,7 +821,7 @@ function WarsDisplayForm ($id = fale) {
                 </div>
                 <div class="formRow">
                     <input type="submit" name="btnSubmit" class="buttonM bBlue">
-                    <a class="buttonM bDefault" href="<?php echo nkGetLink(); ?>"><?php echo BACK; ?></a>
+                    <a class="buttonM bDefault" href="<?php echo NkSetLink(); ?>"><?php echo BACK; ?></a>
                 </div>
             </div>
         </div>
@@ -966,7 +966,7 @@ function postProcess ($op, $action, $id) {
                 mysql_query($dbrSetMatchMap) or die(nk_debug_bt());
             }
 
-            header('Refresh:0, url='.nkGetLink(true, null, array('op' => 'matchs')));
+            header('Refresh:0, url='.NkSetLink(true, null, array('op' => 'matchs')));
 
         }
     }
