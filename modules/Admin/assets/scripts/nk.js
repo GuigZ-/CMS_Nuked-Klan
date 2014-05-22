@@ -210,4 +210,7 @@ $(document).ready(function(){
             $(row).removeClass("current");
         }
     });
+
+    $("div[class^='widget']").contentTabs(); //Run function on any div with class name of "Content Tabs"
+
 });

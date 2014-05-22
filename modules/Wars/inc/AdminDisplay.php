@@ -247,247 +247,109 @@ function WarsDisplayForm ($id = fale) {
                     alert('Merci de sélectionner une équipe');
                     return false;
                 }
-                // Create component
-                var content = document.createElement('div');
-                content.setAttribute('class', 'formRow last map');
 
-                // Maps
-                // Create first col
-                var maps = document.createElement('div');
-                maps.setAttribute('class', 'grid2 searchDrop');
-                // Create select
-                var selectMaps = document.createElement('select');
-                selectMaps.setAttribute('name', 'map['+maps_nb+'][map]');
-                // Add element to select
+                var div = $('<div class="fluid"><div class="widget map last grid12"><div class="whead hand collapsible" id="map_collapsible_'+ (maps_nb + 1) +'"><h6>Map n°'+ (maps_nb + 1) +'</h6><a href="#" class="headIcon icon-delete nkIcons tipS" original-title="download"></a><div class="clear both"></div></div><div class="body nopadding"></div></div></div>');
+
+                // Insertion
+                $("#mapsbutton").before(div);
+                // On récupère pour travailler dessus
+                var map = $(".map.last > .body");
+
+                // Création des tabs
+                map.append('<ul class="tabs"><li><a href="#map_'+maps_nb+'_tab_1">Informations</a></li><li><a href="#map_'+maps_nb+'_tab_2">Joueurs</a></li></ul><a href="#" class="headIcon icon-download tipS" original-title="download"></a>');
+
+                // Création de la tab des informations
+                var tab_content = '<div id="map_'+maps_nb+'_tab_1" class="tab_content">';
+
+                var options = '<option value=""></option>';
+
                 for (k in jsonTab) {
                     if (k == game_id) {
                         var listMaps = jsonTab[k].maps;
 
-                        var option = document.createElement('option');
-                        option.setAttribute('value', '');
-
-                        var text = document.createTextNode('<?php echo CHOOSE; ?>');
-                        option.appendChild(text);
-                        selectMaps.appendChild(option);
-
                         for (j in listMaps) {
-                            var option = document.createElement('option');
-                            option.setAttribute('value', j);
-                            // If map selected
-                            if (typeof(d) !== 'undefined' && d.map === j) {
-                                option.setAttribute('selected', true);
+                            var selected = false;
+                            if (typeof(d) !== 'undefined' && typeof(d.map) === 'string' && d.map === j) {
+                                selected = true;
                             }
 
-                            var text = document.createTextNode(listMaps[j].name);
-                            option.appendChild(text);
-                            selectMaps.appendChild(option);
+                            options += '<option value="'+j+'"'+ (selected === true ? ' selected' : '') +'>'+listMaps[j].name+'</option>';
                         }
+
                     }
                 }
 
-                maps.appendChild(selectMaps);
+                var local = (typeof(d) !== "undefined" && typeof(d.score) !== "undefined" && typeof(d.score.local) !== "undefined" && d.score.local != "" ? d.score.local : '');
+                var visitor = (typeof(d) !== "undefined" && typeof(d.score) !== "undefined" && typeof(d.score.visitor) !== "undefined" && d.score.visitor != "" ? d.score.visitor : '');
 
-                var t = $("#team").val();
-                // Players
-                var players = document.createElement('div');
-                players.setAttribute('class', 'grid2');
-                // Add element to select
-                for (i in jsonTab) {
-                    if (i == game_id) {
-                        // While teams
-                        for (j in jsonTab[i].teams) {
-                            // If teams
-                            if (j == t) {
-                                var team = jsonTab[i].teams[j];
-                                var num = 0;
-
-                                var nb_players = Object.keys(team.players).length;
-
-                                var cols = parseFloat(nb_players / 3);
-                                var grid;
-
-                                if (cols <= 1) {
-                                    grid = '12';
-                                }
-                                else if (cols <= 2) {
-                                    grid = '6';
-                                }
-                                else {
-                                    grid = '4';
-                                }
-
-                                // While players
-                                for (k in team.players) {
-                                    var player = document.createElement('div');
-                                    player.setAttribute('class', 'grid6');
-                                    var checkbox = document.createElement('input');
-                                    checkbox.setAttribute('name', 'map['+maps_nb+'][players][]');
-                                    checkbox.setAttribute('id', 'player_'+maps_nb+'_'+k);
-                                    checkbox.setAttribute('type', 'checkbox');
-                                    checkbox.setAttribute('value', k);
-                                    if (typeof(d) !== 'undefined' && typeof(d.players) === 'object' && inArray(k, d.players)) {
-                                        checkbox.setAttribute('checked', true);
-                                    }
-
-                                    var label = document.createElement('label');
-                                    label.setAttribute('for', 'player_'+maps_nb+'_'+k);
-
-                                    var text = document.createTextNode(team.players[k]);
-
-                                    label.appendChild(text);
-
-                                    player.appendChild(checkbox);
-                                    player.appendChild(label);
-
-                                    num++;
-                                    if (num % 2 === 0 && nb_players > num) {
-                                        var clearBoth = document.createElement('div');
-                                        clearBoth.setAttribute('class', 'clear both');
-                                        player.appendChild(clearBoth);
-                                    }
-                                    players.appendChild(player);
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-                // substitute
-                var substitute = document.createElement('div');
-                substitute.setAttribute('class', 'grid2');
-                // Add element to select
-                for (i in jsonTab) {
-                    if (i == game_id) {
-                        // While teams
-                        for (j in jsonTab[i].teams) {
-                            // If teams
-                            if (j == t) {
-                                var team = jsonTab[i].teams[j];
-                                var num = 0;
-
-                                var nb_substitute = Object.keys(team.players).length;
-
-                                var cols = parseFloat(nb_substitute / 3);
-                                var grid;
-
-                                if (cols <= 1) {
-                                    grid = '12';
-                                }
-                                else if (cols <= 2) {
-                                    grid = '6';
-                                }
-                                else {
-                                    grid = '4';
-                                }
-
-                                // While substitute
-                                for (k in team.players) {
-                                    var player = document.createElement('div');
-                                    player.setAttribute('class', 'grid6');
-                                    var checkbox = document.createElement('input');
-                                    checkbox.setAttribute('name', 'map['+maps_nb+'][substitute][]');
-                                    checkbox.setAttribute('id', 'substitute_'+maps_nb+'_'+k);
-                                    checkbox.setAttribute('type', 'checkbox');
-                                    checkbox.setAttribute('value', k);
-                                    if (typeof(d) !== 'undefined' && typeof(d.substitute) === 'object' && inArray(k, d.substitute)) {
-                                        checkbox.setAttribute('checked', true);
-                                    }
-
-                                    var label = document.createElement('label');
-                                    label.setAttribute('for', 'substitute_'+maps_nb+'_'+k);
-
-                                    var text = document.createTextNode(team.players[k]);
-
-                                    label.appendChild(text);
-
-                                    player.appendChild(checkbox);
-                                    player.appendChild(label);
-
-                                    num++;
-                                    if (num % 2 === 0 && nb_substitute > num) {
-                                        var clearBoth = document.createElement('div');
-                                        clearBoth.setAttribute('class', 'clear both');
-                                        player.appendChild(clearBoth);
-                                    }
-                                    substitute.appendChild(player);
-                                }
-
-                            }
-                        }
-                    }
-                }
-
+                // Choix de la map
+                tab_content += '<div class="formRow"><div class="grid3"><label for="map_'+maps_nb+'_map">Choisir la carte :</label></div><div class="grid9 searchDrop"><select class="select" name="map['+maps_nb+'][map]" id="map_'+maps_nb+'_map">'+options+'</select></div><div class="clear both"></div></div>';
                 // Score
-                var score = document.createElement('div');
-                score.setAttribute('class', 'grid1');
-                var inputScore = document.createElement('input');
-                inputScore.setAttribute('name', 'map['+maps_nb+'][score]');
-                inputScore.setAttribute('type', 'text');
-                inputScore.setAttribute('placeholder', 'Score');
-                inputScore.setAttribute('value', (typeof(d) !== 'undefined' && d.score ? d.score : ''));
-                score.appendChild(inputScore);
+                tab_content += '<div class="formRow"><div class="grid3"><label>Score de la carte :</label></div><div class="grid9 moreFields"><ul class="rowData"><li><input type="text" value="' + local + '" placeholder="Local" name="map['+maps_nb+'][score][local]" /></li><li class="sep">-</li><li><input type="text" value="' + visitor + '" placeholder="Visiteur" name="map['+maps_nb+'][score][visitor]" /></li></ul></div><div class="clear both"></div></div>';
+                // Mode de jeu
+                tab_content += '<div class="formRow"><div class="grid3"><label for="map_'+maps_nb+'_mod">Mode de la carte :</label></div><div class="grid9"><input type="text" name="map['+maps_nb+'][mod]" id="map_'+maps_nb+'_mod" /></div><div class="clear both"></div></div>';
+                // Mode de jeu
+                tab_content += '<div class="formRow"><div class="grid3"><label for="map_'+maps_nb+'_time">Temps de la carte :</label></div><div class="grid9"><input type="text" name="map['+maps_nb+'][time]" id="map_'+maps_nb+'_time" /></div><div class="clear both"></div></div>';
 
-                // Mod de jeu
-                var mod = document.createElement('div');
-                mod.setAttribute('class', 'grid1');
-                var inputMod = document.createElement('input');
-                inputMod.setAttribute('name', 'map['+maps_nb+'][mod]');
-                inputMod.setAttribute('type', 'text');
-                inputMod.setAttribute('placeholder', 'Mode de jeu');
-                inputMod.setAttribute('value', (typeof(d) !== 'undefined' && d.mod ? d.mod : ''));
-                mod.appendChild(inputMod);
+                // Fin de la tab des informations
+                tab_content += '</div>';
 
-                // Adversaire
-                var opponent = document.createElement('div');
-                opponent.setAttribute('class', 'grid2');
-                var inputOpponent = document.createElement('textarea');
-                inputOpponent.setAttribute('name', 'map['+maps_nb+'][opponent]');
-                inputOpponent.setAttribute('placeholder', 'Adversaires : Séparer les adversaires par une virgule');
-                inputOpponent.innerHTML = (typeof(d) !== 'undefined' && d.opponent ? d.opponent : '');
-                inputOpponent.setAttribute('rows', 4);
-                opponent.appendChild(inputOpponent);
+                // Début tab des joueurs
+                tab_content += '<div id="map_'+maps_nb+'_tab_2" class="tab_content">';
+                var players_content = '';
 
-                // time
-                var time = document.createElement('div');
-                time.setAttribute('class', 'grid1');
-                var inputTime = document.createElement('input');
-                inputTime.setAttribute('name', 'map['+maps_nb+'][time]');
-                inputTime.setAttribute('type', 'text');
-                inputTime.setAttribute('placeholder', 'Durée de la map');
-                inputTime.setAttribute('value', (typeof(d) !== 'undefined' && d.time ? d.time : ''));
-                time.appendChild(inputTime);
+                // List players
+                var t = $("#team").val();
+                for (i in jsonTab) {
+                    if (i == game_id) {
+                        // While teams
+                        for (j in jsonTab[i].teams) {
+                            // If teams
+                            if (j == t) {
+                                var team = jsonTab[i].teams[j];
+                                for (k in team.players) {
+                                    var playerChecked = substituteChecked = false;
+                                    if (typeof(d) !== 'undefined' && typeof(d.players) === 'object' && inArray(k, d.players)) {
+                                        playerChecked = true;
+                                    }
+                                    if (typeof(d) !== 'undefined' && typeof(d.substitute) === 'object' && inArray(k, d.substitute)) {
+                                        substituteChecked = true;
+                                    }
+                                    players_content += '<tr><td>'+team.players[k]+'</td><td><input type="checkbox" value="'+k+'" name="map['+maps_nb+'][players][]"'+ (playerChecked === true ? ' checked' : '') +' /></td><td><input type="checkbox" value="'+k+'" name="map['+maps_nb+'][substitute][]"'+ (substituteChecked === true ? ' checked' : '') +' /></td></tr>';
+                                }
+                            }
+                        }
+                    }
+                }
 
-                var btnDelete = document.createElement('div');
-                btnDelete.setAttribute('class', 'grid2 center btnDelete');
-                var buttonDelete = document.createElement('a');
-                buttonDelete.setAttribute('class', 'nkIcons icon-delete bDefault tablectrl_medium tipS floatR');
-                btnDelete.appendChild(buttonDelete);
+                // table contenant les joueurs
+                tab_content += '<table class="tDefault"><thead><td>Joueur</td><td width="20px">J</td><td width="20px">R</td></thead><tbody>'+players_content+'</tbody></table>';
+
+                // Fin tab des joueurs
+                tab_content += '</div>';
+
+                map.append('<div class="tab_container">'+tab_content+'</div>');
+
+                map.contentTabs();
+                map.find("select").chosen().uniform();
+                map.find("input:checkbox").uniform();
+                map.parent().removeClass('last');
+
+               //===== Collapsible elements management =====//
+
+                $('#map_collapsible_'+ (maps_nb + 1)).collapsible({
+                    defaultOpen: 'map_collapsible_'+ (maps_nb + 1),
+                    cssOpen: 'inactive',
+                    cssClose: 'normal',
+                    speed: 200
+                });
+
+                map.parent('.map').find('.whead > .icon-delete').unbind('click').click(function(){
+                   $(this).parents('.fluid').remove();
+                    return false;
+                });
 
                 maps_nb++;
-
-                // Create .clear
-                var clearBoth = document.createElement('div');
-                clearBoth.setAttribute('class', 'clear both');
-                // Insert elements
-                content.appendChild(maps);
-                content.appendChild(mod);
-                content.appendChild(time);
-                content.appendChild(players);
-                content.appendChild(substitute);
-                content.appendChild(opponent);
-                content.appendChild(score);
-                content.appendChild(btnDelete);
-                content.appendChild(clearBoth);
-
-                $("#mapsbutton").before(content);
-                $("#maps .last select").chosen().uniform();
-                $("#maps .last input:checkbox").uniform();
-                $("#maps .last").removeClass('last');
-
-                $("#maps .btnDelete a").click(function(){
-                    $(this).parents('.formRow').remove();
-                });
 
                 return false;
             });
@@ -773,38 +635,13 @@ function WarsDisplayForm ($id = fale) {
             </div>
             <!-- /File -->
         </div>
-        <div class="fluid">
+        <div class="divider">
+            <span></span>
+        </div>
+        <div class="fluid" id="mapsbutton">
             <!-- Maps -->
-            <div class="widget grid12" id="maps">
-                <div class="whead">
-                    <h6>Cartes</h6>
-                    <div class="clear both"></div>
-                </div>
-                <div class="whead center">
-                    <div class="grid2">
-                        Carte
-                    </div>
-                    <div class="grid1">
-                        Mode de jeu
-                    </div>
-                    <div class="grid1">
-                        Durée
-                    </div>
-                    <div class="grid2">
-                        Joueurs
-                    </div>
-                    <div class="grid2">
-                        Remplaçants
-                    </div>
-                    <div class="grid2">
-                        Adversaires
-                    </div>
-                    <div class="grid1">
-                        Score
-                    </div>
-                    <div class="clear both"></div>
-                </div>
-                <div id="mapsbutton" class="formRow center">
+            <div class="widget grid12">
+                <div class="formRow center">
                     <div class="grid12">
                         <a class="buttonM bDefault" href="#mapsbutton">Ajouter une carte</a>
                     </div>
@@ -812,6 +649,9 @@ function WarsDisplayForm ($id = fale) {
                 </div>
             </div>
             <!-- /Maps -->
+        </div>
+        <div class="divider">
+            <span></span>
         </div>
         <div class="fluid">
             <div class="widget grid12 center">

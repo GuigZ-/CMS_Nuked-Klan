@@ -38,7 +38,7 @@ function adminHeader(){
      <head>
         <meta name="keywords" content="<?php echo $GLOBALS['nuked']['keyword'] ?>" />
         <meta name="Description" content="<?php echo $GLOBALS['nuked']['description'] ?>" />
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
         <title><?php echo $GLOBALS['nuked']['name'] ?> - <?php echo ADMIN_PANEL_TITLE; ?></title>
         <link rel="shortcut icon"  href="<?php echo $favicon; ?>" />

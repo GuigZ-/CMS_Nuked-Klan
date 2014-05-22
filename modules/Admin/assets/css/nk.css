@@ -37,3 +37,6 @@
 tfoot {border-top: 1px solid #DFDFDF;}
 
 .chzn-container {min-width:100px !important;}
+
+.headIcon {line-height: 14px;}
+.map .checker {float:none; margin:  0 auto;}

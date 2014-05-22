@@ -663,7 +663,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', end
 /* === Dividers === */
 
 .divider { height: 0; border-top: 1px solid #cdcdcd; border-bottom: 1px solid #fff; position: relative; margin: 35px 0 0 0; }
-.divider > span { position: absolute; left: 50%; margin-left: -21px; background: #eeeeee url(../images/div.png) no-repeat 50%; width: 36px; padding: 0 3px; height: 9px; display: block; top: -4px; }
+.divider > span { position: absolute; left: 50%; margin-left: -21px; background: #eeeeee url(../images/widgetDiv.png) no-repeat 50%; width: 36px; padding: 0 3px; height: 9px; display: block; top: -4px; }
 
 .widget .divider { height: 0; border-top: 1px solid #dfdfdf; border-bottom: 1px solid #fff; position: relative; margin: 20px 0; min-height: 0; }
 .widget .divider > span { position: absolute; left: 50%; margin-left: -21px; background: #eeeeee url(../images/widgetDiv.png) no-repeat 50%; width: 36px; padding: 0 3px; height: 9px; display: block; top: -4px; }
