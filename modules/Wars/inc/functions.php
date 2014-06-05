@@ -31,17 +31,32 @@ function getMatchs ($id = false) {
             if (!array_key_exists($dbaGetWars['id'], $wars)) {
                 $wars[$dbaGetWars['id']] = $temp;
                 $wars[$dbaGetWars['id']]['map'] = array();
+                $wars[$dbaGetWars['id']]['files'] = array();
             }
 
+                $scores = explode('-', $dbaGetWars['score']);
                 $wars[$dbaGetWars['id']]['map'][] = array(
                     'map' => $dbaGetWars['map_id'],
                     'players' => explode(',', $dbaGetWars['players']),
                     'substitute' => explode(',', $dbaGetWars['substitute']),
-                    'score' => $dbaGetWars['score'],
+                    'score' => array(
+                        'local' => $scores[0],
+                        'visitor' => $scores[1]
+                    ),
                     'game_mod' => $dbaGetWars['game_mod'],
                     'time' => $dbaGetWars['time'],
                     'opponent' => $dbaGetWars['opponent']
                 );
+                if ($id) {
+                    $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'Matchs' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR;
+                    if (is_dir($dir)) {
+                        foreach (scandir($dir) as $file) {
+                            if (is_dir($file) === false && $file != "index.php" && !preg_match('#^icon-adv#isD', $file)) {
+                                $wars[$dbaGetWars['id']]['files'][] = $file;
+                            }
+                        }
+                    }
+                }
         }
     }
 

@@ -78,19 +78,7 @@ $_POST = array_map('SecureVar', $_POST);
 $_COOKIE = array_map('SecureVar', $_COOKIE);
 
 $_REQUEST = array_merge($_COOKIE, $_POST, $_GET);
-foreach ($_FILES as $k=>$v){
-    if(!empty($_FILES[$k]['name'])){
-        $_FILES[$k]['name'] = substr(md5(uniqid()), rand(0, 20), 10) . strrchr($_FILES[$k]['name'], '.');
-        $sfile = new finfo(FILEINFO_MIME);
-        if (stripos(strrchr($_FILES[$k]['name'], '.'), 'php') !== false || stripos($sfile->file($_FILES[$k]['tmp_name']), 'php') !== false){
-            die ('Upload a PHP file isn\'t autorised !!');
-        }
-        elseif (stripos(strrchr($_FILES[$k]['name'], '.'), 'htaccess') !== false || stripos($sfile->file($_FILES[$k]['tmp_name']), 'htaccess') !== false){
-            die ('Upload a HTACCESS file isn\'t autorised !!');
-        }
-        unset($sfile);
-    }
-}
+
 
 //register_shutdown_function(create_function('', 'var_dump($_GET, $_POST, $_REQUEST);return false;'));
 

@@ -1,18 +1,34 @@
-$(document).ready(function(){
+$(document).ready(function() {
     // Initialize forms styling
     $(".select").chosen();
     $("select, .check, .check :checkbox, input:radio, input:file").uniform();
 
 
     // Initialize tooltips class
-    $('.tipN').tipsy({gravity: 'n',fade: true, html:true});
-    $('.tipS').tipsy({gravity: 's',fade: true, html:true});
-    $('.tipW').tipsy({gravity: 'w',fade: true, html:true});
-    $('.tipE').tipsy({gravity: 'e',fade: true, html:true});
+    $('.tipN').tipsy({
+        gravity: 'n',
+        fade: true,
+        html: true
+    });
+    $('.tipS').tipsy({
+        gravity: 's',
+        fade: true,
+        html: true
+    });
+    $('.tipW').tipsy({
+        gravity: 'w',
+        fade: true,
+        html: true
+    });
+    $('.tipE').tipsy({
+        gravity: 'e',
+        fade: true,
+        html: true
+    });
 
     // Initialize modal
-    $('a[rel=modal]').each(function(){
-        $(this).click(function(){
+    $('a[rel=modal]').each(function() {
+        $(this).click(function() {
             var titleDialog = $(this).data('title');
             var closeButton = 'Close';
 
@@ -21,30 +37,28 @@ $(document).ready(function(){
             }
 
             $.ajax({
-                scriptCharset:"iso-8859-1",
+                scriptCharset: "iso-8859-1",
                 type: "GET",
                 url: $(this).attr('href'),
-                success:function(data){
+                success: function(data) {
                     $('#nkDialog').html(data);
                     $('#nkDialog').dialog({
-                        title:titleDialog,
-                        modal:true,
-                        draggable:false,
-                        resizable:false,
-                        width:'auto',
+                        title: titleDialog,
+                        modal: true,
+                        draggable: false,
+                        resizable: false,
+                        width: 'auto',
                         maxHeight: $(window).innerHeight() - 50,
                         dialogClass: "ui-dialog-no-close",
-                        buttons: [
-                            {
-                                text: closeButton,
-                                click: function() {
-                                    $( this ).dialog( "close" );
-                                }
+                        buttons: [{
+                            text: closeButton,
+                            click: function() {
+                                $(this).dialog("close");
                             }
-                        ]
+                        }]
                     });
                 },
-                error:function(){
+                error: function() {
                     $('#nkDialog').html("ERROR !");
                 }
             });
@@ -56,24 +70,24 @@ $(document).ready(function(){
     $(".validateForm").validationEngine();
 
     // Login ajax
-    $('#login').submit(function(){
-        if($("#login").validationEngine('validate') === true) {
+    $('#login').submit(function() {
+        if ($("#login").validationEngine('validate') === true) {
             $('#loginMessage').dialog({
-                modal:true,
-                resizable:false,
-                draggable:false,
-                open: function(){
+                modal: true,
+                resizable: false,
+                draggable: false,
+                open: function() {
                     $.ajax({
-                        scriptCharset:"iso-8859-1",
+                        scriptCharset: "iso-8859-1",
                         type: "POST",
                         url: "index.php?file=Admin&page=login&nuked_nude=admin",
                         data: {
-                                mail:$('#loginMail').val(),
-                                password:$('#loginPassword').val()
-                              },
-                        success:function(data){
+                            mail: $('#loginMail').val(),
+                            password: $('#loginPassword').val()
+                        },
+                        success: function(data) {
                             $('#loginMessage').removeClass('ajaxLoading');
-                            $('#loginMessage').html('<p>'+data+'</p>');
+                            $('#loginMessage').html('<p>' + data + '</p>');
                         }
                     });
                 }
@@ -83,23 +97,24 @@ $(document).ready(function(){
     });
 
     //===== Add class on #content resize. Needed for responsive grid =====//
-    $('#content').resize(function () {
-      var width = $(this).width();
+    $('#content').resize(function() {
+        var width = $(this).width();
         if (width < 769) {
             $(this).addClass('under');
+        } else {
+            $(this).removeClass('under')
         }
-        else { $(this).removeClass('under') }
     }).resize(); // Run resize on window load
 
     //===== User nav dropdown =====//
 
-    $('a.leftUserDrop').click(function () {
+    $('a.leftUserDrop').click(function() {
         $('.leftUser').slideToggle(200);
     });
     $(document).bind('click', function(e) {
         var $clicked = $(e.target);
-        if (! $clicked.parents().hasClass("leftUserDrop"))
-        $(".leftUser").slideUp(200);
+        if (!$clicked.parents().hasClass("leftUserDrop"))
+            $(".leftUser").slideUp(200);
     });
 
     //===== Add classes for sub sidebar detection =====//
@@ -107,12 +122,11 @@ $(document).ready(function(){
     if ($('div').hasClass('secNav')) {
         $('#sidebar').addClass('with');
         //$('#content').addClass('withSide');
-    }
-    else {
+    } else {
         $('#sidebar').addClass('without');
-        $('#content').css('margin-left','100px');//.addClass('withoutSide');
+        $('#content').css('margin-left', '100px'); //.addClass('withoutSide');
         $('#footer > .wrapper').addClass('fullOne');
-        };
+    };
 
     //== Adding class to :last-child elements ==//
 
@@ -120,15 +134,15 @@ $(document).ready(function(){
 
     //===== 2 responsive buttons (320px - 480px) =====//
 
-    $('.iTop').click(function () {
+    $('.iTop').click(function() {
         $('#sidebar').slideToggle(100);
     });
 
-    $('.iButton').click(function () {
+    $('.iButton').click(function() {
         $('.altMenu').slideToggle(100);
     });
 
-    $('.userNav a.search').click(function () {
+    $('.userNav a.search').click(function() {
         $('.topSearch').fadeToggle(150);
     });
 
@@ -159,7 +173,7 @@ $(document).ready(function(){
     //===== Notification boxes =====//
 
     $('.nNoteHideable').click(function() {
-        $(this).fadeTo(200, 0.00, function(){ //fade
+        $(this).fadeTo(200, 0.00, function() { //fade
             $(this).slideUp(200, function() { //slide up
                 $(this).remove(); //then remove from the DOM
             });
@@ -171,19 +185,17 @@ $(document).ready(function(){
     $('#breadcrumbs').xBreadcrumbs();
 
     $(".tableDnD").tableDnD({
-        onDrop : function(table, row)
-        {
+        onDrop: function(table, row) {
 
             var old = parseInt($(row).find('.order').html());
             $(row).addClass("current");
 
             var i = 0;
             var newOrder;
-            $(table).find('tbody tr').each(function(){
+            $(table).find('tbody tr').each(function() {
                 $(this).find('.order').html(i);
                 console.log($(this).hasClass('current'));
-                if ($(this).hasClass('current'))
-                {
+                if ($(this).hasClass('current')) {
                     newOrder = i;
                 }
                 i++;
@@ -195,22 +207,33 @@ $(document).ready(function(){
                 url: '',
                 type: 'POST',
                 dataType: 'json',
-                data: { 'tableDnD' : '1', 'old' : old, 'new' : newOrder, 'table' : $(table).data('table'), 'id' : $(row).data('id')},
+                data: {
+                    'tableDnD': '1',
+                    'old': old,
+                    'new': newOrder,
+                    'table': $(table).data('table'),
+                    'id': $(row).data('id')
+                },
             })
-            .done(function() {
-                console.log("success");
-            })
-            .fail(function() {
-                console.log("error");
-            })
-            .always(function() {
-                console.log("complete");
-            });
+                .done(function() {
+                    console.log("success");
+                })
+                .fail(function() {
+                    console.log("error");
+                })
+                .always(function() {
+                    console.log("complete");
+                });
 
             $(row).removeClass("current");
         }
     });
 
     $("div[class^='widget']").contentTabs(); //Run function on any div with class name of "Content Tabs"
+
+    // Lightbox
+    $(".lightbox").fancybox({
+        'padding': 2
+    });
 
 });

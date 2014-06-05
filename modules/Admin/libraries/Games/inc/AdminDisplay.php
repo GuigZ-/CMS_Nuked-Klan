@@ -32,7 +32,7 @@ function GamesDisplayAdmin () {
 
 
     // Message de process
-    echo '<div class="nNote nWarning nNoteHideabl"><p>En cours de développement</p></div>';
+    echo '<div class="nNote nWarning nNoteHideabl"><p>En cours de dÃ©veloppement</p></div>';
     ?>
 
     <div class="content-box">
@@ -59,7 +59,7 @@ function GamesDisplayAdmin () {
 function GamesPostProcess ($op, $action, $id) {
     if ($op === 'games') {
 
-        $path = dirname(__FILE__) . '/../../../../../Upload/Games/';
+        $path = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Upload' . DIRECTORY_SEPARATOR . 'Games' . DIRECTORY_SEPARATOR;
         if (($action === 'add' || $action === 'edit') && nkGetValue('btnSubmit')) {
             if (!nkGetValue('name')) {
                 ?>
@@ -79,13 +79,13 @@ function GamesPostProcess ($op, $action, $id) {
                 $dbaExists = mysql_fetch_assoc($dbeExists);
 
                 if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1)) {
-                    $icon = nkUploadImage('icon', $path);
+                    $icon = current(nkUploadImage('icon', $path));
                     if (!$id && ($icon === true || $icon === false)) {
                         ?>
                             <div class="nNote nFailure nNoteHideable">
                                 <p>
                                     <?php
-                                        echo 'Merci d\'insérer une image';
+                                        echo 'Merci d\'insÃ©rer une image';
                                     ?>
                                 </p>
                             </div>
@@ -109,7 +109,7 @@ function GamesPostProcess ($op, $action, $id) {
                         <div class="nNote nFailure nNoteHideable">
                             <p>
                                 <?php
-                                    echo 'Le jeu que vous souhaitez enregistrer existe déjà';
+                                    echo 'Le jeu que vous souhaitez enregistrer existe dÃ©jÃ ';
                                 ?>
                             </p>
                         </div>
@@ -150,7 +150,7 @@ function GamesPostProcess ($op, $action, $id) {
     }
     else if ($op === 'maps') {
 
-        $path = dirname(__FILE__) . '/../../../../../Upload/Maps/';
+        $path = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Upload' . DIRECTORY_SEPARATOR . 'Maps' . DIRECTORY_SEPARATOR;
         if (($action === 'add' || $action === 'edit') && nkGetValue('btnSubmit')) {
             if (!nkGetValue('name') || !nkGetValue('game')) {
                 ?>
@@ -169,13 +169,13 @@ function GamesPostProcess ($op, $action, $id) {
                 $dbaExists = mysql_fetch_assoc($dbeExists);
 
                 if ($dbaExists['total'] == 0 || ($id && $id == $dbaExists['id'] && $dbaExists['total'] == 1)) {
-                    $picture = nkUploadImage('picture', $path);
+                    $picture = current(nkUploadImage('picture', $path));
                     if (!$id && ($picture === true || $picture === false)) {
                         ?>
                             <div class="nNote nFailure nNoteHideable">
                                 <p>
                                     <?php
-                                        echo 'Merci d\'insérer une image';
+                                        echo 'Merci d\'insÃ©rer une image';
                                     ?>
                                 </p>
                             </div>
@@ -199,7 +199,7 @@ function GamesPostProcess ($op, $action, $id) {
                         <div class="nNote nFailure nNoteHideable">
                             <p>
                                 <?php
-                                    echo 'Le jeu que vous souhaitez enregistrer existe déjà';
+                                    echo 'Le jeu que vous souhaitez enregistrer existe dÃ©jÃ ';
                                 ?>
                             </p>
                         </div>
@@ -419,7 +419,7 @@ function GamesDisplayForm ($id = false) {
                 </div>
                 <div class="formRow">
                     <div class="grid3">
-                        <label for="icon">Icône :</label>
+                        <label for="icon">IcÃ´ne :</label>
                     </div>
                     <div class="grid9 searchDrop">
                         <input type="file" name="icon" id="icon" />

@@ -14,7 +14,7 @@ if (nkHasAdmin()) {
 
     /**
      * Affiche un message de confirmation
-     * @param  int $case ClÈ du message
+     * @param  int $case Cl√© du message
      */
     function nkDisplayConf ($case) {
         ?>
@@ -23,15 +23,19 @@ if (nkHasAdmin()) {
                 <?php
                     switch ($case) {
                         case '1':
-                            echo 'CrÈation rÈussie';
+                            echo 'Cr√©ation r√©ussie';
                             break;
 
                         case '2':
-                            echo 'Suppression rÈussie';
+                            echo 'Suppression r√©ussie';
                             break;
 
                         case '3':
-                            echo 'Mise ‡ jour rÈussie';
+                            echo 'Mise √† jour r√©ussie';
+                            break;
+
+                        case '4':
+                            echo 'Fichier supprim√© avec succ√®s';
                             break;
 
                         default:
@@ -46,7 +50,7 @@ if (nkHasAdmin()) {
     /**
      *  Affiche le contenu d'un menu
      *  @param array $menus Liste des menus
-     *  @param string $search Valeur ‡ chercher pour le lien courant
+     *  @param string $search Valeur √† chercher pour le lien courant
      *  @param string $op Type d'action op|action
      *  @param string $op Si c'est pas le menu principal, c'est la valeur du op
      */
@@ -104,7 +108,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des jeux
      * @param  integer $id Identifiant du jeu
-     * @return mixed       DonnÈes trouvÈes
+     * @return mixed       Donn√©es trouv√©es
      */
     function nkGetGames ($id = false) {
         $dbsGetGames = '
@@ -149,7 +153,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des groupes
      * @param  integer $id Identifiant du groupe
-     * @return mixed       DonnÈes trouvÈes
+     * @return mixed       Donn√©es trouv√©es
      */
     function nkGetGroups ($id = false) {
         $dbsGetGroups = "
@@ -194,10 +198,10 @@ if (nkHasAdmin()) {
     }
 
     /**
-     * GÈnËre un lien pour l'admin
+     * G√©n√®re un lien pour l'admin
      * @param  boolean $conf    Si on utilise une conf
      * @param  integer $id_conf Identifiant de la conf
-     * @param  array   $others  Si d'autres ÈlÈments sont ‡ ajoutÈs
+     * @param  array   $others  Si d'autres √©l√©ments sont √† ajout√©s
      * @return string           Lien construit
      */
     function nkSetLink ($conf = false, $id_conf = null, $others = array()) {
@@ -237,7 +241,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des maps
      * @param  integer $id Identifier de la map
-     * @return mixed      DonnÈes trouvÈes
+     * @return mixed      Donn√©es trouv√©es
      */
     function nkGetMaps ($id = false) {
         $dbsGetGames = '
@@ -282,7 +286,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des champs sociaux
      * @param  integer $id Identifiant du champ social
-     * @return mixed       DonnÈes trouvÈes
+     * @return mixed       Donn√©es trouv√©es
      */
     function nkGetSocials ($id = false) {
         $dbsGetSocials = '
@@ -321,9 +325,9 @@ if (nkHasAdmin()) {
     }
 
     /**
-     * Liste des Èquipes
-     * @param  integer $id Identifiant de l'Èquipe
-     * @return mixed       DonnÈes trouvÈes
+     * Liste des √©quipes
+     * @param  integer $id Identifiant de l'√©quipe
+     * @return mixed       Donn√©es trouv√©es
      */
     function nkGetTeams ($id = false) {
 
@@ -335,7 +339,7 @@ if (nkHasAdmin()) {
                 LEFT OUTER JOIN " . TEAM_GAMES_TABLE . " AS tga
                     ON tga.team_id = t.id
             ";
-        // Si une id est dÈfini
+        // Si une id est d√©fini
         if($id) {
             $dbsGetTeams .= " WHERE t.id = '" . (int) $id . "' ";
         }
@@ -371,7 +375,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des rangs
      * @param  integer $id Identifiant du status
-     * @return mixed       DonnÈes trouvÈes
+     * @return mixed       Donn√©es trouv√©es
      */
     function nkGetTeamsRanks ($id = false) {
         $dbsGetRank = "
@@ -379,7 +383,7 @@ if (nkHasAdmin()) {
             FROM " . TEAM_RANK_TABLE . "
             WHERE 1
         ";
-        // Si une id est dÈfini
+        // Si une id est d√©fini
         if($id) {
             $dbsGetRank .= " AND id = '" . (int) $id . "' ";
         }
@@ -413,16 +417,16 @@ if (nkHasAdmin()) {
     }
 
     /**
-     * Liste des statut d'Èquipe
+     * Liste des statut d'√©quipe
      * @param  string $id Identifiant du statut
-     * @return mixed      DonnÈes trouvÈes
+     * @return mixed      Donn√©es trouv√©es
      */
     function nkGetTeamsStatus ($id = false) {
 
         $dbsGetStatus = '
                 SELECT name, id
                 FROM ' . TEAM_STATUS_TABLE . '';
-        // Si une id est dÈfini
+        // Si une id est d√©fini
         if($id) {
             $dbsGetStatus .= ' WHERE id = "' . (int) $id . '" ';
         }
@@ -454,7 +458,7 @@ if (nkHasAdmin()) {
     /**
      * Liste des utilisateurs
      * @param  string $id Identifiant de l'utilisateur
-     * @return mixed      DonnÈes trouvÈes
+     * @return mixed      Donn√©es trouv√©es
      */
     function nkGetUsers ($id = false) {
         $dbsGetUsers = "
@@ -499,10 +503,10 @@ if (nkHasAdmin()) {
     }
 
     /**
-     * Permet de rÈcupÈrer les donnÈes de requÍtes
-     * @param  string  $key     ClÈ de la donnÈe
-     * @param  mixed   $default DonnÈe de retour, si la clÈ n'est pas trouvÈ
-     * @return mixed            Valeur trouvÈ ou de dÈfault
+     * Permet de r√©cup√©rer les donn√©es de requ√™tes
+     * @param  string  $key     Cl√© de la donn√©e
+     * @param  mixed   $default Donn√©e de retour, si la cl√© n'est pas trouv√©
+     * @return mixed            Valeur trouv√© ou de d√©fault
      */
     function nkGetValue ($key, $default = false) {
         if (isset($_REQUEST[$key]) && !empty($_REQUEST[$key])) {
@@ -517,8 +521,8 @@ if (nkHasAdmin()) {
 
     /**
      * Stripslasshes
-     * @param  mixed $value Valeur ‡ gÈrer
-     * @return string        valeur gÈrÈ
+     * @param  mixed $value Valeur √† g√©rer
+     * @return string        valeur g√©r√©
      */
     function nkStripslashes($value) {
         if (is_array($value))
@@ -529,12 +533,29 @@ if (nkHasAdmin()) {
 
     /**
      * Upload une image
-     * @param  mixed  $file      Tableau ($_FILES) ou clÈ du tableau $_FILES
+     * @param  mixed  $file      Tableau ($_FILES) ou cl√© du tableau $_FILES
      * @param  string $dest_path Chemin relatif pour l'image
      * @param  string $dest_file Nouveau nom du fichier
      * @return string            Nom du fichier
      */
     function nkUploadImage ($file, $dest_path, $dest_file = null) {
+        $types = array('.jpeg', '.jpg', '.png', '.gif');
+        return nkUploadFile($file, $dest_path, $types, $dest_file);
+    }
+
+    /**
+     * Upload une image
+     * @param  mixed  $file          Tableau ($_FILES) ou cl√© du tableau $_FILES
+     * @param  string $dest_path     Chemin relatif pour l'image
+     * @param  array  $types_enabled Type de fichier
+     * @param  string $dest_file     Nouveau nom du fichier
+     * @return string                Nom du fichier
+     */
+    function nkUploadFile ($file, $dest_path, $types_enabled, $dest_file = null) {
+
+        if (!$types_enabled || is_array($types_enabled) === false) {
+            return false;
+        }
 
         if (!is_array($file) && preg_match('#^[0-9_A-Za-z.\-\s]+$#isD', $file)) {
             if (isset($_FILES[$file])) {
@@ -548,45 +569,67 @@ if (nkHasAdmin()) {
             return false;
         }
 
-        if (!isset($file['tmp_name']))
+        if (!isset($file['tmp_name'])) {
             return true;
+        }
 
-        // Si le dossier existe pas on le crÈÈ
+        $use_name = ($dest_file === null || is_array($file['tmp_name']) !== false);
+
+        // Check if multiupload or not
+        if (is_array($file['tmp_name']) === false) {
+            foreach ($file as &$value) {
+                $value = array($value);
+            }
+        }
+
+        // Si le dossier existe pas on le cr√©√©
         if (is_dir($dest_path) === false) {
             @mkdir($dest_path, 0755, true);
         }
 
         $dest_path = realpath($dest_path).DIRECTORY_SEPARATOR;
 
-        if ($file['error'] !== 0) {
-            return false;
+        // Stockage des fichiers upload√©s
+        $files = array();
+
+        foreach ($file['name'] as $k => $v) {
+
+            if ($file['error'][$k] !== 0) {
+                return false;
+            }
+
+            // Format du fichier upload√©
+            $type = strrchr($v, '.');
+            if (!in_array($type, $types_enabled)) {
+                return false;
+            }
+
+            // Le fichier n'est pas upload√©
+            if (is_uploaded_file($file['tmp_name'][$k]) === false) {
+                return false;
+            }
+
+            // Nom du fichier
+            if ($use_name) {
+                $dest_file = preg_replace('#'.$type.'$#isD', '', $v);
+            }
+
+            // On upload le fichier
+            if (move_uploaded_file($file['tmp_name'][$k], $dest_path . $dest_file . $type) === false) {
+                return false;
+            }
+
+            $files[$k] = $dest_file . $type;
         }
 
-        $types = array('.jpeg', '.jpg', '.png', '.gif');
-
-        // Format du fichier uploadÈ
-        $type = strrchr($file['name'], '.');
-        if (!in_array($type, $types)) {
-            return false;
-        }
-
-        // Le fichier n'est pas uploadÈ
-        if (is_uploaded_file($file['tmp_name']) === false) {
-            return false;
-        }
-
-        if (!$dest_file) {
-            $dest_file = preg_replace('#'.$type.'$#isD', '', $file['name']);
-        }
-
-        // On upload le fichier
-        if (move_uploaded_file($file['tmp_name'], $dest_path . $dest_file . $type) === false) {
-            return false;
-        }
-
-        return $dest_file . $type;
+        return $files;
     }
 
+    /**
+     * V√©rifie un lien
+     * @param  string $link Cha√Æne √† tester
+     * @return boolean      Si c'est un lien
+     */
     function nkIsLink($link) {
         return filter_var($link, FILTER_VALIDATE_URL);
     }

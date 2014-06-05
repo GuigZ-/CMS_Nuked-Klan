@@ -9,7 +9,7 @@
  */
 defined('INDEX_CHECK') or die('You can\'t run this file alone.');
 
-require_once 'modules/Wars/inc/functions.php';
+require_once 'modules' . DIRECTORY_SEPARATOR . 'Wars' . DIRECTORY_SEPARATOR . 'inc' . DIRECTORY_SEPARATOR . 'functions.php';
 
 /**
  * Afficheur
@@ -170,7 +170,7 @@ function WarsDisplayList () {
  * Display form
  * @param integer $id Identifier
  */
-function WarsDisplayForm ($id = fale) {
+function WarsDisplayForm ($id = false) {
 
     $json = MatchGetJsonTab();
     $games = nkGEtGames();
@@ -190,6 +190,7 @@ function WarsDisplayForm ($id = fale) {
         $url_tournament = nkGetValue('url_tournament', $match['url_tournament']);
         $team = nkGetValue('team', $match['team_id']);
         $map = nkGetValue('map', $match['map']);
+        $files = $match['files'];
     }
     else {
         $versus = nkGetValue('versus');
@@ -278,18 +279,20 @@ function WarsDisplayForm ($id = fale) {
 
                     }
                 }
-
+                console.log(d);
                 var local = (typeof(d) !== "undefined" && typeof(d.score) !== "undefined" && typeof(d.score.local) !== "undefined" && d.score.local != "" ? d.score.local : '');
                 var visitor = (typeof(d) !== "undefined" && typeof(d.score) !== "undefined" && typeof(d.score.visitor) !== "undefined" && d.score.visitor != "" ? d.score.visitor : '');
+                var game_mod = (typeof(d) !== "undefined" && typeof(d.game_mod) !== "undefined" && d.game_mod !== false ? d.game_mod : '');
+                var map_time = (typeof(d) !== "undefined" && typeof(d.time) !== "undefined" && d.time !== false ? d.time : '');
 
                 // Choix de la map
                 tab_content += '<div class="formRow"><div class="grid3"><label for="map_'+maps_nb+'_map">Choisir la carte :</label></div><div class="grid9 searchDrop"><select class="select" name="map['+maps_nb+'][map]" id="map_'+maps_nb+'_map">'+options+'</select></div><div class="clear both"></div></div>';
                 // Score
                 tab_content += '<div class="formRow"><div class="grid3"><label>Score de la carte :</label></div><div class="grid9 moreFields"><ul class="rowData"><li><input type="text" value="' + local + '" placeholder="Local" name="map['+maps_nb+'][score][local]" /></li><li class="sep">-</li><li><input type="text" value="' + visitor + '" placeholder="Visiteur" name="map['+maps_nb+'][score][visitor]" /></li></ul></div><div class="clear both"></div></div>';
                 // Mode de jeu
-                tab_content += '<div class="formRow"><div class="grid3"><label for="map_'+maps_nb+'_mod">Mode de la carte :</label></div><div class="grid9"><input type="text" name="map['+maps_nb+'][mod]" id="map_'+maps_nb+'_mod" /></div><div class="clear both"></div></div>';
+                tab_content += '<div class="formRow"><div class="grid3"><label for="map_'+maps_nb+'_mod">Mode de la carte :</label></div><div class="grid9"><input type="text" name="map['+maps_nb+'][mod]" id="map_'+maps_nb+'_mod" value="'+game_mod+'" /></div><div class="clear both"></div></div>';
                 // Mode de jeu
-                tab_content += '<div class="formRow"><div class="grid3"><label for="map_'+maps_nb+'_time">Temps de la carte :</label></div><div class="grid9"><input type="text" name="map['+maps_nb+'][time]" id="map_'+maps_nb+'_time" /></div><div class="clear both"></div></div>';
+                tab_content += '<div class="formRow"><div class="grid3"><label for="map_'+maps_nb+'_time">Temps de la carte :</label></div><div class="grid9"><input type="text" name="map['+maps_nb+'][time]" id="map_'+maps_nb+'_time"  value="'+map_time+'" /></div><div class="clear both"></div></div>';
 
                 // Fin de la tab des informations
                 tab_content += '</div>';
@@ -421,7 +424,7 @@ function WarsDisplayForm ($id = fale) {
                             players : jsonMap[key].players,
                             substitute : jsonMap[key].substitute,
                             score : jsonMap[key].score,
-                            mod : jsonMap[key].mod,
+                            game_mod : jsonMap[key].game_mod,
                             opponent : jsonMap[key].opponent,
                             time : jsonMap[key].time
                         });
@@ -626,6 +629,22 @@ function WarsDisplayForm ($id = fale) {
                     <h6>Fichiers</h6>
                     <div class="clear both"></div>
                 </div>
+                <?php
+                    if (isset($files) && sizeof($files)) {
+                        foreach ($files as $k => $file) {
+                            ?>
+                            <div class="formRow">
+                                <div class="grid3">
+                                    <label for="url_tournament">Fichier n° <?php echo $k+1; ?></label>
+                                </div>
+                                <div class="grid6"><a href="upload/Matchs/<?php echo $id; ?>/<?php echo $file; ?>" class="lightbox"><?php echo $file; ?></a></div>
+                                <div class="grid3 center"><a class="nkIcons icon-delete bDefault tablectrl_medium tipS floatR" href="<?php echo NkSetLink(false, null, array('op' => 'edit', 'id' => $id, 'delete_img' => urlencode($file))); ?>"></a></div>
+                                <div class="clear both"></div>
+                            </div>
+                            <?php
+                        }
+                    }
+                ?>
                 <div id="filebutton" class="formRow center">
                     <div class="grid12">
                         <a class="buttonM bDefault" href="#filebutton">Ajouter un fichier</a>
@@ -669,6 +688,22 @@ function WarsDisplayForm ($id = fale) {
     <?php
 }
 
+function getInBytes($val) {
+    $val = trim($val);
+    $last = strtolower($val[strlen($val)-1]);
+    switch($last) {
+        // The 'G' modifier is available since PHP 5.1.0
+        case 'g':
+            $val *= 1024;
+        case 'm':
+            $val *= 1024;
+        case 'k':
+            $val *= 1024;
+    }
+
+    return $val;
+}
+
 /**
  * Processus
  * @param  string $op     Opération
@@ -678,6 +713,32 @@ function WarsDisplayForm ($id = fale) {
  */
 function postProcess ($op, $action, $id) {
     if ($op === 'add' || ($op === 'edit' && $id)) {
+        if (nkGetValue('delete_img') &&  $op === 'edit' && $id) {
+            $file = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'Matchs' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR . urldecode(nkGetValue('delete_img'));
+
+            if (unlink($file)) {
+                header('Refresh:0, url='.NkSetLink(true, 4, array('op' => 'edit', 'id' => $id)));
+            }
+        }
+        
+        if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {        
+            $max_post = getInBytes(@ini_get('post_max_size'));
+            $upload_max = getInBytes(@ini_get('upload_max_filesize'));
+
+            if (isset($_SERVER['CONTENT_LENGTH']) && ($_SERVER['CONTENT_LENGTH'] > $max_post || $_SERVER['CONTENT_LENGTH'] > $upload_max)) {
+                ?>
+                    <div class="nNote nFailure nNoteHideable">
+                        <p>
+                            <?php
+                            echo 'Merci d\'augmenter la capacité d\'envoi pour vos formulaires : ' . $_SERVER['CONTENT_LENGTH'] . ' bytes au lieu de ' . ($max_post > $upload_max ? $upload_max : $max_post) . ' autorisés';
+                            ?>
+                        </p>
+                    </div>
+                <?php
+                return;
+            }
+        }
+
         if (nkGetValue('btnSubmit')) {
             // Champs requis
             if (!nkGetValue('game')) {
@@ -741,6 +802,45 @@ function postProcess ($op, $action, $id) {
                 return;
             }
 
+            if ((isset($_FILES['file']) && count($_FILES['file'])) || (isset($_FILES['icon']) && count($_FILES['icon']))) {
+                $dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'Matchs' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR;
+
+                if (isset($_FILES['file']) && count($_FILES['file'])) {
+                    $files = nkUploadFile('file', $dir, array('.png', '.jpg', '.jpeg'));
+                }
+                else {
+                    $files = array();
+                }
+
+                if (isset($_FILES['icon']) && count($_FILES['icon'])) {
+                    $icon = nkUploadFile('icon', $dir, array('.png', '.jpg', '.jpeg'), 'icon-adv');
+                    if (is_array($icon)) {
+                        $files = array_merge($icon, $files);
+                    }
+                }
+
+                if (is_array($files) === false) {
+
+                    foreach (scandir($dir) as $file) {
+                        if (is_file($dir.$file)) {
+                            unlink($dir.$file);
+                        }
+                    }
+                    rmdir($dir);
+
+                    ?>
+                        <div class="nNote nFailure nNoteHideable">
+                            <p>
+                                <?php
+                                echo 'Les fichiers n\'ont pas pu être uploadé';
+                                ?>
+                            </p>
+                        </div>
+                    <?php
+                    return;
+                }
+            }
+
             $maps = nkGetValue('map');
 
             $sqlMaps = array();
@@ -763,9 +863,12 @@ function postProcess ($op, $action, $id) {
                 if ($maps && is_array($maps)) {
                     $i = 0;
                     foreach ($maps as $map) {
+
+                        $map['score'] = $map['score']['local'] . '-' . $map['score']['visitor'];
+
                         // Une map sera rempli que si l
                         if (!empty($map['map'])) {
-                            $sqlMaps[] = "(NULL, %d, '".printSecuTags($map['map'])."', '".(isset($map['players']) && is_array($map['players']) && sizeof($map['players']) ? printSecuTags(implode(',', $map['players'])) : '')."', '".(isset($map['substitute']) && is_array($map['substitute']) && sizeof($map['substitute']) ? printSecuTags(implode(',', $map['substitute'])) : '')."', '".printSecuTags($map['score'])."', '".printSecuTags($map['mod'])."', '".printSecuTags($map['opponent'])."', '".printSecuTags($map['time'])."')";
+                            $sqlMaps[] = "(NULL, %d, '".printSecuTags($map['map'])."', '".(isset($map['players']) && is_array($map['players']) && sizeof($map['players']) ? printSecuTags(implode(',', $map['players'])) : '')."', '".(isset($map['substitute']) && is_array($map['substitute']) && sizeof($map['substitute']) ? printSecuTags(implode(',', $map['substitute'])) : '')."', '".printSecuTags($map['score'])."', '".printSecuTags($map['mod'])."', '".(isset($map['opponent']) ? printSecuTags($map['opponent']) : '')."', '".printSecuTags($map['time'])."')";
                             $i++;
                         }
                     }
@@ -806,6 +909,21 @@ function postProcess ($op, $action, $id) {
                 mysql_query($dbrSetMatchMap) or die(nk_debug_bt());
             }
 
+            if (isset($files) && sizeof($files)) {
+                 $new_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'upload' . DIRECTORY_SEPARATOR . 'Matchs' . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR;
+
+                 if (is_dir($new_dir) === false) {
+                    @mkdir($new_dir, 0755, true);
+                 }
+
+                foreach (scandir($dir) as $file) {
+                    if (is_file($dir.$file)) {
+                        copy($dir.$file, $new_dir.$file);
+                        unlink($dir.$file);
+                    }
+                }
+                rmdir($dir);
+            }
             header('Refresh:0, url='.NkSetLink(true, null, array('op' => 'matchs')));
 
         }
